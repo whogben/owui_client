@@ -20,8 +20,8 @@ dependencies = [
 
 [project.urls]
 "Author" = "https://willhogben.com"
-"Repository" = "https://github.com/whogben/owui-client"
-"Issues" = "https://github.com/whogben/owui-client/issues"
+"Repository" = "https://github.com/whogben/owui_client"
+"Issues" = "https://github.com/whogben/owui_client/issues"
 
 
 [project.optional-dependencies]
