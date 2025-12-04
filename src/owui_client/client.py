@@ -24,6 +24,7 @@ from owui_client.routers.functions import FunctionsClient
 from owui_client.routers.evaluations import EvaluationsClient
 from owui_client.routers.utils import UtilsClient
 from owui_client.routers.root import RootClient
+from owui_client.shortcuts import Shortcuts
 
 
 class OpenWebUI(OWUIClientBase):
@@ -64,3 +65,4 @@ class OpenWebUI(OWUIClientBase):
         self.evaluations = EvaluationsClient(self)
         self.utils = UtilsClient(self)
         self.root = RootClient(self)
+        self.shortcuts = Shortcuts(self)
