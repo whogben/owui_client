@@ -39,10 +39,10 @@ def extract_string(node: ast.AST) -> str:
     return ""
 
 
-def get_pydantic_models(file_path: Path) -> Dict[str, Set[str]]:
+def get_class_details(file_path: Path) -> Dict[str, Dict[str, Any]]:
     """
-    Parses a python file and returns a dict of {ClassName: {field_names}}.
-    Only looks for classes inheriting from BaseModel.
+    Parses a python file and returns a dict of {ClassName: {fields: Set[str], bases: Set[str]}}.
+    Parses ALL classes to ensure we catch models defined in routers or elsewhere.
     """
     if not file_path.exists():
         return {}
@@ -54,28 +54,29 @@ def get_pydantic_models(file_path: Path) -> Dict[str, Set[str]]:
             print(f"Error parsing {file_path}: {e}")
             return {}
 
-    models = {}
+    classes = {}
 
     for node in ast.walk(tree):
         if isinstance(node, ast.ClassDef):
-            is_model = False
+            fields = set()
+            bases = set()
+
+            # Extract bases
             for base in node.bases:
-                if isinstance(base, ast.Name) and base.id == "BaseModel":
-                    is_model = True
-                elif isinstance(base, ast.Attribute) and base.attr == "BaseModel":
-                    is_model = True
-                elif isinstance(base, ast.Name) and base.id in models:
-                    is_model = True
+                if isinstance(base, ast.Name):
+                    bases.add(base.id)
+                elif isinstance(base, ast.Attribute):
+                    bases.add(base.attr)
 
-            if is_model:
-                fields = set()
-                for item in node.body:
-                    if isinstance(item, ast.AnnAssign):
-                        if isinstance(item.target, ast.Name):
-                            fields.add(item.target.id)
-                models[node.name] = fields
+            # Extract fields
+            for item in node.body:
+                if isinstance(item, ast.AnnAssign):
+                    if isinstance(item.target, ast.Name):
+                        fields.add(item.target.id)
+            
+            classes[node.name] = {"fields": fields, "bases": bases}
 
-    return models
+    return classes
 
 
 def get_router_endpoints(file_path: Path) -> List[Tuple[str, str]]:
@@ -212,6 +213,7 @@ def find_drift(ignore_files: List[str] = None) -> List[DriftIssue]:
 
     # 1. Check Models
     ref_models_dir = REF_BASE / "models"
+    ref_routers_dir = REF_BASE / "routers"
     client_models_dir = CLIENT_BASE / "models"
 
     if not ref_models_dir.exists():
@@ -224,39 +226,33 @@ def find_drift(ignore_files: List[str] = None) -> List[DriftIssue]:
         )
         return issues
 
-    for ref_file in ref_models_dir.glob("*.py"):
-        if ref_file.name == "__init__.py":
+    # Drive check from Client Models (what we have implemented)
+    for client_file in client_models_dir.glob("*.py"):
+        if client_file.name == "__init__.py":
             continue
-        if ref_file.name in ignore_files:
-            continue
-
-        client_file = client_models_dir / ref_file.name
-        if not client_file.exists():
-            # Skip completely unimplemented files
+        if client_file.name in ignore_files:
             continue
 
-        ref_classes = get_pydantic_models(ref_file)
-        client_classes = get_pydantic_models(client_file)
+        ref_model_file = ref_models_dir / client_file.name
+        ref_router_file = ref_routers_dir / client_file.name
+        
+        # Get details from client
+        client_classes = get_class_details(client_file)
+        
+        # Build reference classes map by combining Model and Router files
+        ref_classes = {}
+        if ref_model_file.exists():
+            ref_classes.update(get_class_details(ref_model_file))
+        if ref_router_file.exists():
+            # Router definitions take precedence or augment if they exist in both (unlikely)
+            ref_classes.update(get_class_details(ref_router_file))
 
-        # Filter out ref_classes that are NOT used in any router endpoint in the ref file's corresponding router
-        # This is hard to do perfectly, but we can skip checking "Missing Models" if they aren't clearly used.
-        # Alternatively, we just accept that if we implement a file, we should probably implement all models in it
-        # to match the file structure.
-
-        # User request: "it shouldn't worry about models that aren't part of any endpoint"
-        # To do this accurately, we'd need to scan the router file to see which models are used as request bodies or return types.
-
-        # Simplified approach: Only check for Missing Fields in *existing* client models.
-        # Do NOT check for Missing Models (entire classes missing) because often the backend has internal helper models
-        # or DB models mixed in with API schemas that the client doesn't need.
-
-        for cls_name, ref_fields in ref_classes.items():
-            if cls_name not in client_classes:
-                # Skip "MISSING_MODEL" check per user request to reduce noise on internal models
-                continue
-            else:
-                client_fields = client_classes[cls_name]
-                missing_fields = ref_fields - client_fields
+        for cls_name, client_details in client_classes.items():
+            if cls_name in ref_classes:
+                ref_details = ref_classes[cls_name]
+                
+                # Check for Missing Fields
+                missing_fields = ref_details['fields'] - client_details['fields']
                 if missing_fields:
                     issues.append(
                         DriftIssue(
@@ -265,9 +261,22 @@ def find_drift(ignore_files: List[str] = None) -> List[DriftIssue]:
                             client_file.name,
                         )
                     )
+                
+                # Check for Missing Bases
+                # We filter out common bases that aren't relevant for drift like 'BaseModel'
+                ignored_bases = {'BaseModel', 'object'}
+                missing_bases = ref_details['bases'] - client_details['bases'] - ignored_bases
+                
+                if missing_bases:
+                     issues.append(
+                        DriftIssue(
+                            "MISSING_BASE",
+                            f"Model {cls_name} missing base classes: {', '.join(missing_bases)}",
+                            client_file.name,
+                        )
+                    )
 
     # 2. Check Routers
-    ref_routers_dir = REF_BASE / "routers"
     client_routers_dir = CLIENT_BASE / "routers"
 
     for ref_file in ref_routers_dir.glob("*.py"):

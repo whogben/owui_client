@@ -120,6 +120,11 @@ class UserNameResponse(BaseModel):
     role: str
 
 
+class UserProfileImageResponse(UserNameResponse):
+    email: str
+    profile_image_url: str
+
+
 class WorkspacePermissions(BaseModel):
     models: bool = False
     knowledge: bool = False
@@ -175,6 +180,8 @@ class FeaturesPermissions(BaseModel):
     image_generation: bool = True
     code_interpreter: bool = True
     notes: bool = True
+    channels: bool = True
+    folders: bool = True
 
 
 class UserPermissions(BaseModel):

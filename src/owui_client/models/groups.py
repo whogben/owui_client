@@ -19,17 +19,8 @@ class GroupModel(BaseModel):
     updated_at: int  # timestamp in epoch
 
 
-class GroupResponse(BaseModel):
-    id: str
-    user_id: str
-    name: str
-    description: str
-    permissions: Optional[dict] = None
-    data: Optional[dict] = None
-    meta: Optional[dict] = None
+class GroupResponse(GroupModel):
     member_count: Optional[int] = None
-    created_at: int  # timestamp in epoch
-    updated_at: int  # timestamp in epoch
 
 
 class GroupExportResponse(GroupResponse):

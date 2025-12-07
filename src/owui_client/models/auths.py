@@ -1,6 +1,7 @@
 from typing import Optional
 from datetime import date
 from pydantic import BaseModel
+from owui_client.models.users import UserProfileImageResponse, UserStatus
 
 
 class Token(BaseModel):
@@ -16,7 +17,7 @@ class UserResponse(BaseModel):
     profile_image_url: str
 
 
-class SigninResponse(Token, UserResponse):
+class SigninResponse(Token, UserProfileImageResponse):
     pass
 
 
@@ -41,12 +42,12 @@ class AddUserForm(SignupForm):
     role: Optional[str] = "pending"
 
 
-class SessionUserResponse(Token, UserResponse):
+class SessionUserResponse(Token, UserProfileImageResponse):
     expires_at: Optional[int] = None
     permissions: Optional[dict] = None
 
 
-class SessionUserInfoResponse(SessionUserResponse):
+class SessionUserInfoResponse(SessionUserResponse, UserStatus):
     bio: Optional[str] = None
     gender: Optional[str] = None
     date_of_birth: Optional[date] = None
