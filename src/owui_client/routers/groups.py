@@ -11,12 +11,25 @@ from owui_client.models.users import UserInfoResponse
 
 
 class GroupsClient(ResourceBase):
+    """
+    Client for the Groups endpoints.
+    """
+
     async def get_groups(self, share: Optional[bool] = None) -> list[GroupResponse]:
         """
         Get all groups.
 
-        :param share: Filter by share status
-        :return: List of groups
+        Retrieves a list of all groups available to the user.
+        Admin users can see all groups. Regular users only see groups they are members of.
+
+        Args:
+            share: Filter by share status.
+                   If True, returns only shared groups.
+                   If False, returns only non-shared groups.
+                   If None, returns all groups (subject to user role).
+
+        Returns:
+            List of groups.
         """
         params = {}
         if share is not None:
@@ -33,8 +46,14 @@ class GroupsClient(ResourceBase):
         """
         Create a new group.
 
-        :param form_data: The group creation information
-        :return: The created group
+        Creates a new user group with the provided details.
+        Requires admin privileges.
+
+        Args:
+            form_data: The group creation information including name, description, and permissions.
+
+        Returns:
+            The created group if successful, None otherwise.
         """
         return await self._request(
             "POST",
@@ -47,8 +66,14 @@ class GroupsClient(ResourceBase):
         """
         Get group by ID.
 
-        :param id: The group ID
-        :return: The group
+        Retrieves details of a specific group by its ID.
+        Requires admin privileges.
+
+        Args:
+            id: The unique identifier of the group.
+
+        Returns:
+            The group details if found, None otherwise.
         """
         return await self._request(
             "GET",
@@ -60,8 +85,15 @@ class GroupsClient(ResourceBase):
         """
         Export group by ID (includes user IDs).
 
-        :param id: The group ID
-        :return: The exported group details
+        Retrieves group details along with the list of member user IDs.
+        Useful for backing up or migrating group data.
+        Requires admin privileges.
+
+        Args:
+            id: The unique identifier of the group.
+
+        Returns:
+            The exported group details including member user IDs if found, None otherwise.
         """
         return await self._request(
             "GET",
@@ -73,8 +105,14 @@ class GroupsClient(ResourceBase):
         """
         Get users in a group.
 
-        :param id: The group ID
-        :return: List of users in the group
+        Retrieves the list of users who are members of the specified group.
+        Requires admin privileges.
+
+        Args:
+            id: The unique identifier of the group.
+
+        Returns:
+            List of user information for members of the group.
         """
         return await self._request(
             "POST",
@@ -88,9 +126,15 @@ class GroupsClient(ResourceBase):
         """
         Update group by ID.
 
-        :param id: The group ID
-        :param form_data: The group update information
-        :return: The updated group
+        Updates the details of an existing group.
+        Requires admin privileges.
+
+        Args:
+            id: The unique identifier of the group.
+            form_data: The updated group information.
+
+        Returns:
+            The updated group details if successful, None otherwise.
         """
         return await self._request(
             "POST",
@@ -105,9 +149,15 @@ class GroupsClient(ResourceBase):
         """
         Add users to group.
 
-        :param id: The group ID
-        :param form_data: The users to add
-        :return: The updated group
+        Adds one or more users to the specified group.
+        Requires admin privileges.
+
+        Args:
+            id: The unique identifier of the group.
+            form_data: Form containing the list of user IDs to add.
+
+        Returns:
+            The updated group details if successful, None otherwise.
         """
         return await self._request(
             "POST",
@@ -122,9 +172,15 @@ class GroupsClient(ResourceBase):
         """
         Remove users from group.
 
-        :param id: The group ID
-        :param form_data: The users to remove
-        :return: The updated group
+        Removes one or more users from the specified group.
+        Requires admin privileges.
+
+        Args:
+            id: The unique identifier of the group.
+            form_data: Form containing the list of user IDs to remove.
+
+        Returns:
+            The updated group details if successful, None otherwise.
         """
         return await self._request(
             "POST",
@@ -137,8 +193,14 @@ class GroupsClient(ResourceBase):
         """
         Delete group by ID.
 
-        :param id: The group ID
-        :return: True if successful
+        Permanently deletes the specified group.
+        Requires admin privileges.
+
+        Args:
+            id: The unique identifier of the group.
+
+        Returns:
+            True if the group was successfully deleted, False otherwise.
         """
         return await self._request(
             "DELETE",

@@ -11,9 +11,16 @@ from owui_client.models.folders import (
 
 
 class FoldersClient(ResourceBase):
+    """
+    Client for the Folders endpoints.
+    """
+
     async def get_folders(self) -> List[FolderNameIdResponse]:
         """
-        Get all folders.
+        Get all folders for the current user.
+
+        Returns:
+            List[FolderNameIdResponse]: A list of folders with basic information.
         """
         return await self._request(
             "GET",
@@ -23,7 +30,15 @@ class FoldersClient(ResourceBase):
 
     async def create_folder(self, form_data: FolderForm) -> FolderModel:
         """
-        Create a new folder.
+        Create a new root folder.
+
+        To create a nested folder, create a root folder and then move it using `update_folder_parent_id_by_id`.
+
+        Args:
+            form_data: The form data for creating the folder.
+
+        Returns:
+            FolderModel: The created folder model.
         """
         return await self._request(
             "POST",
@@ -35,6 +50,12 @@ class FoldersClient(ResourceBase):
     async def get_folder_by_id(self, id: str) -> Optional[FolderModel]:
         """
         Get a folder by ID.
+
+        Args:
+            id: The folder ID.
+
+        Returns:
+            Optional[FolderModel]: The folder model, or None if not found.
         """
         return await self._request(
             "GET",
@@ -46,7 +67,14 @@ class FoldersClient(ResourceBase):
         self, id: str, form_data: FolderUpdateForm
     ) -> FolderModel:
         """
-        Update a folder name by ID.
+        Update a folder's details (name, data, meta) by ID.
+
+        Args:
+            id: The folder ID.
+            form_data: The update form data.
+
+        Returns:
+            FolderModel: The updated folder model.
         """
         return await self._request(
             "POST",
@@ -59,7 +87,14 @@ class FoldersClient(ResourceBase):
         self, id: str, form_data: FolderParentIdForm
     ) -> FolderModel:
         """
-        Update a folder parent ID by ID.
+        Move a folder to a new parent folder.
+
+        Args:
+            id: The folder ID.
+            form_data: The parent ID form data.
+
+        Returns:
+            FolderModel: The updated folder model with the new parent ID.
         """
         return await self._request(
             "POST",
@@ -72,7 +107,14 @@ class FoldersClient(ResourceBase):
         self, id: str, form_data: FolderIsExpandedForm
     ) -> FolderModel:
         """
-        Update a folder is_expanded by ID.
+        Update a folder's expansion status (is_expanded) by ID.
+
+        Args:
+            id: The folder ID.
+            form_data: The is_expanded form data.
+
+        Returns:
+            FolderModel: The updated folder model.
         """
         return await self._request(
             "POST",
@@ -86,6 +128,14 @@ class FoldersClient(ResourceBase):
     ) -> bool:
         """
         Delete a folder by ID.
+
+        Args:
+            id: The folder ID.
+            delete_contents: Whether to delete the contents of the folder (chats, etc). Defaults to True.
+                             If False, contents might be moved or handled differently depending on the backend logic (usually chats are moved to root or detached).
+
+        Returns:
+            bool: True if successful.
         """
         params = {"delete_contents": delete_contents}
         return await self._request(
@@ -94,4 +144,3 @@ class FoldersClient(ResourceBase):
             params=params,
             model=bool,
         )
-

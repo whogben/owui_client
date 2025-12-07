@@ -1,4 +1,4 @@
-from typing import TypeVar, Type, List, Any, overload, get_origin, get_args
+from typing import TypeVar, Type, List, Any, overload, get_origin, get_args, Union
 from httpx import AsyncClient, HTTPStatusError, RequestError
 from pydantic import BaseModel
 
@@ -66,10 +66,22 @@ class OWUIClientBase:
 
             if model:
                 # Handle Optional[T] (which is Union[T, NoneType])
-                # If the model is a generic alias (like Optional[UserSettings]), extract the actual model
                 origin = get_origin(model)
                 if origin:
                     args = get_args(model)
+                    
+                    # Handle List[T]
+                    if origin is list:
+                        item_type = args[0]
+                        if isinstance(data, list):
+                            return [
+                                self._process_model_item(item_type, item) 
+                                for item in data
+                            ]
+                        # If data is not a list but model expects list, return as is (or raise?)
+                        return data
+
+                    # Handle Union[T, None] (Optional)
                     # If it's an Optional (Union with NoneType), find the non-None type
                     # Simplified logic: usually Optional[T] has 2 args, one is T and one is NoneType
                     valid_model = next(
@@ -81,20 +93,9 @@ class OWUIClientBase:
                             return None
                         # Use the valid model for validation
                         model = valid_model
-
-                if isinstance(model, type) and issubclass(model, BaseModel):
-                    if isinstance(data, list):
-                        return [model.model_validate(item) for item in data]
-                    # If data is None at this point, it might fail validation unless the model allows it,
-                    # but typically we've handled Optional above.
-                    if data is None:
-                        return None
-                    return model.model_validate(data)
-                else:
-                    # Handle primitive types or other classes
-                    if isinstance(data, list):
-                        return [model(item) for item in data]
-                    return model(data)
+                
+                # Handle standard models
+                return self._process_model_item(model, data)
 
             return data
 
@@ -125,6 +126,47 @@ class OWUIClientBase:
         except RequestError as e:
             # Handle connection errors, timeouts, etc.
             raise e
+
+    def _process_model_item(self, model: Any, data: Any) -> Any:
+        """Helper to process a single item against a model type."""
+        if isinstance(model, type) and issubclass(model, BaseModel):
+            if isinstance(data, list):
+                return [model.model_validate(item) for item in data]
+            if data is None:
+                return None
+            return model.model_validate(data)
+        
+        # Handle Unions (e.g. Union[ModelA, ModelB])
+        origin = get_origin(model)
+        if origin is get_origin(Union[int, str]): # Check if it's a Union
+             # Try to validate against each type in the Union
+             args = get_args(model)
+             for arg in args:
+                 try:
+                     return self._process_model_item(arg, data)
+                 except (ValueError, TypeError, AttributeError):
+                     continue
+             # If none match, return data as is or raise?
+             # For now return data to avoid crashing, or let it crash later
+             return data
+
+        # Handle primitive types or other classes
+        if isinstance(data, list):
+            # If model is not a list type but data is list, try to map?
+            # This path is ambiguous. 
+            # If we are here, model is scalar type, data is list.
+            # e.g. model=int, data=[1, 2] -> [1, 2] (list of ints)
+            # But we don't know if we should return list[int] or if it's an error.
+            # Assuming list mapping:
+            try:
+                return [model(item) for item in data]
+            except TypeError:
+                return data
+        
+        try:
+            return model(data)
+        except TypeError:
+            return data
 
 
 class ResourceBase:

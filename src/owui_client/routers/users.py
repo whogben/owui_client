@@ -17,6 +17,13 @@ from owui_client.models.oauth_sessions import OAuthSessionModel
 
 
 class UsersClient(ResourceBase):
+    """
+    Client for User management endpoints.
+
+    This client handles operations related to user accounts, profiles, settings,
+    permissions, and groups.
+    """
+
     async def get_users(
         self,
         query: Optional[str] = None,
@@ -27,11 +34,18 @@ class UsersClient(ResourceBase):
         """
         Get users with pagination and filtering.
 
-        :param query: Search query
-        :param order_by: Field to order by
-        :param direction: Sort direction ('asc' or 'desc')
-        :param page: Page number (starts at 1)
-        :return: List of users with group IDs and total count
+        This endpoint is typically used by admins to manage users.
+        Note: While the backend model layer supports complex filtering (e.g., by channel_id, user_ids),
+        this endpoint currently only exposes query, order_by, direction, and page.
+
+        Args:
+            query: Search query for name or email.
+            order_by: Field to order by (e.g., 'name', 'email', 'created_at', 'last_active_at', 'updated_at', 'role').
+            direction: Sort direction ('asc' or 'desc').
+            page: Page number (starts at 1).
+
+        Returns:
+            UserGroupIdsListResponse: List of users with group IDs and total count.
         """
         params = {}
         if query:
@@ -54,7 +68,11 @@ class UsersClient(ResourceBase):
         """
         Get all users (abbreviated info).
 
-        :return: List of all users with basic info
+        Retrieves a list of all users with basic information.
+        This is an admin-only endpoint.
+
+        Returns:
+            UserInfoListResponse: List of all users with basic info.
         """
         return await self._request(
             "GET",
@@ -65,10 +83,15 @@ class UsersClient(ResourceBase):
     async def search_users(self, query: Optional[str] = None) -> UserIdNameListResponse:
         """
         Search users by query (name or email).
-        Always returns the first page of results.
 
-        :param query: Search query
-        :return: List of users (id and name)
+        Searches for users matching the query string.
+        Returns the first page of results (limit 30).
+
+        Args:
+            query: Search query string.
+
+        Returns:
+            UserIdNameListResponse: List of users (ID and name) matching the query.
         """
         params = {}
         if query:
@@ -85,7 +108,8 @@ class UsersClient(ResourceBase):
         """
         Get the groups the current user belongs to.
 
-        :return: List of groups
+        Returns:
+            List[GroupModel]: List of groups the user is a member of.
         """
         return await self._request(
             "GET",
@@ -97,7 +121,8 @@ class UsersClient(ResourceBase):
         """
         Get the current user's permissions.
 
-        :return: Dictionary of user permissions
+        Returns:
+            Dict: Dictionary of user permissions (workspace, sharing, chat, features).
         """
         return await self._request(
             "GET",
@@ -108,7 +133,10 @@ class UsersClient(ResourceBase):
         """
         Get the default user permissions.
 
-        :return: Default user permissions
+        This is an admin-only endpoint.
+
+        Returns:
+            UserPermissions: Default user permissions.
         """
         return await self._request(
             "GET",
@@ -122,8 +150,13 @@ class UsersClient(ResourceBase):
         """
         Update the default user permissions.
 
-        :param permissions: The new default permissions
-        :return: The updated default permissions
+        This is an admin-only endpoint.
+
+        Args:
+            permissions: The new default permissions.
+
+        Returns:
+            UserPermissions: The updated default permissions.
         """
         # Note: The backend returns the dict directly, but we can model validate it back to UserPermissions
         return await self._request(
@@ -137,7 +170,8 @@ class UsersClient(ResourceBase):
         """
         Get the current session user's settings.
 
-        :return: User settings
+        Returns:
+            Optional[UserSettings]: User settings if available.
         """
         return await self._request(
             "GET",
@@ -149,8 +183,11 @@ class UsersClient(ResourceBase):
         """
         Update the current session user's settings.
 
-        :param settings: The new user settings
-        :return: The updated user settings
+        Args:
+            settings: The new user settings.
+
+        Returns:
+            UserSettings: The updated user settings.
         """
         return await self._request(
             "POST",
@@ -163,7 +200,8 @@ class UsersClient(ResourceBase):
         """
         Get the current session user's status.
 
-        :return: The user model (which acts as the status in the backend response)
+        Returns:
+            UserModel: The user model which includes status fields.
         """
         return await self._request(
             "GET",
@@ -175,8 +213,11 @@ class UsersClient(ResourceBase):
         """
         Update the current session user's status.
 
-        :param status: The new user status
-        :return: The updated user model
+        Args:
+            status: The new user status.
+
+        Returns:
+            UserModel: The updated user model.
         """
         return await self._request(
             "POST",
@@ -189,7 +230,10 @@ class UsersClient(ResourceBase):
         """
         Get the current session user's info.
 
-        :return: User info dictionary
+        This returns extra info stored in the user's 'info' JSON field.
+
+        Returns:
+            Optional[Dict[str, Any]]: User info dictionary.
         """
         return await self._request(
             "GET",
@@ -200,8 +244,13 @@ class UsersClient(ResourceBase):
         """
         Update the current session user's info.
 
-        :param info: The new info dictionary to merge/update
-        :return: The updated user info dictionary
+        Merges the provided dictionary with the existing info.
+
+        Args:
+            info: The new info dictionary to merge/update.
+
+        Returns:
+            Optional[Dict[str, Any]]: The updated user info dictionary.
         """
         return await self._request(
             "POST",
@@ -213,8 +262,11 @@ class UsersClient(ResourceBase):
         """
         Get a user by ID.
 
-        :param user_id: The ID of the user
-        :return: User response with basic info
+        Args:
+            user_id: The ID of the user.
+
+        Returns:
+            UserActiveResponse: User info including active status.
         """
         return await self._request(
             "GET",
@@ -228,9 +280,15 @@ class UsersClient(ResourceBase):
         """
         Update a user by ID.
 
-        :param user_id: The ID of the user to update
-        :param form_data: The update form data
-        :return: The updated user model
+        This is an admin-only endpoint. It can be used to update user details including
+        role and password.
+
+        Args:
+            user_id: The ID of the user to update.
+            form_data: The update form data.
+
+        Returns:
+            UserModel: The updated user model.
         """
         return await self._request(
             "POST",
@@ -243,8 +301,13 @@ class UsersClient(ResourceBase):
         """
         Delete a user by ID.
 
-        :param user_id: The ID of the user to delete
-        :return: True if successful
+        This is an admin-only endpoint.
+
+        Args:
+            user_id: The ID of the user to delete.
+
+        Returns:
+            bool: True if successful.
         """
         return await self._request(
             "DELETE",
@@ -258,8 +321,13 @@ class UsersClient(ResourceBase):
         """
         Get OAuth sessions for a user by ID.
 
-        :param user_id: The ID of the user
-        :return: List of OAuth sessions
+        This is an admin-only endpoint.
+
+        Args:
+            user_id: The ID of the user.
+
+        Returns:
+            List[OAuthSessionModel]: List of OAuth sessions.
         """
         return await self._request(
             "GET",
@@ -270,10 +338,14 @@ class UsersClient(ResourceBase):
     async def get_user_profile_image_by_id(self, user_id: str) -> bytes:
         """
         Get a user's profile image by ID.
+
         Returns the image content (bytes).
 
-        :param user_id: The ID of the user
-        :return: Image bytes
+        Args:
+            user_id: The ID of the user.
+
+        Returns:
+            bytes: Image content.
         """
         return await self._request(
             "GET",
@@ -286,8 +358,11 @@ class UsersClient(ResourceBase):
         """
         Get a user's active status by ID.
 
-        :param user_id: The ID of the user
-        :return: Dictionary with 'active' status
+        Args:
+            user_id: The ID of the user.
+
+        Returns:
+            Dict[str, bool]: Dictionary with 'active' status key.
         """
         return await self._request(
             "GET",
@@ -298,8 +373,13 @@ class UsersClient(ResourceBase):
         """
         Get the groups a user belongs to by user ID.
 
-        :param user_id: The ID of the user
-        :return: List of groups
+        This is an admin-only endpoint.
+
+        Args:
+            user_id: The ID of the user.
+
+        Returns:
+            List[GroupModel]: List of groups.
         """
         return await self._request(
             "GET",

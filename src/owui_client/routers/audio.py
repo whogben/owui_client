@@ -4,37 +4,47 @@ from owui_client.client_base import ResourceBase
 from owui_client.models.audio import AudioConfigUpdateForm
 
 class AudioClient(ResourceBase):
+    """
+    Client for Audio endpoints (TTS and STT).
+    """
+
     async def get_config(self) -> dict:
         """
-        Get current audio configuration.
-        
+        Get the current audio configuration.
+
+        This includes settings for both Text-to-Speech (TTS) and Speech-to-Text (STT) engines,
+        such as API keys, base URLs, models, and voice settings.
+
         Returns:
-            dict: Current configuration
+            dict: The current configuration, with keys 'tts' and 'stt'.
         """
         return await self._request("GET", "/v1/audio/config")
 
     async def update_config(self, form_data: AudioConfigUpdateForm) -> dict:
         """
-        Update audio configuration.
-        
+        Update the audio configuration.
+
         Args:
-            form_data: The configuration data
-            
+            form_data: The configuration data to update.
+
         Returns:
-            dict: The updated configuration
+            dict: The updated configuration.
         """
         return await self._request("POST", "/v1/audio/config/update", json=form_data.model_dump())
 
     async def transcribe(self, file_path: str | Path, language: Optional[str] = None) -> dict:
         """
-        Transcribe an audio file.
-        
+        Transcribe an audio file to text.
+
+        Uses the configured STT engine (e.g. Whisper, OpenAI, Deepgram, Azure, Mistral).
+        Automatically handles audio conversion and chunking if necessary.
+
         Args:
-            file_path: Path to the audio file
-            language: Optional language code (e.g. "en")
-            
+            file_path: Path to the audio file to transcribe.
+            language: Optional language code (e.g. "en") to guide transcription.
+
         Returns:
-            dict: The transcription result
+            dict: A dictionary containing the transcription result, typically `{"text": "...", "filename": "..."}`.
         """
         file_path = Path(file_path)
         if not file_path.exists():
@@ -60,13 +70,18 @@ class AudioClient(ResourceBase):
         save_path: Optional[str | Path] = None,
     ) -> bytes:
         """
-        Generate speech from text (TTS).
+        Generate speech from text (Text-to-Speech).
 
-        :param input_text: The text to convert to speech
-        :param model: Optional model override
-        :param voice: Optional voice override
-        :param save_path: Optional path to save the audio file
-        :return: Audio bytes
+        Uses the configured TTS engine (e.g. OpenAI, ElevenLabs, Azure, Transformers).
+
+        Args:
+            input_text: The text to convert to speech.
+            model: Optional model identifier to override the default configuration.
+            voice: Optional voice identifier to override the default configuration.
+            save_path: Optional file path to save the generated audio to.
+
+        Returns:
+            bytes: The generated audio content in bytes.
         """
         payload = {"input": input_text}
         if model:
@@ -89,18 +104,18 @@ class AudioClient(ResourceBase):
 
     async def get_models(self) -> dict:
         """
-        Get available audio models.
-        
+        Get available audio models for the configured TTS engine.
+
         Returns:
-            dict: List of available models
+            dict: A dictionary containing a list of models, e.g. `{"models": [{"id": "tts-1"}, ...]}`.
         """
         return await self._request("GET", "/v1/audio/models")
 
     async def get_voices(self) -> dict:
         """
-        Get available voices.
-        
+        Get available voices for the configured TTS engine.
+
         Returns:
-            dict: List of available voices
+            dict: A dictionary containing a list of voices, e.g. `{"voices": [{"id": "alloy", "name": "alloy"}, ...]}`.
         """
         return await self._request("GET", "/v1/audio/voices")

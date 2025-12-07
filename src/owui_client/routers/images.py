@@ -1,3 +1,7 @@
+"""
+Client for the Images endpoints.
+"""
+
 from typing import List, Dict, Optional
 from owui_client.client_base import ResourceBase
 from owui_client.models.images import (
@@ -8,11 +12,16 @@ from owui_client.models.images import (
 
 
 class ImagesClient(ResourceBase):
+    """
+    Client for the Images endpoints.
+    """
+
     async def get_config(self) -> ImagesConfig:
         """
         Get the images configuration.
 
-        :return: Images configuration
+        Returns:
+            ImagesConfig: The current images configuration.
         """
         return await self._request(
             "GET",
@@ -24,8 +33,11 @@ class ImagesClient(ResourceBase):
         """
         Update the images configuration.
 
-        :param config: The new configuration
-        :return: The updated configuration
+        Args:
+            config: The new configuration.
+
+        Returns:
+            ImagesConfig: The updated configuration.
         """
         return await self._request(
             "POST",
@@ -38,7 +50,8 @@ class ImagesClient(ResourceBase):
         """
         Verify the image generation URL (for Automatic1111 or ComfyUI).
 
-        :return: True if valid, raises Exception otherwise
+        Returns:
+            bool: True if the URL is valid.
         """
         return await self._request(
             "GET",
@@ -50,7 +63,8 @@ class ImagesClient(ResourceBase):
         """
         Get the list of available image models.
 
-        :return: List of models (dictionaries with 'id' and 'name')
+        Returns:
+            List[Dict[str, str]]: List of models (dictionaries with 'id' and 'name').
         """
         # The backend returns a list of dicts, but not a specific Pydantic model for the list items in the response type signature
         # We can use dict as the model, and _request will handle the list
@@ -62,10 +76,13 @@ class ImagesClient(ResourceBase):
 
     async def generate_image(self, form_data: CreateImageForm) -> List[Dict[str, str]]:
         """
-        Generate images.
+        Generate images based on the provided parameters.
 
-        :param form_data: The image generation parameters
-        :return: List of generated images (dictionaries with 'url')
+        Args:
+            form_data: The image generation parameters.
+
+        Returns:
+            List[Dict[str, str]]: List of generated images (dictionaries with 'url').
         """
         return await self._request(
             "POST",
@@ -76,10 +93,13 @@ class ImagesClient(ResourceBase):
 
     async def edit_image(self, form_data: EditImageForm) -> List[Dict[str, str]]:
         """
-        Edit an image.
+        Edit an image based on the provided parameters.
 
-        :param form_data: The image edit parameters
-        :return: List of edited images (dictionaries with 'url')
+        Args:
+            form_data: The image edit parameters.
+
+        Returns:
+            List[Dict[str, str]]: List of edited images (dictionaries with 'url').
         """
         return await self._request(
             "POST",

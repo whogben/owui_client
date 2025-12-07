@@ -11,11 +11,18 @@ from owui_client.models.feedbacks import (
 
 
 class EvaluationsClient(ResourceBase):
+    """
+    Client for the Evaluations endpoints.
+    Handles configuration of evaluation arena models and management of feedback.
+    """
     async def get_config(self) -> Dict[str, Any]:
         """
-        Get the evaluation configuration.
+        Get the current evaluation configuration.
 
-        :return: Dictionary with evaluation configuration
+        Returns:
+            Dict[str, Any]: A dictionary containing evaluation settings, including:
+            - ENABLE_EVALUATION_ARENA_MODELS (bool): Whether evaluation arena models are enabled.
+            - EVALUATION_ARENA_MODELS (list[dict]): List of configured arena models.
         """
         return await self._request(
             "GET",
@@ -26,8 +33,11 @@ class EvaluationsClient(ResourceBase):
         """
         Update the evaluation configuration.
 
-        :param form_data: The configuration update form
-        :return: Dictionary with updated evaluation configuration
+        Args:
+            form_data: The configuration update form containing fields to update.
+
+        Returns:
+            Dict[str, Any]: The updated evaluation configuration.
         """
         return await self._request(
             "POST",
@@ -39,7 +49,8 @@ class EvaluationsClient(ResourceBase):
         """
         Get all feedbacks (admin only).
 
-        :return: List of all feedbacks
+        Returns:
+            List[FeedbackResponse]: A list of all feedback entries in the system.
         """
         return await self._request(
             "GET",
@@ -51,7 +62,8 @@ class EvaluationsClient(ResourceBase):
         """
         Delete all feedbacks (admin only).
 
-        :return: True if successful
+        Returns:
+            bool: True if the operation was successful.
         """
         return await self._request(
             "DELETE",
@@ -61,9 +73,10 @@ class EvaluationsClient(ResourceBase):
 
     async def export_all_feedbacks(self) -> List[FeedbackModel]:
         """
-        Export all feedbacks (admin only).
+        Export all feedbacks with full data details (admin only).
 
-        :return: List of all feedbacks with full data
+        Returns:
+            List[FeedbackModel]: A list of all feedback models with complete data for export.
         """
         return await self._request(
             "GET",
@@ -73,9 +86,10 @@ class EvaluationsClient(ResourceBase):
 
     async def get_feedbacks_by_user(self) -> List[FeedbackUserResponse]:
         """
-        Get feedbacks for the current user.
+        Get feedbacks submitted by the current user.
 
-        :return: List of feedbacks
+        Returns:
+            List[FeedbackUserResponse]: A list of feedbacks submitted by the user.
         """
         return await self._request(
             "GET",
@@ -85,9 +99,10 @@ class EvaluationsClient(ResourceBase):
 
     async def delete_feedbacks_by_user(self) -> bool:
         """
-        Delete all feedbacks for the current user.
+        Delete all feedbacks submitted by the current user.
 
-        :return: True if successful
+        Returns:
+            bool: True if the operation was successful.
         """
         return await self._request(
             "DELETE",
@@ -102,12 +117,15 @@ class EvaluationsClient(ResourceBase):
         page: Optional[int] = 1,
     ) -> FeedbackListResponse:
         """
-        Get feedbacks list with pagination and sorting.
+        Get a paginated and sorted list of feedbacks (admin only).
 
-        :param order_by: Field to order by
-        :param direction: Sort direction ('asc' or 'desc')
-        :param page: Page number
-        :return: Feedback list response
+        Args:
+            order_by: The field name to order the results by (e.g., 'created_at').
+            direction: The sort direction, either 'asc' (ascending) or 'desc' (descending).
+            page: The page number to retrieve (default is 1).
+
+        Returns:
+            FeedbackListResponse: A response object containing the list of feedbacks and pagination details.
         """
         params = {}
         if order_by:
@@ -126,10 +144,13 @@ class EvaluationsClient(ResourceBase):
 
     async def create_feedback(self, form_data: FeedbackForm) -> FeedbackModel:
         """
-        Create a new feedback.
+        Create a new feedback entry.
 
-        :param form_data: The feedback form data
-        :return: The created feedback model
+        Args:
+            form_data: The data for the new feedback (e.g., type, content, data).
+
+        Returns:
+            FeedbackModel: The created feedback object.
         """
         return await self._request(
             "POST",
@@ -140,10 +161,13 @@ class EvaluationsClient(ResourceBase):
 
     async def get_feedback(self, id: str) -> FeedbackModel:
         """
-        Get a feedback by ID.
+        Get a specific feedback entry by its ID.
 
-        :param id: The ID of the feedback
-        :return: The feedback model
+        Args:
+            id: The unique identifier of the feedback to retrieve.
+
+        Returns:
+            FeedbackModel: The requested feedback object.
         """
         return await self._request(
             "GET",
@@ -153,11 +177,14 @@ class EvaluationsClient(ResourceBase):
 
     async def update_feedback(self, id: str, form_data: FeedbackForm) -> FeedbackModel:
         """
-        Update a feedback by ID.
+        Update a specific feedback entry by its ID.
 
-        :param id: The ID of the feedback
-        :param form_data: The update form data
-        :return: The updated feedback model
+        Args:
+            id: The unique identifier of the feedback to update.
+            form_data: The updated data for the feedback.
+
+        Returns:
+            FeedbackModel: The updated feedback object.
         """
         return await self._request(
             "POST",
@@ -168,10 +195,13 @@ class EvaluationsClient(ResourceBase):
 
     async def delete_feedback(self, id: str) -> bool:
         """
-        Delete a feedback by ID.
+        Delete a specific feedback entry by its ID.
 
-        :param id: The ID of the feedback
-        :return: True if successful
+        Args:
+            id: The unique identifier of the feedback to delete.
+
+        Returns:
+            bool: True if the operation was successful.
         """
         return await self._request(
             "DELETE",

@@ -9,9 +9,18 @@ from owui_client.models.tools import (
 )
 
 class ToolsClient(ResourceBase):
+    """
+    Client for the Tools endpoints.
+    """
+
     async def get_tools(self) -> List[ToolUserResponse]:
         """
-        Get all tools.
+        Get all available tools.
+
+        This includes local tools and tools from configured servers (OpenAPI, MCP).
+
+        Returns:
+            List[ToolUserResponse]: List of tools with user information.
         """
         return await self._request(
             "GET",
@@ -21,7 +30,10 @@ class ToolsClient(ResourceBase):
 
     async def get_tool_list(self) -> List[ToolUserResponse]:
         """
-        Get list of tools.
+        Get list of tools the user has write access to.
+
+        Returns:
+            List[ToolUserResponse]: List of tools.
         """
         return await self._request(
             "GET",
@@ -31,7 +43,13 @@ class ToolsClient(ResourceBase):
 
     async def load_tool_from_url(self, form_data: LoadUrlForm) -> Optional[Dict[str, Any]]:
         """
-        Load a tool from a URL.
+        Load a tool's code and metadata from a URL.
+
+        Args:
+            form_data: The URL information.
+
+        Returns:
+            Optional[Dict[str, Any]]: A dictionary containing 'name' and 'content' of the tool, or None if failed.
         """
         return await self._request(
             "POST",
@@ -42,7 +60,10 @@ class ToolsClient(ResourceBase):
 
     async def export_tools(self) -> List[ToolModel]:
         """
-        Export tools.
+        Export all tools the user has read access to.
+
+        Returns:
+            List[ToolModel]: List of tools with full content.
         """
         return await self._request(
             "GET",
@@ -53,6 +74,12 @@ class ToolsClient(ResourceBase):
     async def create_new_tool(self, form_data: ToolForm) -> Optional[ToolResponse]:
         """
         Create a new tool.
+
+        Args:
+            form_data: The tool data, including ID, name, and Python content.
+
+        Returns:
+            Optional[ToolResponse]: The created tool metadata.
         """
         return await self._request(
             "POST",
@@ -63,7 +90,13 @@ class ToolsClient(ResourceBase):
 
     async def get_tool_by_id(self, id: str) -> Optional[ToolModel]:
         """
-        Get a tool by ID.
+        Get a tool by its unique ID.
+
+        Args:
+            id: The tool ID.
+
+        Returns:
+            Optional[ToolModel]: The tool details.
         """
         return await self._request(
             "GET",
@@ -74,6 +107,13 @@ class ToolsClient(ResourceBase):
     async def update_tool_by_id(self, id: str, form_data: ToolForm) -> Optional[ToolModel]:
         """
         Update a tool by ID.
+
+        Args:
+            id: The tool ID.
+            form_data: The updated tool data.
+
+        Returns:
+            Optional[ToolModel]: The updated tool details.
         """
         return await self._request(
             "POST",
@@ -85,6 +125,12 @@ class ToolsClient(ResourceBase):
     async def delete_tool_by_id(self, id: str) -> bool:
         """
         Delete a tool by ID.
+
+        Args:
+            id: The tool ID.
+
+        Returns:
+            bool: True if successful, False otherwise.
         """
         return await self._request(
             "DELETE",
@@ -94,7 +140,13 @@ class ToolsClient(ResourceBase):
 
     async def get_tool_valves_by_id(self, id: str) -> Optional[Dict[str, Any]]:
         """
-        Get tool valves by ID.
+        Get the current valve settings for a tool.
+
+        Args:
+            id: The tool ID.
+
+        Returns:
+            Optional[Dict[str, Any]]: The valve settings.
         """
         return await self._request(
             "GET",
@@ -104,7 +156,13 @@ class ToolsClient(ResourceBase):
 
     async def get_tool_valves_spec_by_id(self, id: str) -> Optional[Dict[str, Any]]:
         """
-        Get tool valves spec by ID.
+        Get the specification (schema) for the tool's valves.
+
+        Args:
+            id: The tool ID.
+
+        Returns:
+            Optional[Dict[str, Any]]: The JSON schema for the valves.
         """
         return await self._request(
             "GET",
@@ -114,7 +172,14 @@ class ToolsClient(ResourceBase):
 
     async def update_tool_valves_by_id(self, id: str, valves: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """
-        Update tool valves by ID.
+        Update the valve settings for a tool.
+
+        Args:
+            id: The tool ID.
+            valves: The new valve settings.
+
+        Returns:
+            Optional[Dict[str, Any]]: The updated valve settings.
         """
         return await self._request(
             "POST",
@@ -125,7 +190,13 @@ class ToolsClient(ResourceBase):
 
     async def get_tool_user_valves_by_id(self, id: str) -> Optional[Dict[str, Any]]:
         """
-        Get tool user valves by ID.
+        Get user-specific valve settings for a tool.
+
+        Args:
+            id: The tool ID.
+
+        Returns:
+            Optional[Dict[str, Any]]: The user's valve settings.
         """
         return await self._request(
             "GET",
@@ -135,7 +206,13 @@ class ToolsClient(ResourceBase):
 
     async def get_tool_user_valves_spec_by_id(self, id: str) -> Optional[Dict[str, Any]]:
         """
-        Get tool user valves spec by ID.
+        Get the specification (schema) for the tool's user valves.
+
+        Args:
+            id: The tool ID.
+
+        Returns:
+            Optional[Dict[str, Any]]: The JSON schema for the user valves.
         """
         return await self._request(
             "GET",
@@ -145,7 +222,14 @@ class ToolsClient(ResourceBase):
 
     async def update_tool_user_valves_by_id(self, id: str, valves: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """
-        Update tool user valves by ID.
+        Update user-specific valve settings for a tool.
+
+        Args:
+            id: The tool ID.
+            valves: The new valve settings.
+
+        Returns:
+            Optional[Dict[str, Any]]: The updated valve settings.
         """
         return await self._request(
             "POST",

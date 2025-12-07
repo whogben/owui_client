@@ -12,9 +12,16 @@ from owui_client.models.functions import (
 
 
 class FunctionsClient(ResourceBase):
+    """
+    Client for the Functions endpoints.
+    """
+
     async def get_functions(self) -> list[FunctionResponse]:
         """
         Get all functions.
+
+        Returns:
+            list[FunctionResponse]: A list of all functions.
         """
         return await self._request(
             "GET",
@@ -25,6 +32,9 @@ class FunctionsClient(ResourceBase):
     async def get_function_list(self) -> list[FunctionUserResponse]:
         """
         Get list of functions with user info.
+
+        Returns:
+            list[FunctionUserResponse]: A list of functions including user details.
         """
         return await self._request(
             "GET",
@@ -37,6 +47,12 @@ class FunctionsClient(ResourceBase):
     ) -> list[Union[FunctionModel, FunctionWithValvesModel]]:
         """
         Export functions.
+
+        Args:
+            include_valves: Whether to include valve configurations in the export.
+
+        Returns:
+            list[Union[FunctionModel, FunctionWithValvesModel]]: A list of functions, optionally including valves.
         """
         return await self._request(
             "GET",
@@ -48,6 +64,12 @@ class FunctionsClient(ResourceBase):
     async def load_function_from_url(self, url: str) -> Optional[dict]:
         """
         Load a function from a URL.
+
+        Args:
+            url: The URL to load the function from.
+
+        Returns:
+            Optional[dict]: A dictionary containing the function name and content if successful.
         """
         return await self._request(
             "POST",
@@ -61,6 +83,12 @@ class FunctionsClient(ResourceBase):
     ) -> list[FunctionWithValvesModel]:
         """
         Sync functions.
+
+        Args:
+            functions: A list of functions to sync.
+
+        Returns:
+            list[FunctionWithValvesModel]: The list of synced functions.
         """
         form = SyncFunctionsForm(functions=functions)
         return await self._request(
@@ -75,6 +103,12 @@ class FunctionsClient(ResourceBase):
     ) -> Optional[FunctionResponse]:
         """
         Create a new function.
+
+        Args:
+            form_data: The function data to create.
+
+        Returns:
+            Optional[FunctionResponse]: The created function details.
         """
         return await self._request(
             "POST",
@@ -86,6 +120,12 @@ class FunctionsClient(ResourceBase):
     async def get_function_by_id(self, id: str) -> Optional[FunctionModel]:
         """
         Get a function by ID.
+
+        Args:
+            id: The ID of the function.
+
+        Returns:
+            Optional[FunctionModel]: The function details if found.
         """
         return await self._request(
             "GET",
@@ -96,6 +136,12 @@ class FunctionsClient(ResourceBase):
     async def toggle_function_by_id(self, id: str) -> Optional[FunctionModel]:
         """
         Toggle a function's active state by ID.
+
+        Args:
+            id: The ID of the function.
+
+        Returns:
+            Optional[FunctionModel]: The updated function details.
         """
         return await self._request(
             "POST",
@@ -106,6 +152,12 @@ class FunctionsClient(ResourceBase):
     async def toggle_global_by_id(self, id: str) -> Optional[FunctionModel]:
         """
         Toggle a function's global state by ID.
+
+        Args:
+            id: The ID of the function.
+
+        Returns:
+            Optional[FunctionModel]: The updated function details.
         """
         return await self._request(
             "POST",
@@ -118,6 +170,13 @@ class FunctionsClient(ResourceBase):
     ) -> Optional[FunctionModel]:
         """
         Update a function by ID.
+
+        Args:
+            id: The ID of the function to update.
+            form_data: The updated function data.
+
+        Returns:
+            Optional[FunctionModel]: The updated function details.
         """
         return await self._request(
             "POST",
@@ -129,6 +188,12 @@ class FunctionsClient(ResourceBase):
     async def delete_function_by_id(self, id: str) -> bool:
         """
         Delete a function by ID.
+
+        Args:
+            id: The ID of the function to delete.
+
+        Returns:
+            bool: True if the function was deleted successfully.
         """
         return await self._request(
             "DELETE",
@@ -139,6 +204,12 @@ class FunctionsClient(ResourceBase):
     async def get_function_valves_by_id(self, id: str) -> Optional[dict]:
         """
         Get function valves by ID.
+
+        Args:
+            id: The ID of the function.
+
+        Returns:
+            Optional[dict]: The function valves configuration.
         """
         return await self._request(
             "GET",
@@ -149,6 +220,12 @@ class FunctionsClient(ResourceBase):
     async def get_function_valves_spec_by_id(self, id: str) -> Optional[dict]:
         """
         Get function valves specification by ID.
+
+        Args:
+            id: The ID of the function.
+
+        Returns:
+            Optional[dict]: The function valves specification (schema).
         """
         return await self._request(
             "GET",
@@ -161,6 +238,13 @@ class FunctionsClient(ResourceBase):
     ) -> Optional[dict]:
         """
         Update function valves by ID.
+
+        Args:
+            id: The ID of the function.
+            valves: The new valves configuration.
+
+        Returns:
+            Optional[dict]: The updated valves configuration.
         """
         return await self._request(
             "POST",
@@ -172,6 +256,12 @@ class FunctionsClient(ResourceBase):
     async def get_function_user_valves_by_id(self, id: str) -> Optional[dict]:
         """
         Get function user valves by ID.
+
+        Args:
+            id: The ID of the function.
+
+        Returns:
+            Optional[dict]: The function user valves configuration.
         """
         return await self._request(
             "GET",
@@ -182,6 +272,12 @@ class FunctionsClient(ResourceBase):
     async def get_function_user_valves_spec_by_id(self, id: str) -> Optional[dict]:
         """
         Get function user valves specification by ID.
+
+        Args:
+            id: The ID of the function.
+
+        Returns:
+            Optional[dict]: The function user valves specification (schema).
         """
         return await self._request(
             "GET",
@@ -194,6 +290,13 @@ class FunctionsClient(ResourceBase):
     ) -> Optional[dict]:
         """
         Update function user valves by ID.
+
+        Args:
+            id: The ID of the function.
+            valves: The new user valves configuration.
+
+        Returns:
+            Optional[dict]: The updated user valves configuration.
         """
         return await self._request(
             "POST",
@@ -201,4 +304,3 @@ class FunctionsClient(ResourceBase):
             json=valves,
             model=Optional[dict],
         )
-

@@ -9,11 +9,16 @@ from owui_client.models.memories import (
 
 
 class MemoriesClient(ResourceBase):
+    """
+    Client for the Memories endpoints.
+    """
+
     async def get_memories(self) -> List[MemoryModel]:
         """
-        Get all memories for the current user.
+        Retrieve all memories associated with the authenticated user.
 
-        :return: List of memories
+        Returns:
+            List[MemoryModel]: A list of the user's memories.
         """
         return await self._request(
             "GET",
@@ -23,10 +28,13 @@ class MemoriesClient(ResourceBase):
 
     async def add_memory(self, form_data: AddMemoryForm) -> Optional[MemoryModel]:
         """
-        Add a new memory.
+        Create a new memory for the authenticated user and add it to the vector database.
 
-        :param form_data: The memory content
-        :return: The created memory
+        Args:
+            form_data: The content of the memory to create.
+
+        Returns:
+            Optional[MemoryModel]: The created memory object, or None if creation failed.
         """
         return await self._request(
             "POST",
@@ -37,10 +45,13 @@ class MemoriesClient(ResourceBase):
 
     async def query_memory(self, form_data: QueryMemoryForm) -> Any:
         """
-        Query memories.
+        Search for memories using vector similarity search.
 
-        :param form_data: The query content
-        :return: Query results
+        Args:
+            form_data: The query parameters, including the search text and limit (k).
+
+        Returns:
+            Any: The search results from the vector database.
         """
         return await self._request(
             "POST",
@@ -50,9 +61,12 @@ class MemoriesClient(ResourceBase):
 
     async def reset_memory_from_vector_db(self) -> bool:
         """
-        Reset memory from vector DB.
+        Reset the vector database collection for the user's memories.
 
-        :return: True if successful
+        This deletes the existing collection and regenerates embeddings for all current memories.
+
+        Returns:
+            bool: True if the reset was successful.
         """
         return await self._request(
             "POST",
@@ -62,9 +76,12 @@ class MemoriesClient(ResourceBase):
 
     async def delete_memory_by_user_id(self) -> bool:
         """
-        Delete all memories for the current user.
+        Delete all memories for the authenticated user.
 
-        :return: True if successful
+        This removes all memories from both the primary database and the vector database.
+
+        Returns:
+            bool: True if the deletion was successful.
         """
         return await self._request(
             "DELETE",
@@ -76,11 +93,16 @@ class MemoriesClient(ResourceBase):
         self, memory_id: str, form_data: MemoryUpdateModel
     ) -> Optional[MemoryModel]:
         """
-        Update a memory by ID.
+        Update a specific memory by its ID.
 
-        :param memory_id: The ID of the memory
-        :param form_data: The update data
-        :return: The updated memory
+        Updates the content in both the primary database and the vector database.
+
+        Args:
+            memory_id: The unique identifier of the memory to update.
+            form_data: The data to update (e.g., new content).
+
+        Returns:
+            Optional[MemoryModel]: The updated memory object, or None if the memory was not found.
         """
         return await self._request(
             "POST",
@@ -91,10 +113,15 @@ class MemoriesClient(ResourceBase):
 
     async def delete_memory_by_id(self, memory_id: str) -> bool:
         """
-        Delete a memory by ID.
+        Delete a specific memory by its ID.
 
-        :param memory_id: The ID of the memory
-        :return: True if successful
+        Removes the memory from both the primary database and the vector database.
+
+        Args:
+            memory_id: The unique identifier of the memory to delete.
+
+        Returns:
+            bool: True if the deletion was successful.
         """
         return await self._request(
             "DELETE",
@@ -104,9 +131,12 @@ class MemoriesClient(ResourceBase):
 
     async def get_embeddings(self) -> dict:
         """
-        Test embedding function.
-        
-        :return: Dictionary containing the embedding result for "hello world"
+        Test the embedding function.
+
+        Generates an embedding for the text "hello world" to verify the embedding function is working.
+
+        Returns:
+            dict: A dictionary containing the embedding result.
         """
         return await self._request(
             "GET",

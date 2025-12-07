@@ -19,7 +19,11 @@ class ConfigsClient(ResourceBase):
         """
         Export the current system configuration.
 
-        :return: The configuration dictionary
+        This returns the full configuration dictionary including all settings,
+        models, and other system-wide configurations.
+
+        Returns:
+            The configuration dictionary.
         """
         return await self._request(
             "GET",
@@ -31,8 +35,11 @@ class ConfigsClient(ResourceBase):
         """
         Import a system configuration.
 
-        :param config: The configuration dictionary to import
-        :return: The updated configuration dictionary
+        Args:
+            config: The configuration dictionary to import.
+
+        Returns:
+            The updated configuration dictionary.
         """
         return await self._request(
             "POST",
@@ -45,7 +52,8 @@ class ConfigsClient(ResourceBase):
         """
         Get the current connections configuration.
 
-        :return: ConnectionsConfigForm with current settings
+        Returns:
+            ConnectionsConfigForm with current settings for direct connections and model caching.
         """
         return await self._request(
             "GET",
@@ -59,8 +67,11 @@ class ConfigsClient(ResourceBase):
         """
         Set the connections configuration.
 
-        :param form_data: ConnectionsConfigForm with new settings
-        :return: Updated ConnectionsConfigForm
+        Args:
+            form_data: ConnectionsConfigForm with new settings.
+
+        Returns:
+            Updated ConnectionsConfigForm.
         """
         return await self._request(
             "POST",
@@ -75,14 +86,19 @@ class ConfigsClient(ResourceBase):
         """
         Register an OAuth client.
 
-        :param form_data: Registration details (url, client_id, client_name)
-        :param type: Optional type prefix for the client_id
-        :return: Dictionary containing status and encrypted oauth_client_info
+        Used for services like MCP Tool Servers that require OAuth 2.1 authentication/registration.
+
+        Args:
+            form_data: Registration details (url, client_id, client_name).
+            type: Optional type prefix for the client_id (e.g. 'mcp').
+
+        Returns:
+            Dictionary containing status and encrypted oauth_client_info.
         """
         params = {}
         if type:
             params["type"] = type
-
+        
         return await self._request(
             "POST",
             "/v1/configs/oauth/clients/register",
@@ -95,7 +111,8 @@ class ConfigsClient(ResourceBase):
         """
         Get the current tool servers configuration.
 
-        :return: ToolServersConfigForm with current settings
+        Returns:
+            ToolServersConfigForm with current settings.
         """
         return await self._request(
             "GET",
@@ -109,8 +126,11 @@ class ConfigsClient(ResourceBase):
         """
         Set the tool servers configuration.
 
-        :param form_data: ToolServersConfigForm with new settings
-        :return: Updated ToolServersConfigForm
+        Args:
+            form_data: ToolServersConfigForm with new settings.
+
+        Returns:
+            Updated ToolServersConfigForm.
         """
         return await self._request(
             "POST",
@@ -125,8 +145,14 @@ class ConfigsClient(ResourceBase):
         """
         Verify a tool server connection.
 
-        :param form_data: ToolServerConnection details
-        :return: Response dictionary (success status, specs, etc.)
+        This endpoint attempts to connect to the tool server using the provided
+        configuration and returns the server specifications if successful.
+
+        Args:
+            form_data: ToolServerConnection details to verify.
+
+        Returns:
+            Response dictionary containing verification status and server specs (if successful).
         """
         return await self._request(
             "POST",
@@ -139,7 +165,8 @@ class ConfigsClient(ResourceBase):
         """
         Get the current code execution configuration.
 
-        :return: CodeInterpreterConfigForm with current settings
+        Returns:
+            CodeInterpreterConfigForm with current settings.
         """
         return await self._request(
             "GET",
@@ -153,8 +180,11 @@ class ConfigsClient(ResourceBase):
         """
         Set the code execution configuration.
 
-        :param form_data: CodeInterpreterConfigForm with new settings
-        :return: Updated CodeInterpreterConfigForm
+        Args:
+            form_data: CodeInterpreterConfigForm with new settings.
+
+        Returns:
+            Updated CodeInterpreterConfigForm.
         """
         return await self._request(
             "POST",
@@ -167,7 +197,8 @@ class ConfigsClient(ResourceBase):
         """
         Get the current models configuration.
 
-        :return: ModelsConfigForm with current settings
+        Returns:
+            ModelsConfigForm with current settings.
         """
         return await self._request(
             "GET",
@@ -179,8 +210,11 @@ class ConfigsClient(ResourceBase):
         """
         Set the models configuration.
 
-        :param form_data: ModelsConfigForm with new settings
-        :return: Updated ModelsConfigForm
+        Args:
+            form_data: ModelsConfigForm with new settings.
+
+        Returns:
+            Updated ModelsConfigForm.
         """
         return await self._request(
             "POST",
@@ -195,8 +229,11 @@ class ConfigsClient(ResourceBase):
         """
         Set default prompt suggestions.
 
-        :param form_data: SetDefaultSuggestionsForm containing the suggestions list
-        :return: Updated list of PromptSuggestion
+        Args:
+            form_data: SetDefaultSuggestionsForm containing the suggestions list.
+
+        Returns:
+            Updated list of PromptSuggestion.
         """
         return await self._request(
             "POST",
@@ -209,7 +246,8 @@ class ConfigsClient(ResourceBase):
         """
         Get the current banners.
 
-        :return: List of BannerModel
+        Returns:
+            List of BannerModel.
         """
         return await self._request(
             "GET",
@@ -221,8 +259,11 @@ class ConfigsClient(ResourceBase):
         """
         Set the banners.
 
-        :param form_data: SetBannersForm containing the banners list
-        :return: Updated list of BannerModel
+        Args:
+            form_data: SetBannersForm containing the banners list.
+
+        Returns:
+            Updated list of BannerModel.
         """
         return await self._request(
             "POST",

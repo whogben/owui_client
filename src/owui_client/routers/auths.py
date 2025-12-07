@@ -8,7 +8,6 @@ from owui_client.models.auths import (
     AdminConfig,
     SignoutResponse,
     UpdatePasswordForm,
-    UserResponse,
     AddUserForm,
     SigninResponse,
     AdminDetails,
@@ -17,15 +16,26 @@ from owui_client.models.auths import (
     LdapConfigResponse,
     ApiKey,
 )
-from owui_client.models.users import UpdateProfileForm
+from owui_client.models.users import UpdateProfileForm, UserProfileImageResponse
 
 
 class AuthsClient(ResourceBase):
+    """
+    Client for the Auths endpoints.
+
+    This client handles authentication operations such as signin, signup,
+    password updates, and administrative configurations.
+    """
+
     async def get_session_user(self) -> SessionUserInfoResponse:
         """
         Get the current session user information.
 
-        :return: Session user information
+        This endpoint retrieves detailed information about the currently authenticated user,
+        including their profile, permissions, and status.
+
+        Returns:
+            SessionUserInfoResponse: Session user information
         """
         return await self._request(
             "GET",
@@ -33,17 +43,22 @@ class AuthsClient(ResourceBase):
             model=SessionUserInfoResponse,
         )
 
-    async def update_profile(self, form_data: UpdateProfileForm) -> UserResponse:
+    async def update_profile(self, form_data: UpdateProfileForm) -> UserProfileImageResponse:
         """
         Update the current user's profile.
 
-        :param form_data: The profile update information
-        :return: Updated user information
+        Updates the user's name, bio, gender, date of birth, and profile image.
+
+        Args:
+            form_data: The profile update information
+
+        Returns:
+            UserProfileImageResponse: Updated user information
         """
         return await self._request(
             "POST",
             "/v1/auths/update/profile",
-            model=UserResponse,
+            model=UserProfileImageResponse,
             json=form_data.model_dump(),
         )
 
@@ -51,8 +66,13 @@ class AuthsClient(ResourceBase):
         """
         Update the current user's password.
 
-        :param form_data: The password update information (current and new password)
-        :return: True if successful
+        Verifies the current password before updating to the new one.
+
+        Args:
+            form_data: The password update information (current and new password)
+
+        Returns:
+            True if successful
         """
         return await self._request(
             "POST",
@@ -67,9 +87,15 @@ class AuthsClient(ResourceBase):
         """
         Sign in with email and password.
 
-        :param form_data: The signin credentials (email, password)
-        :param set_client_api_key: If True (default), updates the main client's API key upon success
-        :return: Session information including token and user details
+        Authenticates the user using email and password. On success, it returns a session
+        token and user details.
+
+        Args:
+            form_data: The signin credentials (email, password)
+            set_client_api_key: If True (default), updates the main client's API key upon success
+
+        Returns:
+            SessionUserResponse: Session information including token and user details
         """
         response = await self._request(
             "POST",
@@ -89,9 +115,14 @@ class AuthsClient(ResourceBase):
         """
         Sign in with LDAP credentials.
 
-        :param form_data: The LDAP credentials (user, password)
-        :param set_client_api_key: If True (default), updates the main client's API key upon success
-        :return: Session information including token and user details
+        Authenticates the user using LDAP. Requires LDAP to be enabled and configured on the server.
+
+        Args:
+            form_data: The LDAP credentials (user, password)
+            set_client_api_key: If True (default), updates the main client's API key upon success
+
+        Returns:
+            SessionUserResponse: Session information including token and user details
         """
         response = await self._request(
             "POST",
@@ -111,9 +142,15 @@ class AuthsClient(ResourceBase):
         """
         Sign up a new user.
 
-        :param form_data: The signup information (name, email, password, etc.)
-        :param set_client_api_key: If True (default), updates the main client's API key upon success
-        :return: Session information including token and user details
+        Creates a new user account. If this is the first user, they will be assigned the 'admin' role.
+        Subsequent users are assigned the default role (usually 'pending').
+
+        Args:
+            form_data: The signup information (name, email, password, etc.)
+            set_client_api_key: If True (default), updates the main client's API key upon success
+
+        Returns:
+            SessionUserResponse: Session information including token and user details
         """
         response = await self._request(
             "POST",
@@ -131,8 +168,13 @@ class AuthsClient(ResourceBase):
         """
         Add a new user (Admin only).
 
-        :param form_data: The user information (name, email, password, role, etc.)
-        :return: Response including token and user details
+        Allows an admin to create a new user account directly, specifying their role.
+
+        Args:
+            form_data: The user information (name, email, password, role, etc.)
+
+        Returns:
+            SigninResponse: Response including token and user details
         """
         return await self._request(
             "POST",
@@ -145,7 +187,10 @@ class AuthsClient(ResourceBase):
         """
         Get admin details.
 
-        :return: Admin details (name, email)
+        Retrieves the name and email of the admin user, if configured to be shown.
+
+        Returns:
+            AdminDetails: Admin details (name, email)
         """
         return await self._request(
             "GET",
@@ -157,8 +202,13 @@ class AuthsClient(ResourceBase):
         """
         Sign out the current user.
 
-        :param unset_client_api_key: If True (default), clears the main client's API key upon success
-        :return: Signout status
+        Invalidates the current session token.
+
+        Args:
+            unset_client_api_key: If True (default), clears the main client's API key upon success
+
+        Returns:
+            SignoutResponse: Signout status
         """
         response = await self._request(
             "GET",
@@ -175,7 +225,10 @@ class AuthsClient(ResourceBase):
         """
         Get the admin configuration.
 
-        :return: The admin configuration
+        Retrieves global configuration settings for the application.
+
+        Returns:
+            AdminConfig: The admin configuration
         """
         return await self._request(
             "GET",
@@ -187,8 +240,13 @@ class AuthsClient(ResourceBase):
         """
         Update the admin configuration.
 
-        :param config: The new configuration
-        :return: The updated configuration
+        Updates global configuration settings. Requires admin privileges.
+
+        Args:
+            config: The new configuration
+
+        Returns:
+            AdminConfig: The updated configuration
         """
         return await self._request(
             "POST",
@@ -201,7 +259,10 @@ class AuthsClient(ResourceBase):
         """
         Get the LDAP server configuration.
 
-        :return: LDAP server configuration
+        Retrieves the LDAP connection settings. Requires admin privileges.
+
+        Returns:
+            LdapServerConfig: LDAP server configuration
         """
         return await self._request(
             "GET",
@@ -213,8 +274,13 @@ class AuthsClient(ResourceBase):
         """
         Update the LDAP server configuration.
 
-        :param form_data: The LDAP server configuration
-        :return: Updated LDAP server configuration
+        Updates the LDAP connection settings. Requires admin privileges.
+
+        Args:
+            form_data: The LDAP server configuration
+
+        Returns:
+            LdapServerConfig: Updated LDAP server configuration
         """
         return await self._request(
             "POST",
@@ -225,9 +291,12 @@ class AuthsClient(ResourceBase):
 
     async def get_ldap_config(self) -> LdapConfigResponse:
         """
-        Get the LDAP configuration (enable/disable status).
+        Get the LDAP configuration status.
 
-        :return: LDAP configuration status
+        Checks if LDAP authentication is enabled.
+
+        Returns:
+            LdapConfigResponse: LDAP configuration status
         """
         return await self._request(
             "GET",
@@ -237,10 +306,15 @@ class AuthsClient(ResourceBase):
 
     async def update_ldap_config(self, form_data: LdapConfigForm) -> LdapConfigResponse:
         """
-        Update the LDAP configuration (enable/disable status).
+        Update the LDAP configuration status.
 
-        :param form_data: The LDAP configuration form
-        :return: Updated LDAP configuration status
+        Enables or disables LDAP authentication. Requires admin privileges.
+
+        Args:
+            form_data: The LDAP configuration form
+
+        Returns:
+            LdapConfigResponse: Updated LDAP configuration status
         """
         return await self._request(
             "POST",
@@ -253,7 +327,10 @@ class AuthsClient(ResourceBase):
         """
         Generate a new API key for the current user.
 
-        :return: The generated API key
+        Creates or rotates the API key for the current user.
+
+        Returns:
+            ApiKey: The generated API key
         """
         return await self._request(
             "POST",
@@ -265,7 +342,10 @@ class AuthsClient(ResourceBase):
         """
         Delete the current user's API key.
 
-        :return: True if successful
+        Removes the API key associated with the current user.
+
+        Returns:
+            bool: True if successful
         """
         return await self._request(
             "DELETE",
@@ -277,7 +357,10 @@ class AuthsClient(ResourceBase):
         """
         Get the current user's API key.
 
-        :return: The current API key
+        Retrieves the existing API key for the current user.
+
+        Returns:
+            ApiKey: The current API key
         """
         return await self._request(
             "GET",
