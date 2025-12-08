@@ -1,0 +1,39 @@
+site_name: Python Client for Open WebUI
+
+theme:
+  name: material
+
+plugins:
+  - search
+  - gen-files:
+      scripts:
+        - scripts/gen_ref_pages.py
+  - literate-nav:
+      nav_file: SUMMARY.md
+  - section-index
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          paths: [src]
+          options:
+            show_source: true
+            show_signature_annotations: true
+            signature_crossrefs: true
+            show_root_heading: false
+            show_labels: false
+            members_order: source
+            merge_init_into_class: true
+            docstring_style: google
+            show_category_heading: true
+            show_symbol_type_heading: true
+            separate_signature: true
+            backlinks: tree
+  - autorefs
+            
+nav:
+  - Home: index.md
+  - Code Reference: reference/
+
+site_dir: docs
+docs_dir: docs_src

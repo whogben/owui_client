@@ -85,7 +85,7 @@ class OllamaClient(ResourceBase):
             "POST", self._get_url("ollama/verify"), json=form.model_dump()
         )
 
-    async def get_config(self):
+    async def get_config(self) -> Dict[str, Any]:
         """
         Get the current global Ollama configuration.
         
@@ -94,7 +94,7 @@ class OllamaClient(ResourceBase):
         """
         return await self._request("GET", self._get_url("ollama/config"))
 
-    async def update_config(self, form: OllamaConfigForm):
+    async def update_config(self, form: OllamaConfigForm) -> Dict[str, Any]:
         """
         Update the global Ollama configuration.
         
@@ -108,7 +108,7 @@ class OllamaClient(ResourceBase):
             "POST", self._get_url("ollama/config/update"), json=form.model_dump()
         )
 
-    async def get_models(self, url_idx: int = None):
+    async def get_models(self, url_idx: int = None) -> Dict[str, Any]:
         """
         List available models.
         
@@ -123,7 +123,7 @@ class OllamaClient(ResourceBase):
             path = f"{path}/{url_idx}"
         return await self._request("GET", self._get_url(path))
 
-    async def get_loaded_models(self):
+    async def get_loaded_models(self) -> Dict[str, Any]:
         """
         List models currently loaded in memory (ps).
         
@@ -132,7 +132,7 @@ class OllamaClient(ResourceBase):
         """
         return await self._request("GET", self._get_url("ollama/api/ps"))
 
-    async def get_version(self, url_idx: int = None):
+    async def get_version(self, url_idx: int = None) -> Dict[str, Any]:
         """
         Get the Ollama version.
         
@@ -147,7 +147,7 @@ class OllamaClient(ResourceBase):
             path = f"{path}/{url_idx}"
         return await self._request("GET", self._get_url(path))
 
-    async def unload_model(self, form: ModelNameForm):
+    async def unload_model(self, form: ModelNameForm) -> Any:
         """
         Unload a model from memory.
         
@@ -163,7 +163,7 @@ class OllamaClient(ResourceBase):
             json=form.model_dump(exclude_none=True),
         )
 
-    async def pull_model(self, form: ModelNameForm, url_idx: int = 0):
+    async def pull_model(self, form: ModelNameForm, url_idx: int = 0) -> str:
         """
         Pull a model from the registry.
         
@@ -183,7 +183,7 @@ class OllamaClient(ResourceBase):
             "POST", self._get_url(path), json=form.model_dump(exclude_none=True)
         )
 
-    async def push_model(self, form: PushModelForm, url_idx: int = None):
+    async def push_model(self, form: PushModelForm, url_idx: int = None) -> str:
         """
         Push a model to the registry.
         
@@ -204,7 +204,7 @@ class OllamaClient(ResourceBase):
             "DELETE", self._get_url(path), json=form.model_dump(exclude_none=True)
         )
 
-    async def create_model(self, form: CreateModelForm, url_idx: int = 0):
+    async def create_model(self, form: CreateModelForm, url_idx: int = 0) -> str:
         """
         Create a model from a Modelfile.
         
@@ -223,7 +223,7 @@ class OllamaClient(ResourceBase):
             "POST", self._get_url(path), json=form.model_dump(exclude_none=True)
         )
 
-    async def copy_model(self, form: CopyModelForm, url_idx: int = None):
+    async def copy_model(self, form: CopyModelForm, url_idx: int = None) -> Any:
         """
         Copy a model.
         
@@ -241,7 +241,7 @@ class OllamaClient(ResourceBase):
             "POST", self._get_url(path), json=form.model_dump(exclude_none=True)
         )
 
-    async def delete_model(self, form: ModelNameForm, url_idx: int = None):
+    async def delete_model(self, form: ModelNameForm, url_idx: int = None) -> Any:
         """
         Delete a model.
         
@@ -259,7 +259,7 @@ class OllamaClient(ResourceBase):
             "DELETE", self._get_url(path), json=form.model_dump(exclude_none=True)
         )
 
-    async def show_model(self, form: ModelNameForm):
+    async def show_model(self, form: ModelNameForm) -> Dict[str, Any]:
         """
         Show information about a model.
         
@@ -275,7 +275,7 @@ class OllamaClient(ResourceBase):
             json=form.model_dump(exclude_none=True),
         )
 
-    async def embed(self, form: GenerateEmbedForm, url_idx: int = None):
+    async def embed(self, form: GenerateEmbedForm, url_idx: int = None) -> Dict[str, Any]:
         """
         Generate embeddings for the given input (new endpoint).
         
@@ -293,7 +293,7 @@ class OllamaClient(ResourceBase):
             "POST", self._get_url(path), json=form.model_dump(exclude_none=True)
         )
 
-    async def embeddings(self, form: GenerateEmbeddingsForm, url_idx: int = None):
+    async def embeddings(self, form: GenerateEmbeddingsForm, url_idx: int = None) -> Dict[str, Any]:
         """
         Generate embeddings for the given prompt (legacy endpoint).
         
@@ -311,7 +311,7 @@ class OllamaClient(ResourceBase):
             "POST", self._get_url(path), json=form.model_dump(exclude_none=True)
         )
 
-    async def generate(self, form: GenerateCompletionForm, url_idx: int = None):
+    async def generate(self, form: GenerateCompletionForm, url_idx: int = None) -> Union[Dict[str, Any], str]:
         """
         Generate a completion for the given prompt.
         
@@ -332,7 +332,7 @@ class OllamaClient(ResourceBase):
             "POST", self._get_url(path), json=form.model_dump(exclude_none=True)
         )
 
-    async def chat(self, form: GenerateChatCompletionForm, url_idx: int = None):
+    async def chat(self, form: GenerateChatCompletionForm, url_idx: int = None) -> Union[Dict[str, Any], str]:
         """
         Generate a chat completion.
         
@@ -353,7 +353,7 @@ class OllamaClient(ResourceBase):
             "POST", self._get_url(path), json=form.model_dump(exclude_none=True)
         )
 
-    async def generate_openai_completion(self, payload: Dict, url_idx: int = None):
+    async def generate_openai_completion(self, payload: Dict, url_idx: int = None) -> Dict[str, Any]:
         """
         Generate completion using OpenAI-compatible endpoint.
         
@@ -371,7 +371,7 @@ class OllamaClient(ResourceBase):
             "POST", self._get_url(path), json=payload
         )
 
-    async def generate_openai_chat_completion(self, payload: Dict, url_idx: int = None):
+    async def generate_openai_chat_completion(self, payload: Dict, url_idx: int = None) -> Dict[str, Any]:
         """
         Generate chat completion using OpenAI-compatible endpoint.
         
@@ -389,7 +389,7 @@ class OllamaClient(ResourceBase):
             "POST", self._get_url(path), json=payload
         )
 
-    async def get_openai_models(self, url_idx: int = None):
+    async def get_openai_models(self, url_idx: int = None) -> Dict[str, Any]:
         """
         List models using OpenAI-compatible endpoint.
         
@@ -404,7 +404,7 @@ class OllamaClient(ResourceBase):
             path = f"{path}/{url_idx}"
         return await self._request("GET", self._get_url(path))
 
-    async def download_model(self, form: UrlForm, url_idx: int = None):
+    async def download_model(self, form: UrlForm, url_idx: int = None) -> str:
         """
         Download a model from a URL (e.g. Hugging Face).
         
@@ -426,7 +426,7 @@ class OllamaClient(ResourceBase):
             "POST", self._get_url(path), json=form.model_dump()
         )
 
-    async def upload_model(self, file_path: Union[str, Path], url_idx: int = None):
+    async def upload_model(self, file_path: Union[str, Path], url_idx: int = None) -> str:
         """
         Upload a model file to the server.
         
