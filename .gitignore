@@ -185,3 +185,6 @@ cython_debug/
 
 # OWUI Source
 refs/owui_source*
+docs_src/
+docs_src/*
+!docs_src/.gitkeep

@@ -12,3 +12,4 @@ async def test_shortcuts_initialization(client):
 
 
 
+
