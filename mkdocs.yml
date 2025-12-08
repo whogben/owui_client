@@ -66,4 +66,4 @@ nav:
   - Code Reference: reference/
 
 site_dir: docs
-docs_dir: site
+docs_dir: docs_src
