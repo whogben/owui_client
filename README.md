@@ -1,5 +1,7 @@
 # Unofficial Open WebUI Client
 
+[**📚 Full Documentation**](https://whogben.github.io/owui_client/)
+
 A robust, async Python client for the complete [Open WebUI](https://github.com/open-webui/open-webui) API.
 
 This library mirrors the backend structure of Open WebUI, providing a fully typed, auto-completable interface for every endpoint.
