@@ -6,7 +6,7 @@ from owui_client.models.users import UserProfileImageResponse, UserStatus
 
 class Token(BaseModel):
     """
-    Token response model.
+    `Token` response model.
     """
 
     token: str

@@ -35,7 +35,7 @@ class AuthsClient(ResourceBase):
         including their profile, permissions, and status.
 
         Returns:
-            SessionUserInfoResponse: Session user information
+            `SessionUserInfoResponse`: Session user information
         """
         return await self._request(
             "GET",
@@ -53,7 +53,7 @@ class AuthsClient(ResourceBase):
             form_data: The profile update information
 
         Returns:
-            UserProfileImageResponse: Updated user information
+            `UserProfileImageResponse`: Updated user information
         """
         return await self._request(
             "POST",
@@ -95,7 +95,7 @@ class AuthsClient(ResourceBase):
             set_client_api_key: If True (default), updates the main client's API key upon success
 
         Returns:
-            SessionUserResponse: Session information including token and user details
+            `SessionUserResponse`: Session information including token and user details
         """
         response = await self._request(
             "POST",
@@ -122,7 +122,7 @@ class AuthsClient(ResourceBase):
             set_client_api_key: If True (default), updates the main client's API key upon success
 
         Returns:
-            SessionUserResponse: Session information including token and user details
+            `SessionUserResponse`: Session information including token and user details
         """
         response = await self._request(
             "POST",
@@ -150,7 +150,7 @@ class AuthsClient(ResourceBase):
             set_client_api_key: If True (default), updates the main client's API key upon success
 
         Returns:
-            SessionUserResponse: Session information including token and user details
+            `SessionUserResponse`: Session information including token and user details
         """
         response = await self._request(
             "POST",
@@ -174,7 +174,7 @@ class AuthsClient(ResourceBase):
             form_data: The user information (name, email, password, role, etc.)
 
         Returns:
-            SigninResponse: Response including token and user details
+            `SigninResponse`: Response including token and user details
         """
         return await self._request(
             "POST",
@@ -190,7 +190,7 @@ class AuthsClient(ResourceBase):
         Retrieves the name and email of the admin user, if configured to be shown.
 
         Returns:
-            AdminDetails: Admin details (name, email)
+            `AdminDetails`: Admin details (name, email)
         """
         return await self._request(
             "GET",

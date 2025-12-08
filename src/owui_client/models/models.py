@@ -172,7 +172,7 @@ class ModelUserResponse(ModelModel):
 
 class ModelResponse(ModelModel):
     """
-    Response model for model details (alias for ModelModel).
+    Response model for model details (alias for `ModelModel`).
     """
 
     pass

@@ -112,4 +112,5 @@ class GroupUpdateForm(GroupForm):
     """
     Form for updating an existing group.
     """
+
     pass

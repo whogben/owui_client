@@ -2,6 +2,27 @@ site_name: Python Client for Open WebUI
 
 theme:
   name: material
+  palette:
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default 
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.expand
+    - navigation.sections
 
 plugins:
   - search
@@ -35,5 +56,5 @@ nav:
   - Home: index.md
   - Code Reference: reference/
 
-site_dir: docs
-docs_dir: docs_src
+site_dir: site
+docs_dir: docs
