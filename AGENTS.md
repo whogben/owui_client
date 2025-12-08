@@ -72,11 +72,7 @@ When adding support for a new set of endpoints (e.g., "Chats"):
 
 The original Open WebUI source code is undocumented, so it is neccesary to be a detective and research how and where a given endpoint and it's models are used, to determine what documentation to add to this client. It is critical to ground your understanding in the original source code, as there are many dict fields with undocumented key/value expectations, as well as fields that can be used in multiple ways.
 
-The final documentation will be built from the source code using MkDocs and the following configuration:
-- `show_source: true` (will add ability for end reader to quickly see related source code)
-- `signature_crossrefs: true` (will add an automatic "Used by" and "Returned by" to model classes)
-- `show_root_heading: false` (will prevent redundant module names appearing at start of class names)
-- `members_order: source` (will maintain original field order)
+Documentation is built using mkdocs using the configuration at `owui_client/mkdocs.yml`.
 
 Notes for all documentation:
 - You can use backticks to reference one doc from another, such as "This uses `MyClass.my_method` for processing."
@@ -168,6 +164,160 @@ def my_function(param1: str, param2: int) -> bool:
 
     """
 ```
+
+## Documenting Dictionary Attributes
+
+Dictionary attributes in Pydantic models are particularly problematic because they accept arbitrary key-value pairs at runtime, making them impossible for AI agents (and human developers) to use correctly without explicit documentation of their valid structure.
+
+### The Problem
+
+When a model has an attribute like:
+```python
+config: dict[str, Any]
+```
+
+Without documentation, nobody knows:
+- What keys are valid or expected
+- Which keys are required vs optional
+- What types the values should be
+- What the valid value ranges or options are
+
+This makes the API effectively unusable for that field.
+
+### The Requirement
+
+**Every public dictionary attribute MUST have a `Dict Fields:` section in its docstring.**
+
+This requirement is enforced by the test suite. Tests will fail if any dictionary attribute lacks this documentation.
+
+### Two Valid Documentation Patterns
+
+#### Pattern 1: Inline Field Documentation
+
+When the dictionary structure is defined by your API, document all keys inline:
+
+```python
+metadata: dict[str, Any]
+"""Configuration metadata for the request.
+
+Dict Fields:
+    temperature (float, optional): Sampling temperature between 0.0 and 2.0
+    max_tokens (int, required): Maximum number of tokens to generate
+    model (str, required): Model identifier like 'gpt-4' or 'claude-3'
+    stream (bool, optional): Enable streaming responses, defaults to False
+    top_p (float, optional): Nucleus sampling parameter, range 0.0-1.0
+"""
+```
+
+**Format Requirements:**
+- Use `Dict Fields:` as the section header (case-insensitive)
+- List each key with its type in parentheses
+- Mark each key as `required` or `optional`
+- Provide a clear description of what the key does
+- Include valid ranges, default values, and examples where helpful
+- Use backticks around key names for clarity (optional but recommended)
+
+#### Pattern 2: External Reference Documentation
+
+When the dictionary is passed through to another API or defined elsewhere, document the reference:
+
+```python
+openai_params: dict[str, Any]
+"""Parameters passed directly to the OpenAI API.
+
+Dict Fields:
+    This dictionary is forwarded to the OpenAI Chat Completion API without modification.
+    See the [OpenAI API Reference](https://platform.openai.com/docs/api-reference/chat/create)
+    for valid keys and their descriptions.
+"""
+```
+
+Or for internal references:
+
+```python
+filter_config: dict[str, Any]
+"""Filter configuration options.
+
+Dict Fields:
+    Valid keys are defined by the \`FilterOptions\` model in the backend.
+    See \`owui_client/refs/owui_source_main/backend/open_webui/models/filters.py\`
+    for the complete structure.
+"""
+```
+
+**Reference Format:**
+- Still use `Dict Fields:` as the section header
+- Clearly state where the dictionary structure is defined
+- Include a link or file path to the source of truth
+- Explain any transformations or subset behavior if applicable
+
+### Research Process for Dictionary Documentation
+
+When you encounter a dictionary attribute that needs documentation:
+
+1. **Find ALL usages in backend source code**
+   - Search for the attribute name in the entire backend directory
+   - Look at how it's constructed, what keys are set
+   - Check validation logic, defaults, and transformations
+
+2. **Find ALL usages in frontend source code**
+   - Search the frontend for the same attribute
+   - See what keys the UI reads or writes
+   - Look for TypeScript interfaces that might define the structure
+
+3. **Cross-reference with API specifications**
+   - Check if the OpenAPI spec mentions the attribute
+   - Look for related model definitions
+   - Search for comments or type hints
+
+4. **Trace data flow**
+   - Where does the dict come from? (user input, database, API response)
+   - Where does it go? (database, external API, internal processing)
+   - Are keys added, removed, or transformed in transit?
+
+5. **Document ALL findings**
+   - List every key you discovered
+   - Note if you couldn't find complete information
+   - Mark keys as required/optional based on usage patterns
+   - Include any gotchas, side effects, or special behaviors
+
+**CRITICAL:** Do not guess or infer dictionary structures. If you cannot find concrete evidence of valid keys through source code analysis, document what you DO know and note the uncertainty:
+
+```python
+settings: dict[str, Any]
+"""User settings dictionary.
+
+Dict Fields:
+    Known keys from frontend usage:
+    - theme (str, optional): UI theme, observed values: 'light', 'dark'
+    - language (str, optional): Language code like 'en', 'es'
+    
+    Note: This dictionary may accept additional keys not documented in the current
+    frontend code. Further backend analysis needed for complete documentation.
+"""
+```
+
+### When Updating Models
+
+**Every time you modify a model file, you MUST:**
+
+1. Run the dictionary documentation test to check for violations
+2. If any dict attributes are flagged as undocumented, research and document them
+3. If you add a new dict attribute, document it immediately before committing
+4. If you modify an existing dict attribute's purpose, update its documentation
+
+The test suite will not pass until all dictionary attributes are properly documented.
+
+### Test Enforcement
+
+The test suite includes `test_dict_documentation.py` which:
+- Scans all model classes for dictionary-typed attributes
+- Checks each for the presence of a `Dict Fields:` section
+- Fails with detailed error messages listing all violations
+- Reports file, line number, class name, and attribute name for each issue
+
+This ensures that dictionary documentation never falls out of date and that AI agents have the information they need to maintain the API client correctly.
+
 
 ## Testing
 We maintain a robust test suite in `owui_client/tests`. Remember to run the tests with the venv.
