@@ -5,6 +5,7 @@ Pydantic models for the Images endpoints.
 from typing import Optional, List, Union, Dict, Any
 from pydantic import BaseModel
 
+
 class ImagesConfig(BaseModel):
     """
     Configuration for image generation and editing.
@@ -38,16 +39,69 @@ class ImagesConfig(BaseModel):
     """API version for OpenAI-compatible image generation API."""
 
     IMAGES_OPENAI_API_PARAMS: Optional[Union[Dict, str]]
-    """Additional parameters for OpenAI-compatible image generation API."""
+    """Additional parameters for OpenAI-compatible image generation API.
+
+    Dict Fields:
+        - `quality` (str, optional): Image quality - 'standard' or 'hd'
+        - `style` (str, optional): Image style - 'vivid' or 'natural'
+        - `user` (str, optional): Unique identifier representing the end-user
+        - `response_format` (str, optional): Format of the response - 'url' or 'b64_json'
+        - `size` (str, optional): Override size for this specific request (e.g., '1024x1024')
+        - `n` (int, optional): Override number of images to generate for this request
+
+    Additional keys may be supported depending on the OpenAI-compatible API implementation.
+    """
 
     AUTOMATIC1111_BASE_URL: str
     """Base URL for Automatic1111 API."""
 
     AUTOMATIC1111_API_AUTH: Optional[Union[Dict, str]]
-    """Authentication credentials for Automatic1111 API."""
+    """Authentication credentials for Automatic1111 API.
+
+    Dict Fields:
+        - `username` (str, required): Username for Automatic1111 API authentication
+        - `password` (str, required): Password for Automatic1111 API authentication
+
+    Can also be provided as a string in the format 'username:password'.
+    When provided as a string, it will be converted to Basic Auth format.
+    """
 
     AUTOMATIC1111_PARAMS: Optional[Union[Dict, str]]
-    """Additional parameters for Automatic1111 API."""
+    """Additional parameters for Automatic1111 API.
+
+    Dict Fields:
+        - `sampler_name` (str, optional): Sampler algorithm to use (e.g., 'euler', 'ddim', 'lms')
+        - `scheduler` (str, optional): Scheduler type (e.g., 'normal', 'karras', 'exponential')
+        - `cfg_scale` (float, optional): Classifier-free guidance scale (typically 7-15)
+        - `denoising_strength` (float, optional): Denoising strength for img2img (0.0-1.0)
+        - `seed` (int, optional): Random seed for reproducible results (-1 for random)
+        - `subseed` (int, optional): Subseed for variation
+        - `subseed_strength` (float, optional): Subseed strength (0.0-1.0)
+        - `seed_resize_from_h` (int, optional): Seed resize from height
+        - `seed_resize_from_w` (int, optional): Seed resize from width
+        - `batch_size` (int, optional): Number of images to generate per prompt
+        - `n_iter` (int, optional): Number of iterations/batches to run
+        - `steps` (int, optional): Number of diffusion steps
+        - `tiling` (bool, optional): Enable tiling for seamless textures
+        - `restore_faces` (bool, optional): Enable face restoration
+        - `enable_hr` (bool, optional): Enable high-resolution fix
+        - `hr_scale` (float, optional): High-resolution scale factor
+        - `hr_upscaler` (str, optional): High-resolution upscaler model
+        - `hr_second_pass_steps` (int, optional): Steps for second high-res pass
+        - `hr_resize_x` (int, optional): High-res resize width
+        - `hr_resize_y` (int, optional): High-res resize height
+        - `override_settings` (dict, optional): Additional settings to override
+        - `script_name` (str, optional): Script name to use
+        - `script_args` (list, optional): Arguments for the script
+        - `eta` (float, optional): Eta noise multiplier for ancestral sampling
+        - `s_churn` (float, optional): Stochasticity churn
+        - `s_tmin` (float, optional): Minimum timestep
+        - `s_tmax` (float, optional): Maximum timestep
+        - `s_noise` (float, optional): Noise multiplier
+
+    These parameters are passed directly to the Automatic1111 Stable Diffusion WebUI txt2img API.
+    See https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/API for full documentation.
+    """
 
     COMFYUI_BASE_URL: str
     """Base URL for ComfyUI API."""
@@ -59,7 +113,15 @@ class ImagesConfig(BaseModel):
     """ComfyUI workflow JSON string."""
 
     COMFYUI_WORKFLOW_NODES: List[Dict]
-    """List of nodes in the ComfyUI workflow."""
+    """List of nodes in the ComfyUI workflow.
+
+    Dict Fields:
+        - `type` (str, required): Type of node (e.g., 'prompt', 'model', 'width', 'height', 'steps', 'seed')
+        - `key` (str, required): Key/parameter name in the ComfyUI workflow
+        - `node_ids` (list[str], required): List of node IDs that correspond to this type
+
+    This defines the mapping between workflow parameters and their corresponding node IDs in the ComfyUI workflow.
+    """
 
     IMAGES_GEMINI_API_BASE_URL: str
     """Base URL for Google Gemini image generation API."""
@@ -107,7 +169,16 @@ class ImagesConfig(BaseModel):
     """ComfyUI workflow for image editing."""
 
     IMAGES_EDIT_COMFYUI_WORKFLOW_NODES: List[Dict]
-    """List of nodes in the ComfyUI image editing workflow."""
+    """List of nodes in the ComfyUI image editing workflow.
+
+    Dict Fields:
+        - `type` (str, required): Type of node (e.g., 'image', 'prompt', 'model', 'width', 'height')
+        - `key` (str, required): Parameter name/key in the ComfyUI workflow
+        - `node_ids` (list[str], required): List of node IDs corresponding to this type
+        - `value` (str, optional): Optional value for the node
+
+    This defines the mapping between workflow parameters and their corresponding node IDs in the ComfyUI image editing workflow.
+    """
 
 
 class CreateImageForm(BaseModel):
@@ -156,4 +227,3 @@ class EditImageForm(BaseModel):
 
     negative_prompt: Optional[str] = None
     """The negative prompt to use for image editing (if supported by the engine)."""
-

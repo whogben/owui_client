@@ -7,6 +7,7 @@ class PromptModel(BaseModel):
     """
     Represents a prompt command.
     """
+
     model_config = ConfigDict(from_attributes=True)
 
     command: str
@@ -26,8 +27,17 @@ class PromptModel(BaseModel):
 
     access_control: Optional[dict] = None
     """
-    Access control settings.
-    
+    Access control settings for prompt visibility and modification permissions.
+
+    Dict Fields:
+        - `read` (dict, optional): Read access permissions
+            - `group_ids` (list[str], optional): List of group IDs with read access
+            - `user_ids` (list[str], optional): List of user IDs with read access
+        - `write` (dict, optional): Write access permissions
+            - `group_ids` (list[str], optional): List of group IDs with write access
+            - `user_ids` (list[str], optional): List of user IDs with write access
+
+    Access control behavior:
     - `None`: Public access, available to all users with the "user" role.
     - `{}`: Private access, restricted exclusively to the owner.
     - Custom permissions: Specific access control for reading and writing.
@@ -44,6 +54,13 @@ class PromptModel(BaseModel):
          }
       }
       ```
+
+    Implementation details:
+    - Used in backend access control checks via `has_access()` utility function
+    - Frontend components use this structure for access control UI
+    - Admin users bypass access control when BYPASS_ADMIN_ACCESS_CONTROL is enabled
+    - Access control is enforced in all prompt-related endpoints (create, read, update, delete)
+    - Empty lists in group_ids or user_ids are treated as no additional permissions
     """
 
 
@@ -51,6 +68,7 @@ class PromptUserResponse(PromptModel):
     """
     Response model for a prompt including user details.
     """
+
     user: Optional[UserResponse] = None
     """Details of the user who created the prompt."""
 
@@ -59,6 +77,7 @@ class PromptForm(BaseModel):
     """
     Form for creating or updating a prompt.
     """
+
     command: str
     """The command trigger. Must start with a slash (e.g., '/help')."""
 
@@ -70,8 +89,17 @@ class PromptForm(BaseModel):
 
     access_control: Optional[dict] = None
     """
-    Access control settings.
-    
+    Access control settings for prompt visibility and modification permissions.
+
+    Dict Fields:
+        - `read` (dict, optional): Read access permissions
+            - `group_ids` (list[str], optional): List of group IDs with read access
+            - `user_ids` (list[str], optional): List of user IDs with read access
+        - `write` (dict, optional): Write access permissions
+            - `group_ids` (list[str], optional): List of group IDs with write access
+            - `user_ids` (list[str], optional): List of user IDs with write access
+
+    Access control behavior:
     - `None`: Public access, available to all users with the "user" role.
     - `{}`: Private access, restricted exclusively to the owner.
     - Custom permissions: Specific access control for reading and writing.
@@ -88,4 +116,11 @@ class PromptForm(BaseModel):
          }
       }
       ```
+
+    Implementation details:
+    - Used in backend access control checks via `has_access()` utility function
+    - Frontend components use this structure for access control UI
+    - Admin users bypass access control when BYPASS_ADMIN_ACCESS_CONTROL is enabled
+    - Access control is enforced in all prompt-related endpoints (create, read, update, delete)
+    - Empty lists in group_ids or user_ids are treated as no additional permissions
     """

@@ -120,7 +120,7 @@ class ChannelsClient(ResourceBase):
             page: Page number for pagination.
 
         Returns:
-            UserListResponse: List of users and total count.
+            `UserListResponse`: List of users and total count.
         """
         params = {}
         if query:

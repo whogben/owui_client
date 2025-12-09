@@ -36,7 +36,72 @@ class UserSettings(BaseModel):
     """
 
     ui: Optional[dict] = {}
-    """Dictionary containing UI-specific settings (e.g., theme, notifications)."""
+    """Dictionary containing UI-specific settings and preferences.
+
+    Dict Fields:
+        - `pinnedModels` (list[str], optional): List of model IDs pinned to the sidebar
+        - `toolServers` (list[dict], optional): List of tool server configurations
+        - `detectArtifacts` (bool, optional): Enable artifact detection in responses
+        - `showUpdateToast` (bool, optional): Show update notification toasts
+        - `showChangelog` (bool, optional): Show changelog notifications
+        - `showEmojiInCall` (bool, optional): Show emoji during call interactions
+        - `voiceInterruption` (bool, optional): Allow voice interruption during calls
+        - `collapseCodeBlocks` (bool, optional): Collapse code blocks by default
+        - `expandDetails` (bool, optional): Expand detail sections by default
+        - `notificationSound` (bool, optional): Enable notification sounds
+        - `notificationSoundAlways` (bool, optional): Always play notification sounds
+        - `stylizedPdfExport` (bool, optional): Use stylized PDF export format
+        - `notifications` (dict, optional): Notification configuration
+        - `imageCompression` (bool, optional): Enable image compression
+        - `imageCompressionSize` (any, optional): Image compression size settings
+        - `textScale` (number, optional): Text scaling factor
+        - `widescreenMode` (null, optional): Widescreen mode setting
+        - `largeTextAsFile` (bool, optional): Treat large text as file attachments
+        - `promptAutocomplete` (bool, optional): Enable prompt autocomplete
+        - `hapticFeedback` (bool, optional): Enable haptic feedback
+        - `responseAutoCopy` (any, optional): Auto-copy response settings
+        - `richTextInput` (bool, optional): Enable rich text input
+        - `params` (any, optional): Additional UI parameters
+        - `userLocation` (any, optional): User location settings
+        - `webSearch` (any, optional): Web search configuration
+        - `memory` (bool, optional): Enable memory features
+        - `autoTags` (bool, optional): Enable automatic tagging
+        - `autoFollowUps` (bool, optional): Enable automatic follow-ups
+        - `backgroundImageUrl` (null, optional): Background image URL
+        - `landingPageMode` (str, optional): Landing page display mode
+        - `iframeSandboxAllowForms` (bool, optional): Allow forms in iframe sandbox
+        - `iframeSandboxAllowSameOrigin` (bool, optional): Allow same-origin in iframe sandbox
+        - `scrollOnBranchChange` (bool, optional): Scroll on branch change
+        - `directConnections` (null, optional): Direct connections setting
+        - `chatBubble` (bool, optional): Show chat bubble interface
+        - `copyFormatted` (bool, optional): Copy formatted text
+        - `models` (list[str], optional): List of available model IDs
+        - `conversationMode` (bool, optional): Enable conversation mode
+        - `speechAutoSend` (bool, optional): Auto-send speech input
+        - `responseAutoPlayback` (bool, optional): Auto-playback responses
+        - `audio` (AudioSettings, optional): Audio settings configuration
+        - `showUsername` (bool, optional): Show username in UI
+        - `notificationEnabled` (bool, optional): Enable notifications
+        - `highContrastMode` (bool, optional): Enable high contrast mode
+        - `title` (TitleSettings, optional): Title settings configuration
+        - `showChatTitleInTab` (bool, optional): Show chat title in browser tab
+        - `splitLargeDeltas` (bool, optional): Split large delta updates
+        - `chatDirection` (str, optional): Chat direction ('LTR', 'RTL', 'auto')
+        - `ctrlEnterToSend` (bool, optional): Use Ctrl+Enter to send messages
+        - `system` (str, optional): System configuration
+        - `seed` (number, optional): Random seed value
+        - `temperature` (str, optional): Temperature setting
+        - `repeat_penalty` (str, optional): Repeat penalty value
+        - `top_k` (str, optional): Top-k sampling value
+        - `top_p` (str, optional): Top-p sampling value
+        - `num_ctx` (str, optional): Context window size
+        - `num_batch` (str, optional): Batch size
+        - `num_keep` (str, optional): Number of tokens to keep
+        - `options` (ModelOptions, optional): Model-specific options
+
+    The `notifications` field contains:
+        - `webhook_url` (str, optional): Webhook URL for notifications
+    """
 
     model_config = ConfigDict(extra="allow")
 
@@ -95,7 +160,12 @@ class UserModel(BaseModel):
     """Timestamp when the status message expires."""
 
     info: Optional[dict] = None
-    """Additional user information dictionary."""
+    """Additional user information dictionary.
+
+    Dict Fields:
+        - `location` (str, optional): User's location information, used for geolocation features and template variable replacement (e.g., {{USER_LOCATION}} in prompts)
+        - Additional arbitrary key-value pairs may be stored as needed. This field is a flexible JSON storage that can contain any user-specific metadata.
+    """
 
     settings: Optional[UserSettings] = None
     """User-specific settings."""
@@ -104,7 +174,18 @@ class UserModel(BaseModel):
     """User's API key (if generated)."""
 
     oauth: Optional[dict] = None
-    """OAuth provider data."""
+    """OAuth provider data.
+
+    Dict Fields:
+        - `google` (dict, optional): Google OAuth provider data
+        - `github` (dict, optional): GitHub OAuth provider data
+        - `microsoft` (dict, optional): Microsoft OAuth provider data
+        - `oidc` (dict, optional): OpenID Connect OAuth provider data
+        - `feishu` (dict, optional): Feishu OAuth provider data
+
+    Each provider dictionary contains:
+        - `sub` (str, required): Subject identifier from the OAuth provider
+    """
 
     oauth_sub: Optional[str] = None
     """OAuth subject identifier."""

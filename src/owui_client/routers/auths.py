@@ -208,7 +208,7 @@ class AuthsClient(ResourceBase):
             unset_client_api_key: If True (default), clears the main client's API key upon success
 
         Returns:
-            SignoutResponse: Signout status
+            `SignoutResponse`: Signout status
         """
         response = await self._request(
             "GET",
@@ -228,7 +228,7 @@ class AuthsClient(ResourceBase):
         Retrieves global configuration settings for the application.
 
         Returns:
-            AdminConfig: The admin configuration
+            `AdminConfig`: The admin configuration
         """
         return await self._request(
             "GET",
@@ -246,7 +246,7 @@ class AuthsClient(ResourceBase):
             config: The new configuration
 
         Returns:
-            AdminConfig: The updated configuration
+            `AdminConfig`: The updated configuration
         """
         return await self._request(
             "POST",
@@ -262,7 +262,7 @@ class AuthsClient(ResourceBase):
         Retrieves the LDAP connection settings. Requires admin privileges.
 
         Returns:
-            LdapServerConfig: LDAP server configuration
+            `LdapServerConfig`: LDAP server configuration
         """
         return await self._request(
             "GET",
@@ -280,7 +280,7 @@ class AuthsClient(ResourceBase):
             form_data: The LDAP server configuration
 
         Returns:
-            LdapServerConfig: Updated LDAP server configuration
+            `LdapServerConfig`: Updated LDAP server configuration
         """
         return await self._request(
             "POST",
@@ -296,7 +296,7 @@ class AuthsClient(ResourceBase):
         Checks if LDAP authentication is enabled.
 
         Returns:
-            LdapConfigResponse: LDAP configuration status
+            `LdapConfigResponse`: LDAP configuration status
         """
         return await self._request(
             "GET",
@@ -314,7 +314,7 @@ class AuthsClient(ResourceBase):
             form_data: The LDAP configuration form
 
         Returns:
-            LdapConfigResponse: Updated LDAP configuration status
+            `LdapConfigResponse`: Updated LDAP configuration status
         """
         return await self._request(
             "POST",
@@ -330,7 +330,7 @@ class AuthsClient(ResourceBase):
         Creates or rotates the API key for the current user.
 
         Returns:
-            ApiKey: The generated API key
+            `ApiKey`: The generated API key
         """
         return await self._request(
             "POST",
@@ -360,7 +360,7 @@ class AuthsClient(ResourceBase):
         Retrieves the existing API key for the current user.
 
         Returns:
-            ApiKey: The current API key
+            `ApiKey`: The current API key
         """
         return await self._request(
             "GET",

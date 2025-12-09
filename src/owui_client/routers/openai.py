@@ -44,7 +44,7 @@ class OpenAIClient(ResourceBase):
         Update the OpenAI API configuration.
 
         Args:
-            form_data (OpenAIConfigForm): The new configuration.
+            form_data (`OpenAIConfigForm`): The new configuration.
 
         Returns:
             dict: The updated configuration object.
@@ -74,7 +74,7 @@ class OpenAIClient(ResourceBase):
         Verify connectivity to a specific OpenAI-compatible provider.
 
         Args:
-            form_data (ConnectionVerificationForm): The connection details to verify.
+            form_data (`ConnectionVerificationForm`): The connection details to verify.
 
         Returns:
             dict: The response from the provider (typically the models list) if successful.

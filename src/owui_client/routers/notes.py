@@ -22,7 +22,7 @@ class NotesClient(ResourceBase):
         Otherwise, they can see their own notes and notes shared with them.
 
         Returns:
-            A list of NoteUserResponse objects.
+            A list of `NoteUserResponse` objects.
         """
         return await self._request(
             "GET",
@@ -43,7 +43,7 @@ class NotesClient(ResourceBase):
             page: The page number to retrieve (1-based index).
 
         Returns:
-            A list of NoteTitleIdResponse objects.
+            A list of `NoteTitleIdResponse` objects.
         """
         params = {}
         if page is not None:

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "owui-client"
-version = "1.1.1"
+version = "1.2.1"
 description = "Unofficial async Python client for the complete Open WebUI API."
 readme = "README.md"
 requires-python = ">=3.10"

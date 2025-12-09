@@ -2,49 +2,61 @@ from typing import List, Optional, Union, Dict
 from pydantic import BaseModel
 from owui_client.models.files import FileModel
 
+
 class CollectionNameForm(BaseModel):
     """
     Form for specifying a collection name.
     """
+
     collection_name: Optional[str] = None
     """The name of the collection."""
+
 
 class ProcessUrlForm(CollectionNameForm):
     """
     Form for processing a URL.
     """
+
     url: str
     """The URL to process."""
+
 
 class SearchForm(BaseModel):
     """
     Form for search queries.
     """
+
     queries: List[str]
     """List of search queries."""
+
 
 class OpenAIConfigForm(BaseModel):
     """
     Configuration for OpenAI embedding model.
     """
+
     url: str
     """The base URL for the OpenAI API."""
     key: str
     """The API key for the OpenAI API."""
 
+
 class OllamaConfigForm(BaseModel):
     """
     Configuration for Ollama embedding model.
     """
+
     url: str
     """The base URL for the Ollama API."""
     key: str
     """The API key for the Ollama API."""
 
+
 class AzureOpenAIConfigForm(BaseModel):
     """
     Configuration for Azure OpenAI embedding model.
     """
+
     url: str
     """The base URL for the Azure OpenAI API."""
     key: str
@@ -52,10 +64,12 @@ class AzureOpenAIConfigForm(BaseModel):
     version: str
     """The API version for the Azure OpenAI API."""
 
+
 class EmbeddingModelUpdateForm(BaseModel):
     """
     Form for updating the embedding model configuration.
     """
+
     openai_config: Optional[OpenAIConfigForm] = None
     """Configuration for OpenAI embedding model."""
     ollama_config: Optional[OllamaConfigForm] = None
@@ -71,10 +85,12 @@ class EmbeddingModelUpdateForm(BaseModel):
     ENABLE_ASYNC_EMBEDDING: Optional[bool] = True
     """Whether to enable asynchronous embedding generation."""
 
+
 class WebConfig(BaseModel):
     """
     Configuration for web search and retrieval.
     """
+
     ENABLE_WEB_SEARCH: Optional[bool] = None
     """Whether to enable web search."""
     WEB_SEARCH_ENGINE: Optional[str] = None
@@ -182,10 +198,12 @@ class WebConfig(BaseModel):
     YOUTUBE_LOADER_TRANSLATION: Optional[str] = None
     """The translation language for YouTube loader."""
 
+
 class ConfigForm(BaseModel):
     """
     Configuration form for retrieval settings.
     """
+
     # RAG settings
     RAG_TEMPLATE: Optional[str] = None
     """Template for RAG."""
@@ -249,7 +267,15 @@ class ConfigForm(BaseModel):
     DOCLING_API_KEY: Optional[str] = None
     """API key for Docling."""
     DOCLING_PARAMS: Optional[Dict] = None
-    """Parameters for Docling."""
+    """Parameters for Docling.
+
+    Dict Fields:
+        - `image_export_mode` (str, optional): How images should be exported. Defaults to "placeholder" if not specified.
+        - Additional VLM (Vision Language Model) pipeline parameters may be supported by the Docling API.
+
+    This dictionary is passed directly to the Docling API's /v1/convert/file endpoint.
+    See the Docling API documentation for additional supported parameters.
+    """
     DOCUMENT_INTELLIGENCE_ENDPOINT: Optional[str] = None
     """Endpoint for Document Intelligence."""
     DOCUMENT_INTELLIGENCE_KEY: Optional[str] = None
@@ -269,7 +295,18 @@ class ConfigForm(BaseModel):
     MINERU_API_KEY: Optional[str] = None
     """API key for MinerU."""
     MINERU_PARAMS: Optional[Dict] = None
-    """Parameters for MinerU."""
+    """Parameters for MinerU.
+
+    Dict Fields:
+        - `enable_ocr` (bool, optional): Enable OCR processing. Defaults to False.
+        - `enable_formula` (bool, optional): Enable formula processing. Defaults to True.
+        - `enable_table` (bool, optional): Enable table processing. Defaults to True.
+        - `language` (str, optional): Language code for processing. Defaults to "en".
+        - `model_version` (str, optional): Model version to use. Defaults to "pipeline".
+        - `page_ranges` (str, optional): Page ranges to process. Defaults to empty string.
+
+    This dictionary is passed directly to the MinerU API for document parsing configuration.
+    """
 
     # Reranking settings
     RAG_RERANKING_MODEL: Optional[str] = None
@@ -311,10 +348,12 @@ class ConfigForm(BaseModel):
     web: Optional[WebConfig] = None
     """Web search configuration."""
 
+
 class ProcessFileForm(BaseModel):
     """
     Form for processing a file.
     """
+
     file_id: str
     """The ID of the file to process."""
     content: Optional[str] = None
@@ -322,10 +361,12 @@ class ProcessFileForm(BaseModel):
     collection_name: Optional[str] = None
     """The name of the collection."""
 
+
 class ProcessTextForm(BaseModel):
     """
     Form for processing text.
     """
+
     name: str
     """The name of the text."""
     content: str
@@ -333,10 +374,12 @@ class ProcessTextForm(BaseModel):
     collection_name: Optional[str] = None
     """The name of the collection."""
 
+
 class QueryDocForm(BaseModel):
     """
     Form for querying a document.
     """
+
     collection_name: str
     """The name of the collection to query."""
     query: str
@@ -352,10 +395,12 @@ class QueryDocForm(BaseModel):
     hybrid_bm25_weight: Optional[float] = None
     """Weight for BM25 in hybrid search."""
 
+
 class QueryCollectionsForm(BaseModel):
     """
     Form for querying multiple collections.
     """
+
     collection_names: List[str]
     """List of collection names to query."""
     query: str
@@ -373,28 +418,34 @@ class QueryCollectionsForm(BaseModel):
     enable_enriched_texts: Optional[bool] = None
     """Whether to enable enriched texts."""
 
+
 class DeleteForm(BaseModel):
     """
     Form for deleting a file from a collection.
     """
+
     collection_name: str
     """The name of the collection."""
     file_id: str
     """The ID of the file to delete."""
 
+
 class BatchProcessFilesForm(BaseModel):
     """
     Form for batch processing files.
     """
+
     files: List[FileModel]
     """List of files to process."""
     collection_name: str
     """The name of the collection."""
 
+
 class BatchProcessFilesResult(BaseModel):
     """
     Result of a batch file processing operation.
     """
+
     file_id: str
     """The ID of the file."""
     status: str
@@ -402,12 +453,13 @@ class BatchProcessFilesResult(BaseModel):
     error: Optional[str] = None
     """The error message if processing failed."""
 
+
 class BatchProcessFilesResponse(BaseModel):
     """
     Response for batch process files request.
     """
+
     results: List[BatchProcessFilesResult]
     """List of successful results."""
     errors: List[BatchProcessFilesResult]
     """List of failed results."""
-

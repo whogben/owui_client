@@ -21,8 +21,14 @@ class OAuthSessionModel(BaseModel):
     token: dict
     """
     The OAuth tokens.
-    
-    Typically contains keys like 'access_token', 'id_token', and 'refresh_token'.
+
+    Dict Fields:
+        - `access_token` (str, required): The access token for OAuth authentication
+        - `refresh_token` (str, optional): The refresh token for obtaining new access tokens
+        - `id_token` (str, optional): The ID token containing user identity information
+        - `expires_at` (int, optional): Timestamp when the token expires (epoch)
+        - `expires_in` (int, optional): Duration in seconds until token expires
+        - `issued_at` (int, optional): Timestamp when the token was issued
     """
 
     expires_at: int

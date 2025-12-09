@@ -122,23 +122,18 @@ class ModelModel(BaseModel):
     access_control: Optional[dict] = None
     """
     Access control settings for the model.
-    
-    Structure:
-    - `None`: Public access, available to all users with the "user" role.
-    - `{}`: Private access, restricted exclusively to the owner.
-    - Custom permissions:
-        ```json
-        {
-            "read": {
-                "group_ids": ["group_id1"],
-                "user_ids": ["user_id1"]
-            },
-            "write": {
-                "group_ids": ["group_id2"],
-                "user_ids": ["user_id2"]
-            }
-        }
-        ```
+
+    Dict Fields:
+    - `read` (dict, optional): Read access permissions
+      - `group_ids` (list[str], optional): List of group IDs with read access
+      - `user_ids` (list[str], optional): List of user IDs with read access
+    - `write` (dict, optional): Write access permissions
+      - `group_ids` (list[str], optional): List of group IDs with write access
+      - `user_ids` (list[str], optional): List of user IDs with write access
+
+    Special Values:
+    - `None`: Public access, available to all users with the "user" role
+    - `{}`: Private access, restricted exclusively to the owner
     """
 
     is_active: bool
@@ -226,24 +221,19 @@ class ModelForm(BaseModel):
 
     access_control: Optional[dict] = None
     """
-    Access control settings.
-    
-    Structure:
-    - `None`: Public access, available to all users with the "user" role.
-    - `{}`: Private access, restricted exclusively to the owner.
-    - Custom permissions:
-        ```json
-        {
-            "read": {
-                "group_ids": ["group_id1"],
-                "user_ids": ["user_id1"]
-            },
-            "write": {
-                "group_ids": ["group_id2"],
-                "user_ids": ["user_id2"]
-            }
-        }
-        ```
+    Access control settings for the model.
+
+    Dict Fields:
+    - `read` (dict, optional): Read access permissions
+      - `group_ids` (list[str], optional): List of group IDs with read access
+      - `user_ids` (list[str], optional): List of user IDs with read access
+    - `write` (dict, optional): Write access permissions
+      - `group_ids` (list[str], optional): List of group IDs with write access
+      - `user_ids` (list[str], optional): List of user IDs with write access
+
+    Special Values:
+    - `None`: Public access, available to all users with the "user" role
+    - `{}`: Private access, restricted exclusively to the owner
     """
 
     is_active: bool = True
@@ -271,6 +261,28 @@ class ModelsImportForm(BaseModel):
     models: list[dict]
     """
     List of model data dictionaries to import.
+
+    Dict Fields:
+    - `id` (str, required): Unique identifier for the model
+    - `base_model_id` (str, optional): ID of the base model this model is derived from
+    - `name` (str, required): Display name of the model
+    - `meta` (dict, optional): Model metadata dictionary
+      - `profile_image_url` (str, optional): URL of the model's profile image
+      - `description` (str, optional): User-facing description of the model
+      - `capabilities` (dict, optional): Dictionary of model capabilities
+    - `params` (dict, optional): Model parameters dictionary (allows extra fields)
+    - `access_control` (dict, optional): Access control settings for the model
+      - `read` (dict, optional): Read access permissions
+        - `group_ids` (list[str], optional): List of group IDs with read access
+        - `user_ids` (list[str], optional): List of user IDs with read access
+      - `write` (dict, optional): Write access permissions
+        - `group_ids` (list[str], optional): List of group IDs with write access
+        - `user_ids` (list[str], optional): List of user IDs with write access
+    - `is_active` (bool, optional): Whether the model is active, defaults to True
+
+    Special Values:
+    - `access_control: None`: Public access, available to all users with the "user" role
+    - `access_control: {}`: Private access, restricted exclusively to the owner
     """
 
 

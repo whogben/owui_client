@@ -38,7 +38,7 @@ class FoldersClient(ResourceBase):
             form_data: The form data for creating the folder.
 
         Returns:
-            FolderModel: The created folder model.
+            `FolderModel`: The created folder model.
         """
         return await self._request(
             "POST",
@@ -74,7 +74,7 @@ class FoldersClient(ResourceBase):
             form_data: The update form data.
 
         Returns:
-            FolderModel: The updated folder model.
+            `FolderModel`: The updated folder model.
         """
         return await self._request(
             "POST",
@@ -94,7 +94,7 @@ class FoldersClient(ResourceBase):
             form_data: The parent ID form data.
 
         Returns:
-            FolderModel: The updated folder model with the new parent ID.
+            `FolderModel`: The updated folder model with the new parent ID.
         """
         return await self._request(
             "POST",
@@ -114,7 +114,7 @@ class FoldersClient(ResourceBase):
             form_data: The is_expanded form data.
 
         Returns:
-            FolderModel: The updated folder model.
+            `FolderModel`: The updated folder model.
         """
         return await self._request(
             "POST",

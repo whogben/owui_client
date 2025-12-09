@@ -33,7 +33,7 @@ class FilesClient(ResourceBase):
             process_in_background: If True, processing happens asynchronously. If False, waits for processing (slower).
 
         Returns:
-            FileModelResponse: The uploaded file details.
+            `FileModelResponse`: The uploaded file details.
         """
         files = {"file": file}
         data = {}

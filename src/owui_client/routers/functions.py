@@ -52,7 +52,7 @@ class FunctionsClient(ResourceBase):
             include_valves: Whether to include valve configurations in the export.
 
         Returns:
-            list[Union[FunctionModel, FunctionWithValvesModel]]: A list of functions, optionally including valves.
+            list[Union[`FunctionModel`, `FunctionWithValvesModel`]]: A list of functions, optionally including valves.
         """
         return await self._request(
             "GET",

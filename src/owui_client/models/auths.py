@@ -84,7 +84,61 @@ class SessionUserResponse(Token, UserProfileImageResponse):
     """The timestamp when the session expires (in epoch seconds)."""
 
     permissions: Optional[dict] = None
-    """The user's permissions."""
+    """The user's permissions.
+
+    Dict Fields:
+        - `workspace` (dict, required): Workspace-related permissions
+            - `models` (bool, required): Access to models in workspace
+            - `knowledge` (bool, required): Access to knowledge in workspace
+            - `prompts` (bool, required): Access to prompts in workspace
+            - `tools` (bool, required): Access to tools in workspace
+            - `models_import` (bool, required): Permission to import models
+            - `models_export` (bool, required): Permission to export models
+            - `prompts_import` (bool, required): Permission to import prompts
+            - `prompts_export` (bool, required): Permission to export prompts
+            - `tools_import` (bool, required): Permission to import tools
+            - `tools_export` (bool, required): Permission to export tools
+        - `sharing` (dict, required): Sharing-related permissions
+            - `models` (bool, required): Permission to share models
+            - `public_models` (bool, required): Permission to share models publicly
+            - `knowledge` (bool, required): Permission to share knowledge
+            - `public_knowledge` (bool, required): Permission to share knowledge publicly
+            - `prompts` (bool, required): Permission to share prompts
+            - `public_prompts` (bool, required): Permission to share prompts publicly
+            - `tools` (bool, required): Permission to share tools
+            - `public_tools` (bool, required): Permission to share tools publicly
+            - `notes` (bool, required): Permission to share notes
+            - `public_notes` (bool, required): Permission to share notes publicly
+        - `chat` (dict, required): Chat-related permissions
+            - `controls` (bool, required): Access to chat controls
+            - `valves` (bool, required): Access to chat valves
+            - `system_prompt` (bool, required): Access to system prompt configuration
+            - `params` (bool, required): Access to chat parameters
+            - `file_upload` (bool, required): Permission to upload files
+            - `delete` (bool, required): Permission to delete chats
+            - `delete_message` (bool, required): Permission to delete messages
+            - `continue_response` (bool, required): Permission to continue responses
+            - `regenerate_response` (bool, required): Permission to regenerate responses
+            - `rate_response` (bool, required): Permission to rate responses
+            - `edit` (bool, required): Permission to edit chats
+            - `share` (bool, required): Permission to share chats
+            - `export` (bool, required): Permission to export chats
+            - `stt` (bool, required): Permission to use speech-to-text
+            - `tts` (bool, required): Permission to use text-to-speech
+            - `call` (bool, required): Permission to make calls
+            - `multiple_models` (bool, required): Permission to use multiple models
+            - `temporary` (bool, required): Permission to use temporary chats
+            - `temporary_enforced` (bool, required): Enforced temporary chat usage
+        - `features` (dict, required): Feature-related permissions
+            - `api_keys` (bool, required): Access to API keys feature
+            - `notes` (bool, required): Access to notes feature
+            - `folders` (bool, required): Access to folders feature
+            - `channels` (bool, required): Access to channels feature
+            - `direct_tool_servers` (bool, required): Access to direct tool servers
+            - `web_search` (bool, required): Access to web search feature
+            - `image_generation` (bool, required): Access to image generation feature
+            - `code_interpreter` (bool, required): Access to code interpreter feature
+"""
 
 
 class SessionUserInfoResponse(SessionUserResponse, UserStatus):

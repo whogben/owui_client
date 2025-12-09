@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
+
 class CodeForm(BaseModel):
     """
     Form for code related operations.
@@ -9,6 +10,7 @@ class CodeForm(BaseModel):
     """
     The code content to be formatted or executed.
     """
+
 
 class MarkdownForm(BaseModel):
     """
@@ -20,9 +22,10 @@ class MarkdownForm(BaseModel):
     The markdown content to convert to HTML.
     """
 
+
 # ChatForm in utils.py matches ChatTitleMessagesForm structure but is unused in the endpoint signature in the backend.
 # The backend uses ChatTitleMessagesForm for the /pdf endpoint.
-# We will define ChatForm here anyway to mirror the backend file content if needed, 
+# We will define ChatForm here anyway to mirror the backend file content if needed,
 # but we'll rely on ChatTitleMessagesForm from models.chats for the endpoint.
 class ChatForm(BaseModel):
     """
@@ -40,5 +43,10 @@ class ChatForm(BaseModel):
     messages: list[dict]
     """
     The list of messages in the chat.
-    """
 
+    Dict Fields:
+        - `role` (str, required): The role of the message sender. Valid values are "user", "assistant", or "system".
+        - `content` (str or list[dict], required): The content of the message. Can be a string or a list of content blocks with "type" and "text" fields.
+        - `timestamp` (float, optional): UNIX timestamp when the message was created.
+        - `model` (str, optional): Model identifier for assistant messages, only applicable when role is "assistant".
+    """

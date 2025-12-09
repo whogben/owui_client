@@ -44,7 +44,17 @@ class FileModelResponse(BaseModel):
     """Name of the file as stored in the system (often UUID prefixed)."""
 
     data: Optional[dict] = None
-    """Additional data associated with the file, such as processing status or extracted content."""
+    """Additional data associated with the file, such as processing status or extracted content.
+
+    Dict Fields:
+        - `status` (str, optional): Processing status of the file - 'pending', 'completed', or 'failed'
+        - `error` (str, optional): Error message if file processing failed
+        - `content` (str, optional): Extracted text content from the file
+
+    The data dictionary stores file processing metadata and content. During file upload, the status starts as 'pending',
+    changes to 'completed' when processing succeeds, or 'failed' with an error message when processing fails.
+    The content field contains the extracted text from the file after successful processing.
+    """
 
     meta: FileMeta
     """Metadata about the file including original name, size, and content type."""
@@ -70,7 +80,14 @@ class FileMetadataResponse(BaseModel):
     """File content hash."""
 
     meta: Optional[dict] = None
-    """File metadata dictionary."""
+    """File metadata dictionary.
+
+    Dict Fields:
+        - `name` (str, optional): Original name of the file
+        - `content_type` (str, optional): MIME type of the file (e.g., 'application/pdf', 'image/png')
+        - `size` (int, optional): Size of the file in bytes
+        - `data` (dict, optional): Additional metadata associated with the file
+    """
 
     created_at: int
     """Unix timestamp when the file was created."""
@@ -102,13 +119,41 @@ class FileModel(BaseModel):
     """Physical path or storage reference for the file content."""
 
     data: Optional[dict] = None
-    """Additional data such as processing status."""
+    """Additional data associated with the file, including processing status and extracted content.
+
+    Dict Fields:
+        - `status` (str, optional): Processing status of the file - 'pending', 'completed', or 'failed'
+        - `error` (str, optional): Error message if file processing failed
+        - `content` (str, optional): Extracted text content from the file
+    """
 
     meta: Optional[dict] = None
-    """File metadata."""
+    """File metadata containing information about the file.
+
+    Dict Fields:
+        - `name` (str, optional): Original name of the file as uploaded
+        - `content_type` (str, optional): MIME type of the file (e.g., 'application/pdf', 'image/png', 'text/plain')
+        - `size` (int, optional): Size of the file in bytes
+        - `data` (dict, optional): Additional metadata associated with the file, can contain custom key-value pairs
+        - `collection_name` (str, optional): Knowledge base collection name this file belongs to, used for access control
+
+    The meta dictionary stores core file attributes and can be extended with additional custom metadata.
+    Common usage includes file identification, content type handling, and knowledge base association.
+    """
 
     access_control: Optional[dict] = None
-    """Access control rules for the file."""
+    """Access control rules for the file.
+
+    Dict Fields:
+        - `read` (dict, optional): Read access permissions
+            - `group_ids` (list[str], optional): List of group IDs that have read access
+            - `user_ids` (list[str], optional): List of user IDs that have read access
+        - `write` (dict, optional): Write access permissions
+            - `group_ids` (list[str], optional): List of group IDs that have write access
+            - `user_ids` (list[str], optional): List of user IDs that have write access
+
+    Controls which users and groups can read or write to the file. If None, access follows default system permissions.
+    """
 
     created_at: Optional[int]
     """Unix timestamp when the file was created."""

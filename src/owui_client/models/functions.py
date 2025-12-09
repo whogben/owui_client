@@ -16,6 +16,12 @@ class FunctionMeta(BaseModel):
     manifest: Optional[dict] = {}
     """
     Manifest data extracted from the function's frontmatter.
+
+    Dict Fields:
+        - `version` (str, optional): Version of the function
+        - `funding_url` (str, optional): URL for funding/support
+        - `required_open_webui_version` (str, optional): Minimum required Open WebUI version
+        - `icon_url` (str, optional): URL for function icon
     """
 
     model_config = ConfigDict(extra="allow")
@@ -117,6 +123,13 @@ class FunctionWithValvesModel(BaseModel):
     valves: Optional[dict] = None
     """
     Configuration values (valves) for the function.
+
+    Dict Fields:
+        - `priority` (int, optional): Priority level for filter operations
+        - `max_turns` (int, optional): Maximum allowable conversation turns
+        - `OPENAI_API_BASE_URL` (str, optional): Base URL for OpenAI API endpoints
+        - `OPENAI_API_KEY` (str, optional): API key for OpenAI API access
+        - Additional keys may exist depending on the specific function implementation
     """
 
     is_active: bool = False
@@ -238,6 +251,13 @@ class FunctionValves(BaseModel):
     valves: Optional[dict] = None
     """
     Dictionary of valve configuration values.
+
+    Dict Fields:
+        - `priority` (int, optional): Priority level for filter operations
+        - `max_turns` (int, optional): Maximum allowable conversation turns
+        - `OPENAI_API_BASE_URL` (str, optional): Base URL for OpenAI API endpoints
+        - `OPENAI_API_KEY` (str, optional): API key for OpenAI API access
+        - Additional keys may exist depending on the specific function implementation
     """
 
 

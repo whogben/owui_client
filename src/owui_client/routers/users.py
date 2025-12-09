@@ -45,7 +45,7 @@ class UsersClient(ResourceBase):
             page: Page number (starts at 1).
 
         Returns:
-            UserGroupIdsListResponse: List of users with group IDs and total count.
+            `UserGroupIdsListResponse`: List of users with group IDs and total count.
         """
         params = {}
         if query:
@@ -72,7 +72,7 @@ class UsersClient(ResourceBase):
         This is an admin-only endpoint.
 
         Returns:
-            UserInfoListResponse: List of all users with basic info.
+            `UserInfoListResponse`: List of all users with basic info.
         """
         return await self._request(
             "GET",
@@ -91,7 +91,7 @@ class UsersClient(ResourceBase):
             query: Search query string.
 
         Returns:
-            UserIdNameListResponse: List of users (ID and name) matching the query.
+            `UserIdNameListResponse`: List of users (ID and name) matching the query.
         """
         params = {}
         if query:
@@ -136,7 +136,7 @@ class UsersClient(ResourceBase):
         This is an admin-only endpoint.
 
         Returns:
-            UserPermissions: Default user permissions.
+            `UserPermissions`: Default user permissions.
         """
         return await self._request(
             "GET",
@@ -156,7 +156,7 @@ class UsersClient(ResourceBase):
             permissions: The new default permissions.
 
         Returns:
-            UserPermissions: The updated default permissions.
+            `UserPermissions`: The updated default permissions.
         """
         # Note: The backend returns the dict directly, but we can model validate it back to UserPermissions
         return await self._request(
@@ -187,7 +187,7 @@ class UsersClient(ResourceBase):
             settings: The new user settings.
 
         Returns:
-            UserSettings: The updated user settings.
+            `UserSettings`: The updated user settings.
         """
         return await self._request(
             "POST",
@@ -201,7 +201,7 @@ class UsersClient(ResourceBase):
         Get the current session user's status.
 
         Returns:
-            UserModel: The user model which includes status fields.
+            `UserModel`: The user model which includes status fields.
         """
         return await self._request(
             "GET",
@@ -217,7 +217,7 @@ class UsersClient(ResourceBase):
             status: The new user status.
 
         Returns:
-            UserModel: The updated user model.
+            `UserModel`: The updated user model.
         """
         return await self._request(
             "POST",
@@ -266,7 +266,7 @@ class UsersClient(ResourceBase):
             user_id: The ID of the user.
 
         Returns:
-            UserActiveResponse: User info including active status.
+            `UserActiveResponse`: User info including active status.
         """
         return await self._request(
             "GET",
@@ -288,7 +288,7 @@ class UsersClient(ResourceBase):
             form_data: The update form data.
 
         Returns:
-            UserModel: The updated user model.
+            `UserModel`: The updated user model.
         """
         return await self._request(
             "POST",

@@ -125,7 +125,7 @@ class EvaluationsClient(ResourceBase):
             page: The page number to retrieve (default is 1).
 
         Returns:
-            FeedbackListResponse: A response object containing the list of feedbacks and pagination details.
+            `FeedbackListResponse`: A response object containing the list of feedbacks and pagination details.
         """
         params = {}
         if order_by:
@@ -150,7 +150,7 @@ class EvaluationsClient(ResourceBase):
             form_data: The data for the new feedback (e.g., type, content, data).
 
         Returns:
-            FeedbackModel: The created feedback object.
+            `FeedbackModel`: The created feedback object.
         """
         return await self._request(
             "POST",
@@ -167,7 +167,7 @@ class EvaluationsClient(ResourceBase):
             id: The unique identifier of the feedback to retrieve.
 
         Returns:
-            FeedbackModel: The requested feedback object.
+            `FeedbackModel`: The requested feedback object.
         """
         return await self._request(
             "GET",
@@ -184,7 +184,7 @@ class EvaluationsClient(ResourceBase):
             form_data: The updated data for the feedback.
 
         Returns:
-            FeedbackModel: The updated feedback object.
+            `FeedbackModel`: The updated feedback object.
         """
         return await self._request(
             "POST",

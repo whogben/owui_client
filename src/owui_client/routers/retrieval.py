@@ -183,7 +183,7 @@ class RetrievalClient(ResourceBase):
             form_data: The batch processing data.
 
         Returns:
-            BatchProcessFilesResponse containing the results.
+            `BatchProcessFilesResponse` containing the results.
         """
         response = await self._request("POST", "/v1/retrieval/process/files/batch", json=form_data.model_dump())
         return BatchProcessFilesResponse(**response)

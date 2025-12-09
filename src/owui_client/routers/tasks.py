@@ -28,7 +28,7 @@ class TasksClient(ResourceBase):
         Update the global task configuration.
 
         Args:
-            form_data (TaskConfigForm): The configuration settings to update.
+            form_data (`TaskConfigForm`): The configuration settings to update.
 
         Returns:
             Dict[str, Any]: The updated task configuration dictionary.

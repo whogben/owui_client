@@ -20,13 +20,45 @@ class FeedbackModel(BaseModel):
     """Type of feedback (e.g., 'rating', 'comment')."""
 
     data: Optional[dict] = None
-    """Content of the feedback, structure depends on 'type'."""
+    """Content of the feedback, structure depends on 'type'.
+
+    Dict Fields:
+        - `model_id` (str, optional): ID of the model being rated
+        - `rating` (str|int, optional): The rating value (e.g., 1, 0, -1 for win/draw/lose)
+        - `sibling_model_ids` (list[str], optional): IDs of sibling models in comparison scenarios (e.g., arena)
+        - `tags` (list[str], optional): Tags associated with the feedback
+        - `reason` (str, optional): Reason for the rating
+        - `comment` (str, optional): Additional comment provided by the user
+    """
 
     meta: Optional[dict] = None
-    """Metadata associated with the feedback (e.g., tags, context)."""
+    """Metadata associated with the feedback.
+
+    Dict Fields:
+        - `arena` (bool, optional): Whether the feedback is related to the arena feature
+        - `chat_id` (str, optional): ID of the chat session where feedback was given
+        - `message_id` (str, optional): ID of the message being rated or commented on
+        - `tags` (list[str], optional): Tags associated with the feedback
+        - `model_id` (str, optional): ID of the model being rated
+        - `message_index` (int, optional): Index of the message in the chat history
+        - `base_models` (dict[str, str], optional): Mapping of model IDs to their base model IDs
+    """
 
     snapshot: Optional[dict] = None
-    """Snapshot of the context (e.g., chat history) when feedback was given."""
+    """Snapshot of the context (e.g., chat history) when feedback was given.
+
+    Dict Fields:
+        - `chat` (dict, optional): Complete chat object containing the conversation state
+        - `chat.chat` (dict, optional): Nested chat data structure
+        - `chat.chat.history` (dict, optional): Chat history information
+        - `chat.chat.history.messages` (dict[str, object], optional): Message history mapping message IDs to message objects
+        - `chat.chat.history.messages[*].parentId` (str, optional): ID of parent message
+        - `chat.chat.history.messages[*].childrenIds` (list[str], optional): List of child message IDs
+        - `chat.chat.history.messages[*].content` (str, optional): Message content text
+        - `chat.chat.history.messages[*].role` (str, optional): Message role (e.g., 'user', 'assistant')
+        - `chat.chat.history.messages[*].model` (str, optional): Model used for the message
+        - `chat.chat.history.messages[*].done` (bool, optional): Whether message processing is complete
+    """
 
     created_at: int
     """Timestamp when feedback was created (epoch)."""
@@ -55,10 +87,45 @@ class FeedbackResponse(BaseModel):
     """Type of feedback (e.g., 'rating', 'comment')."""
 
     data: Optional[dict] = None
-    """Content of the feedback."""
+    """Content of the feedback, structure depends on 'type'.
+
+    Dict Fields:
+        - `model_id` (str, optional): ID of the model being rated
+        - `rating` (str|int, optional): The rating value (e.g., 1, 0, -1 for win/draw/lose)
+        - `sibling_model_ids` (list[str], optional): IDs of sibling models in comparison scenarios (e.g., arena)
+        - `tags` (list[str], optional): Tags associated with the feedback
+        - `reason` (str, optional): Reason for the rating
+        - `comment` (str, optional): Additional comment provided by the user
+    """
 
     meta: Optional[dict] = None
-    """Metadata associated with the feedback."""
+    """Metadata associated with the feedback.
+
+    Dict Fields:
+        - `arena` (bool, optional): Whether the feedback is related to the arena feature
+        - `chat_id` (str, optional): ID of the chat session where feedback was given
+        - `message_id` (str, optional): ID of the message being rated or commented on
+        - `tags` (list[str], optional): Tags associated with the feedback
+        - `model_id` (str, optional): ID of the model being rated
+        - `message_index` (int, optional): Index of the message in the chat history
+        - `base_models` (dict[str, str], optional): Mapping of model IDs to their base model IDs
+    """
+
+    snapshot: Optional[dict] = None
+    """Snapshot of the context (e.g., chat history) when feedback was given.
+
+    Dict Fields:
+        - `chat` (dict, optional): Complete chat object containing the conversation state
+        - `chat.chat` (dict, optional): Nested chat data structure
+        - `chat.chat.history` (dict, optional): Chat history information
+        - `chat.chat.history.messages` (dict[str, object], optional): Message history mapping message IDs to message objects
+        - `chat.chat.history.messages[*].parentId` (str, optional): ID of parent message
+        - `chat.chat.history.messages[*].childrenIds` (list[str], optional): List of child message IDs
+        - `chat.chat.history.messages[*].content` (str, optional): Message content text
+        - `chat.chat.history.messages[*].role` (str, optional): Message role (e.g., 'user', 'assistant')
+        - `chat.chat.history.messages[*].model` (str, optional): Model used for the message
+        - `chat.chat.history.messages[*].done` (bool, optional): Whether message processing is complete
+    """
 
     created_at: int
     """Timestamp when feedback was created (epoch)."""
@@ -116,7 +183,20 @@ class SnapshotData(BaseModel):
     """
 
     chat: Optional[dict] = None
-    """The state of the chat when feedback was submitted."""
+    """The state of the chat when feedback was submitted.
+
+    Dict Fields:
+        - `chat` (dict, optional): Nested chat data structure
+        - `chat.chat` (dict, optional): Chat data structure
+        - `chat.chat.history` (dict, optional): Chat history information
+        - `chat.chat.history.messages` (dict[str, object], optional): Message history mapping message IDs to message objects
+        - `chat.chat.history.messages[*].parentId` (str, optional): ID of parent message
+        - `chat.chat.history.messages[*].childrenIds` (list[str], optional): List of child message IDs
+        - `chat.chat.history.messages[*].content` (str, optional): Message content text
+        - `chat.chat.history.messages[*].role` (str, optional): Message role (e.g., 'user', 'assistant')
+        - `chat.chat.history.messages[*].model` (str, optional): Model used for the message
+        - `chat.chat.history.messages[*].done` (bool, optional): Whether message processing is complete
+    """
 
     model_config = ConfigDict(extra="allow")
 
@@ -133,7 +213,17 @@ class FeedbackForm(BaseModel):
     """Specific data for the feedback type."""
 
     meta: Optional[dict] = None
-    """Metadata for the feedback."""
+    """Metadata associated with the feedback.
+
+    Dict Fields:
+        - `arena` (bool, optional): Whether the feedback is related to the arena feature
+        - `chat_id` (str, optional): ID of the chat session where feedback was given
+        - `message_id` (str, optional): ID of the message being rated or commented on
+        - `tags` (list[str], optional): Tags associated with the feedback
+        - `model_id` (str, optional): ID of the model being rated
+        - `message_index` (int, optional): Index of the message in the chat history
+        - `base_models` (dict[str, str], optional): Mapping of model IDs to their base model IDs
+    """
 
     snapshot: Optional[SnapshotData] = None
     """Context snapshot."""
@@ -189,4 +279,3 @@ class FeedbackListResponse(BaseModel):
 
     total: int
     """Total number of feedbacks matching the query."""
-

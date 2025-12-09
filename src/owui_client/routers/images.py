@@ -21,7 +21,7 @@ class ImagesClient(ResourceBase):
         Get the images configuration.
 
         Returns:
-            ImagesConfig: The current images configuration.
+            `ImagesConfig`: The current images configuration.
         """
         return await self._request(
             "GET",
@@ -37,7 +37,7 @@ class ImagesClient(ResourceBase):
             config: The new configuration.
 
         Returns:
-            ImagesConfig: The updated configuration.
+            `ImagesConfig`: The updated configuration.
         """
         return await self._request(
             "POST",

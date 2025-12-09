@@ -29,13 +29,39 @@ class FolderModel(BaseModel):
     """Name of the folder."""
 
     items: Optional[dict] = None
-    """Dictionary of items contained in the folder (contents)."""
+    """Dictionary of items contained in the folder (contents).
+
+    Dict Fields:
+        - `chat_ids` (list[str], optional): List of chat IDs contained in the folder
+        - `file_ids` (list[str], optional): List of file IDs contained in the folder
+
+    This field represents the contents of the folder, including references to chats and files.
+    The frontend uses this to manage folder contents via the `/folders/{id}/update/items` endpoint.
+    """
 
     meta: Optional[dict] = None
-    """Metadata for the folder, such as icon."""
+    """Metadata for the folder, such as icon.
+
+    Dict Fields:
+        - `icon` (str, optional): Emoji icon for the folder (e.g., "📁", "🗂️", "📂"). Used for visual representation in the UI. When not provided, a default folder icon is displayed. The icon can be set or updated via the emoji picker in the frontend interface.
+    """
 
     data: Optional[dict] = None
-    """Additional data associated with the folder, such as file references (e.g. `{"files": [...]}`)."""
+    """Additional data associated with the folder, containing configuration and file references.
+
+    Dict Fields:
+        - `system_prompt` (str, optional): System prompt associated with the folder. Used to provide context or instructions for chats within this folder.
+        - `files` (list, optional): List of file references associated with the folder. Each file reference can have a `type` field (e.g., "file" or "collection") and an `id` field for the file/collection ID. Used for knowledge management and chat context.
+        - `model_ids` (list[str], optional): List of model IDs associated with the folder. Determines which models are available/selected when chatting within this folder.
+
+    The `data` field is used extensively in the frontend for:
+    - Setting default models for chats within the folder (via `model_ids`)
+    - Providing system prompts that apply to all chats in the folder
+    - Managing knowledge files that should be available in folder chats
+    - Synchronizing folder settings between frontend and backend
+
+    When a folder is selected in the UI, the frontend automatically applies the folder's `model_ids` to the chat interface and makes the folder's files available for knowledge retrieval.
+    """
 
     is_expanded: bool = False
     """Whether the folder is expanded in the UI."""
@@ -85,10 +111,20 @@ class FolderForm(BaseModel):
     """Name of the folder."""
 
     data: Optional[dict] = None
-    """Additional data for the folder, such as files."""
+    """Additional data for the folder, such as files.
+
+    Dict Fields:
+        - `system_prompt` (str, optional): System prompt associated with the folder
+        - `files` (list, optional): List of file references associated with the folder
+        - `model_ids` (list, optional): List of model IDs associated with the folder
+    """
 
     meta: Optional[dict] = None
-    """Metadata for the folder, such as icon."""
+    """Metadata for the folder, such as icon.
+
+    Dict Fields:
+        - `icon` (str, optional): Emoji icon for the folder (e.g., "📁", "🗂️", "📂"). Used for visual representation in the UI.
+    """
 
     model_config = ConfigDict(extra="allow")
 
@@ -102,10 +138,20 @@ class FolderUpdateForm(BaseModel):
     """New name for the folder."""
 
     data: Optional[dict] = None
-    """New additional data for the folder."""
+    """New additional data for the folder.
+
+    Dict Fields:
+        - `system_prompt` (str, optional): System prompt associated with the folder
+        - `files` (list, optional): List of file references associated with the folder. Each file reference can have a `type` field (e.g., "file" or "collection") and an `id` field for the file/collection ID.
+        - `model_ids` (list, optional): List of model IDs associated with the folder
+    """
 
     meta: Optional[dict] = None
-    """New metadata for the folder."""
+    """New metadata for the folder.
+
+    Dict Fields:
+        - `icon` (str, optional): Emoji icon for the folder (e.g., "📁", "🗂️", "📂"). Used for visual representation in the UI.
+    """
 
     model_config = ConfigDict(extra="allow")
 
@@ -126,4 +172,3 @@ class FolderIsExpandedForm(BaseModel):
 
     is_expanded: bool
     """Whether the folder should be expanded."""
-

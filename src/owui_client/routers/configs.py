@@ -53,7 +53,7 @@ class ConfigsClient(ResourceBase):
         Get the current connections configuration.
 
         Returns:
-            ConnectionsConfigForm with current settings for direct connections and model caching.
+            `ConnectionsConfigForm` with current settings for direct connections and model caching.
         """
         return await self._request(
             "GET",
@@ -68,10 +68,10 @@ class ConfigsClient(ResourceBase):
         Set the connections configuration.
 
         Args:
-            form_data: ConnectionsConfigForm with new settings.
+            form_data: `ConnectionsConfigForm` with new settings.
 
         Returns:
-            Updated ConnectionsConfigForm.
+            Updated `ConnectionsConfigForm`.
         """
         return await self._request(
             "POST",
@@ -112,7 +112,7 @@ class ConfigsClient(ResourceBase):
         Get the current tool servers configuration.
 
         Returns:
-            ToolServersConfigForm with current settings.
+            `ToolServersConfigForm` with current settings.
         """
         return await self._request(
             "GET",
@@ -127,10 +127,10 @@ class ConfigsClient(ResourceBase):
         Set the tool servers configuration.
 
         Args:
-            form_data: ToolServersConfigForm with new settings.
+            form_data: `ToolServersConfigForm` with new settings.
 
         Returns:
-            Updated ToolServersConfigForm.
+            Updated `ToolServersConfigForm`.
         """
         return await self._request(
             "POST",
@@ -149,7 +149,7 @@ class ConfigsClient(ResourceBase):
         configuration and returns the server specifications if successful.
 
         Args:
-            form_data: ToolServerConnection details to verify.
+            form_data: `ToolServerConnection` details to verify.
 
         Returns:
             Response dictionary containing verification status and server specs (if successful).
@@ -166,7 +166,7 @@ class ConfigsClient(ResourceBase):
         Get the current code execution configuration.
 
         Returns:
-            CodeInterpreterConfigForm with current settings.
+            `CodeInterpreterConfigForm` with current settings.
         """
         return await self._request(
             "GET",
@@ -181,10 +181,10 @@ class ConfigsClient(ResourceBase):
         Set the code execution configuration.
 
         Args:
-            form_data: CodeInterpreterConfigForm with new settings.
+            form_data: `CodeInterpreterConfigForm` with new settings.
 
         Returns:
-            Updated CodeInterpreterConfigForm.
+            Updated `CodeInterpreterConfigForm`.
         """
         return await self._request(
             "POST",
@@ -198,7 +198,7 @@ class ConfigsClient(ResourceBase):
         Get the current models configuration.
 
         Returns:
-            ModelsConfigForm with current settings.
+            `ModelsConfigForm` with current settings.
         """
         return await self._request(
             "GET",
@@ -211,10 +211,10 @@ class ConfigsClient(ResourceBase):
         Set the models configuration.
 
         Args:
-            form_data: ModelsConfigForm with new settings.
+            form_data: `ModelsConfigForm` with new settings.
 
         Returns:
-            Updated ModelsConfigForm.
+            Updated `ModelsConfigForm`.
         """
         return await self._request(
             "POST",
@@ -230,10 +230,10 @@ class ConfigsClient(ResourceBase):
         Set default prompt suggestions.
 
         Args:
-            form_data: SetDefaultSuggestionsForm containing the suggestions list.
+            form_data: `SetDefaultSuggestionsForm` containing the suggestions list.
 
         Returns:
-            Updated list of PromptSuggestion.
+            Updated list of `PromptSuggestion`.
         """
         return await self._request(
             "POST",
@@ -247,7 +247,7 @@ class ConfigsClient(ResourceBase):
         Get the current banners.
 
         Returns:
-            List of BannerModel.
+            List of `BannerModel`.
         """
         return await self._request(
             "GET",
@@ -260,10 +260,10 @@ class ConfigsClient(ResourceBase):
         Set the banners.
 
         Args:
-            form_data: SetBannersForm containing the banners list.
+            form_data: `SetBannersForm` containing the banners list.
 
         Returns:
-            Updated list of BannerModel.
+            Updated list of `BannerModel`.
         """
         return await self._request(
             "POST",

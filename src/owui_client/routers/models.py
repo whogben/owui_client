@@ -41,7 +41,7 @@ class ModelsClient(ResourceBase):
             page: Page number (1-based).
 
         Returns:
-            ModelListResponse: List of models and total count.
+            `ModelListResponse`: List of models and total count.
         """
         params = {}
         if query:

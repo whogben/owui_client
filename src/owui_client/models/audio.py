@@ -1,6 +1,7 @@
 from typing import Optional, List, Dict
 from pydantic import BaseModel
 
+
 class TTSConfigForm(BaseModel):
     """
     Configuration for Text-to-Speech (TTS).
@@ -13,7 +14,15 @@ class TTSConfigForm(BaseModel):
     """API Key for OpenAI-compatible TTS API."""
 
     OPENAI_PARAMS: Optional[Dict] = None
-    """Additional parameters for OpenAI TTS requests."""
+    """Additional parameters for OpenAI TTS requests.
+
+    Dict Fields:
+        - `model` (str, optional): ID of the model to use. Defaults to tts-1 or tts-1-hd
+        - `voice` (str, optional): The voice to use for speech. Options: alloy, echo, fable, nova, onyx, shimmer
+        - `response_format` (str, optional): Format of the returned audio. Options: mp3, opus, aac, flac, wav, pcm
+        - `speed` (float, optional): The speed of the generated audio. Must be between 0.25 and 4.0. Default is 1.0
+        - Any other parameters supported by the OpenAI TTS API can be included
+    """
 
     API_KEY: str
     """API Key for other TTS engines (e.g. ElevenLabs, Azure)."""
@@ -38,6 +47,7 @@ class TTSConfigForm(BaseModel):
 
     AZURE_SPEECH_OUTPUT_FORMAT: str
     """Azure Speech output format."""
+
 
 class STTConfigForm(BaseModel):
     """
@@ -89,6 +99,7 @@ class STTConfigForm(BaseModel):
     MISTRAL_USE_CHAT_COMPLETIONS: bool
     """Whether to use Mistral Chat Completions API (for audio input) instead of Transcription API."""
 
+
 class AudioConfigUpdateForm(BaseModel):
     """
     Form for updating audio configuration (TTS and STT).
@@ -99,4 +110,3 @@ class AudioConfigUpdateForm(BaseModel):
 
     stt: STTConfigForm
     """STT configuration."""
-

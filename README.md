@@ -1,44 +1,55 @@
-# Unofficial Open WebUI Client
+# Unofficial Open WebUI API Documentation
 
-[**📚 Full Documentation**](https://whogben.github.io/owui_client/)
+This is **unofficial documentation** for the Open WebUI API in general. It provides comprehensive coverage of all API endpoints, models, and their fields.
 
-A robust, async Python client for the complete [Open WebUI](https://github.com/open-webui/open-webui) API.
+## What's Included
 
-This library mirrors the backend structure of Open WebUI, providing a fully typed, auto-completable interface for every endpoint.
+This documentation includes **detailed descriptions of every field of every model**, calculated automatically by examining their usage in the Open WebUI source code. The field descriptions are extracted from:
 
-> **Note**: This is the initial release (v1.0.0). While it covers the complete API, there may be edge cases or recent Open WebUI changes we haven't caught yet. Please report any issues you encounter!
+- Type annotations and Pydantic model definitions
+- Docstrings and comments in the source code
+- Actual usage patterns found throughout the codebase
+- API response examples and validation logic
 
-## Installation
+## Python Client Library
+
+While this documentation is API-focused and language-agnostic, it is generated from the [owui-client](https://github.com/whogben/owui_client) Python library, which provides a fully typed, async interface to the Open WebUI API.
+
+### Installation
 
 ```bash
 pip install owui-client
 ```
 
-## Quick Start
+### Quick Start
 
 ```python
 import asyncio
 from owui_client import OpenWebUI
 
 async def main():
-    # Connect to your Open WebUI instance
     client = OpenWebUI(
         api_url="http://localhost:8080/api", 
         api_key="sk-..."
     )
-
-    # Example: Get current user info
+    
+    # Get current user info
     user = await client.auths.get_session_user()
     print(f"Hello, {user.name}!")
-
-    # Example: List all models
-    models = await client.models.get_models()
-    for model in models.data:
-        print(model.id)
 
 if __name__ == "__main__":
     asyncio.run(main())
 ```
+
+## Documentation Structure
+
+- **Code Reference**: Browse all models, routers, and client classes with complete field descriptions
+- **Models**: Every Pydantic model with detailed field documentation
+- **Routers**: All API endpoints organized by resource type
+
+## Note
+
+This documentation is maintained independently and may not always reflect the latest changes in Open WebUI. For the official Open WebUI documentation, please visit the [Open WebUI repository](https://github.com/open-webui/open-webui).
 
 ## Locating Endpoints
 

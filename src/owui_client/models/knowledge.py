@@ -25,13 +25,28 @@ class KnowledgeModel(BaseModel):
     """A description of the knowledge base."""
 
     meta: Optional[dict] = None
-    """Metadata associated with the knowledge base."""
+    """
+    Metadata associated with the knowledge base.
+
+    Dict Fields:
+        - `legacy` (bool, optional): Whether this is a legacy knowledge base migrated from older versions
+        - `document` (bool, optional): Whether this knowledge base represents a document-type structure
+        - `tags` (list[str], optional): List of tags associated with the knowledge base
+        - `id` (str, optional): Knowledge base ID
+        - `name` (str, optional): Knowledge base name
+        - `collection_name` (str, optional): Collection name
+        - `type` (str, optional): Type of knowledge (e.g., 'file', 'collection')
+        - `collection_names` (list[str], optional): List of collection names for collection-type knowledge
+
+    Additional keys may exist. Complete structure not found in reference code.
+    """
 
     access_control: Optional[dict] = None
     """
     Access control settings.
 
     - `None`: Public access, available to all users with the "user" role.
+      Requires "sharing.public_knowledge" permission for non-admin users to set.
     - `{}`: Private access, restricted exclusively to the owner.
     - Custom permissions: Specific access control for reading and writing.
       Can specify group or user-level restrictions.
@@ -48,6 +63,14 @@ class KnowledgeModel(BaseModel):
           }
       }
       ```
+
+    Dict Fields:
+        - `read` (dict, optional): Read access permissions
+        - `write` (dict, optional): Write access permissions
+        - `read.group_ids` (list[str], optional): List of group IDs with read access
+        - `read.user_ids` (list[str], optional): List of user IDs with read access
+        - `write.group_ids` (list[str], optional): List of group IDs with write access
+        - `write.user_ids` (list[str], optional): List of user IDs with write access
     """
 
     created_at: int
@@ -60,6 +83,11 @@ class KnowledgeModel(BaseModel):
 class KnowledgeUserModel(KnowledgeModel):
     """
     Represents a knowledge base with user information.
+
+    Inherits access_control from `KnowledgeModel`. Access is determined by:
+    - Direct user ownership (user_id matches)
+    - Access control permissions (read/write for groups and users)
+    - Admin users have full access regardless of access_control settings
     """
 
     user: Optional[UserResponse] = None
@@ -69,6 +97,9 @@ class KnowledgeUserModel(KnowledgeModel):
 class KnowledgeResponse(KnowledgeModel):
     """
     Represents a knowledge base response, optionally including files.
+
+    Inherits meta from `KnowledgeModel`. See `KnowledgeModel.meta` for complete documentation
+    of the metadata structure and valid fields.
     """
 
     files: Optional[list[Union[FileMetadataResponse, dict]]] = None
@@ -78,6 +109,9 @@ class KnowledgeResponse(KnowledgeModel):
 class KnowledgeUserResponse(KnowledgeUserModel):
     """
     Represents a knowledge base response including user information and files.
+
+    Inherits access_control from `KnowledgeModel`. See `KnowledgeModel.access_control`
+    for complete documentation of the access control structure and permissions.
     """
 
     files: Optional[list[Union[FileMetadataResponse, dict]]] = None
@@ -116,21 +150,34 @@ class KnowledgeForm(BaseModel):
           }
       }
       ```
+
+    Dict Fields:
+        - `read` (dict, optional): Read access permissions
+        - `write` (dict, optional): Write access permissions
+        - `read.group_ids` (list[str], optional): List of group IDs with read access
+        - `read.user_ids` (list[str], optional): List of user IDs with read access
+        - `write.group_ids` (list[str], optional): List of group IDs with write access
+        - `write.user_ids` (list[str], optional): List of user IDs with write access
     """
 
 
 class KnowledgeFilesResponse(KnowledgeResponse):
     """
     Represents a knowledge base response with full file metadata.
+
+    Inherits access_control from `KnowledgeModel`. Access control determines who can read and write to this knowledge base.
     """
 
     files: list[FileMetadataResponse]
-    """List of files with metadata associated with the knowledge base."""
+    """List of files associated with the knowledge base."""
 
     warnings: Optional[dict] = None
     """
     Warnings returned during processing, e.g., if some files failed to process in a batch operation.
-    Structure: `{"message": str, "errors": list[str]}`.
+
+    Dict Fields:
+        - `message` (str, required): Human-readable warning message describing the issue
+        - `errors` (list[str], required): List of specific error details for failed operations
     """
 
 

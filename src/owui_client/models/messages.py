@@ -43,10 +43,20 @@ class MessageModel(BaseModel):
     """Content of the message."""
 
     data: Optional[dict] = None
-    """Additional data associated with the message."""
+    """Additional data associated with the message.
+
+    Dict Fields:
+        - `files` (list, optional): List of file objects associated with the message, each containing file metadata like URLs and types
+    """
 
     meta: Optional[dict] = None
-    """Metadata associated with the message."""
+    """Metadata associated with the message.
+
+    Dict Fields:
+        - `model_id` (str, optional): ID of the model that generated the message
+        - `model_name` (str, optional): Name of the model that generated the message
+        - `done` (bool, optional): Flag indicating if model processing is complete
+    """
 
     created_at: int  # timestamp in epoch (time_ns)
     """Timestamp when the message was created (epoch time in nanoseconds)."""
@@ -73,10 +83,23 @@ class MessageForm(BaseModel):
     """ID of the parent message if this is a thread reply."""
 
     data: Optional[dict] = None
-    """Additional data associated with the message."""
+    """Additional data associated with the message.
+
+    Dict Fields:
+        - `files` (list, optional): List of file objects associated with the message, each containing file metadata like URLs and types
+        - `content` (str, optional): Additional message content data used in message and replace events
+        - `embeds` (list, optional): List of embedded content objects in the message
+        - `status` (dict, optional): Status information about the message processing state
+    """
 
     meta: Optional[dict] = None
-    """Metadata associated with the message."""
+    """Metadata associated with the message.
+
+    Dict Fields:
+        - `model_id` (str, optional): ID of the model that generated the message
+        - `model_name` (str, optional): Name of the model that generated the message
+        - `done` (bool, optional): Flag indicating if model processing is complete
+    """
 
 
 class ReactionForm(BaseModel):
@@ -97,7 +120,12 @@ class Reactions(BaseModel):
     """Name of the reaction."""
 
     users: List[dict]
-    """List of users who reacted (contains 'id' and 'name')."""
+    """List of users who reacted with this reaction.
+
+    Dict Fields:
+        - `id` (str, required): User ID of the user who reacted
+        - `name` (str, required): Name of the user who reacted
+    """
 
     count: int
     """Total count of this reaction."""
@@ -143,4 +171,3 @@ class MessageResponse(MessageReplyToResponse):
 
     reactions: List[Reactions]
     """List of reactions to the message."""
-

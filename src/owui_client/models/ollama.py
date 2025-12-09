@@ -1,8 +1,10 @@
 """
 Pydantic models for Ollama endpoints.
 """
+
 from typing import Optional, Union, List, Dict, Any
 from pydantic import BaseModel, ConfigDict, field_validator
+
 
 class OllamaConfigForm(BaseModel):
     """
@@ -25,20 +27,37 @@ class OllamaConfigForm(BaseModel):
     OLLAMA_API_CONFIGS: Dict[str, Any]
     """
     A dictionary mapping URL indices (as strings) or URLs to configuration objects.
-    
-    Each configuration object can contain keys like:
-    - `enable` (bool): Whether this specific URL is enabled.
-    - `key` (str): API key for authentication (if required).
-    - `prefix_id` (str): A prefix to prepend to model names from this source.
-    - `tags` (List[str]): Tags to apply to models from this source.
-    - `model_ids` (List[str]): Allowlist of model IDs to show.
-    - `connection_type` (str): Type of connection (e.g., "local").
+
+    Dict Fields:
+        - `enable` (bool, optional): Whether this specific URL is enabled.
+        - `key` (str, optional): API key for authentication (if required).
+        - `prefix_id` (str, optional): A prefix to prepend to model names from this source.
+        - `tags` (List[str], optional): Tags to apply to models from this source.
+        - `model_ids` (List[str], optional): Allowlist of model IDs to show.
+        - `connection_type` (str, optional): Type of connection (e.g., "local").
     """
+
+    access_control: Optional[dict] = None
+    """
+    Access control configuration for Ollama resources.
+
+    Dict Fields:
+        - `read` (dict, optional): Read access control configuration
+            - `group_ids` (List[str], optional): List of group IDs that have read access
+            - `user_ids` (List[str], optional): List of user IDs that have read access
+        - `write` (dict, optional): Write access control configuration
+            - `group_ids` (List[str], optional): List of group IDs that have write access
+            - `user_ids` (List[str], optional): List of user IDs that have write access
+
+    When `access_control` is `None`, resources are publicly accessible.
+    When `access_control` is provided, only specified users and groups have access.
+    """
+
 
 class ModelNameForm(BaseModel):
     """
     Form for specifying a model name.
-    
+
     Used in various operations like unloading, deleting, or showing model information.
     """
 
@@ -49,6 +68,7 @@ class ModelNameForm(BaseModel):
 
     # Support extra fields like 'name' which is sometimes used interchangeably
     model_config = ConfigDict(extra="allow")
+
 
 class PushModelForm(BaseModel):
     """
@@ -69,6 +89,7 @@ class PushModelForm(BaseModel):
     """
     Whether to stream the progress of the push operation.
     """
+
 
 class CreateModelForm(BaseModel):
     """
@@ -92,6 +113,7 @@ class CreateModelForm(BaseModel):
 
     model_config = ConfigDict(extra="allow")
 
+
 class CopyModelForm(BaseModel):
     """
     Form for copying a model.
@@ -106,6 +128,7 @@ class CopyModelForm(BaseModel):
     """
     The name of the destination model.
     """
+
 
 class GenerateEmbedForm(BaseModel):
     """
@@ -130,6 +153,9 @@ class GenerateEmbedForm(BaseModel):
     options: Optional[Dict[str, Any]] = None
     """
     Model options (e.g., temperature, context size).
+
+    Dict Fields:
+        See [Ollama Modelfile documentation](https://github.com/ollama/ollama/blob/main/docs/modelfile.md#valid-parameters-and-values) for valid parameters.
     """
 
     keep_alive: Optional[Union[int, str]] = None
@@ -138,6 +164,7 @@ class GenerateEmbedForm(BaseModel):
     """
 
     model_config = ConfigDict(extra="allow")
+
 
 class GenerateEmbeddingsForm(BaseModel):
     """
@@ -157,12 +184,16 @@ class GenerateEmbeddingsForm(BaseModel):
     options: Optional[Dict[str, Any]] = None
     """
     Model options.
+
+    Dict Fields:
+        See [Ollama Modelfile documentation](https://github.com/ollama/ollama/blob/main/docs/modelfile.md#valid-parameters-and-values) for valid parameters.
     """
 
     keep_alive: Optional[Union[int, str]] = None
     """
     How long to keep the model loaded.
     """
+
 
 class GenerateCompletionForm(BaseModel):
     """
@@ -192,11 +223,17 @@ class GenerateCompletionForm(BaseModel):
     format: Optional[Union[Dict[str, Any], str]] = None
     """
     The format of the response (e.g., "json").
+
+    Dict Fields:
+        If provided as a dictionary, it should be a JSON Schema to enforce a specific output structure.
     """
 
     options: Optional[Dict[str, Any]] = None
     """
     Model parameters like temperature, top_k, etc.
+
+    Dict Fields:
+        See [Ollama Modelfile documentation](https://github.com/ollama/ollama/blob/main/docs/modelfile.md#valid-parameters-and-values) for valid parameters.
     """
 
     system: Optional[str] = None
@@ -229,6 +266,7 @@ class GenerateCompletionForm(BaseModel):
     How long to keep the model loaded.
     """
 
+
 class ChatMessage(BaseModel):
     """
     A message in a chat conversation.
@@ -247,6 +285,13 @@ class ChatMessage(BaseModel):
     tool_calls: Optional[List[Dict[str, Any]]] = None
     """
     List of tool calls generated by the model.
+
+    Dict Fields:
+        - `index` (int, optional): The index of the tool call in the sequence
+        - `id` (str, optional): Unique identifier for the tool call
+        - `function` (dict, required): Function call details
+            - `name` (str, required): Name of the function/tool to call
+            - `arguments` (dict, required): JSON-serializable arguments for the function
     """
 
     images: Optional[List[str]] = None
@@ -267,6 +312,7 @@ class ChatMessage(BaseModel):
             pass
         return field_value
 
+
 class GenerateChatCompletionForm(BaseModel):
     """
     Form for generating a chat completion.
@@ -285,11 +331,17 @@ class GenerateChatCompletionForm(BaseModel):
     format: Optional[Union[Dict[str, Any], str]] = None
     """
     Response format (e.g., "json").
+
+    Dict Fields:
+        If provided as a dictionary, it should be a JSON Schema to enforce a specific output structure.
     """
 
     options: Optional[Dict[str, Any]] = None
     """
     Model parameters.
+
+    Dict Fields:
+        See [Ollama Modelfile documentation](https://github.com/ollama/ollama/blob/main/docs/modelfile.md#valid-parameters-and-values) for valid parameters.
     """
 
     template: Optional[str] = None
@@ -310,9 +362,17 @@ class GenerateChatCompletionForm(BaseModel):
     tools: Optional[List[Dict[str, Any]]] = None
     """
     List of tools available to the model.
+
+    Dict Fields:
+        - `type` (str, required): The type of tool, e.g. "function".
+        - `function` (dict, required): The function definition.
+            - `name` (str, required): The name of the function.
+            - `description` (str, optional): A description of the function.
+            - `parameters` (dict, required): A JSON schema defining the function parameters.
     """
 
     model_config = ConfigDict(extra="allow")
+
 
 class ConnectionVerificationForm(BaseModel):
     """
@@ -329,6 +389,7 @@ class ConnectionVerificationForm(BaseModel):
     The API key for authentication.
     """
 
+
 class UrlForm(BaseModel):
     """
     Form containing a URL, used for downloading models.
@@ -338,6 +399,7 @@ class UrlForm(BaseModel):
     """
     The URL to process (e.g., HuggingFace model URL).
     """
+
 
 class UploadBlobForm(BaseModel):
     """
