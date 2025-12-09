@@ -2806,6 +2806,16 @@ but this class exists in the backend <code>utils.py</code> router file.</p>
 
         <p>The list of messages in the chat.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>role</code> (str, required): The role of the message sender. Valid values are "user", "assistant", or "system".</li>
+<li><code>content</code> (str or list[dict], required): The content of the message. Can be a string or a list of content blocks with "type" and "text" fields.</li>
+<li><code>timestamp</code> (float, optional): UNIX timestamp when the message was created.</li>
+<li><code>model</code> (str, optional): Model identifier for assistant messages, only applicable when role is "assistant".</li>
+</ul>
+</details>
           
     </div>
 

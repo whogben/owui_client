@@ -3136,9 +3136,14 @@
     <div class="doc doc-contents ">
 
         <p>Additional data associated with the group.</p>
-<p>Known keys:
-- <code>config</code>: A dictionary containing configuration settings.
-    - <code>share</code> (bool): Whether the group is shared.</p>
+<p>Dict Fields:
+- <code>config</code> (dict, optional): Configuration settings for the group
+    - <code>share</code> (bool, optional): Whether the group is shared and visible to non-members. Defaults to True when not specified. Used in frontend UI to control group visibility and in backend filtering logic.</p>
+<p>This field stores group-specific configuration options that affect how the group behaves
+in the system. The <code>share</code> setting is particularly important as it determines if the group
+should be visible to users who are not members of the group, and is used in both frontend
+UI controls and backend filtering operations. The backend uses this field for SQL filtering
+operations (e.g., <code>Group.data["config"]["share"].as_boolean()</code> and <code>Group.data.op("-&gt;&gt;")("share")</code>).</p>
 
           
     </div>
@@ -3161,6 +3166,22 @@
 
         <p>Metadata associated with the group.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>export_timestamp</code> (int, optional): Timestamp when the group was exported (epoch seconds)</li>
+<li><code>exported_by</code> (str, optional): User ID of who performed the export</li>
+<li><code>version</code> (str, optional): Version identifier for the export format</li>
+<li><code>source_system</code> (str, optional): System or platform where the group originated</li>
+<li><code>custom_data</code> (dict, optional): Additional custom metadata specific to the group</li>
+</ul>
+</details>        <p>This field is used to store arbitrary metadata about the group, particularly
+useful for export/import operations and tracking group provenance. The backend
+database schema defines this as a JSON field that can store any key-value pairs,
+but the specific keys documented here represent the primary usage patterns found
+in the codebase. Additional keys may exist in the backend implementation.</p>
+
           
     </div>
 
@@ -3181,13 +3202,73 @@
     <div class="doc doc-contents ">
 
         <p>Permissions settings for the group.</p>
-<p>This dictionary follows the structure of <code>USER_PERMISSIONS</code> in the backend configuration.
-It contains nested dictionaries for different categories:
-- <code>workspace</code>: access to models, knowledge, prompts, tools, etc.
-- <code>sharing</code>: permissions to share different resources.
-- <code>chat</code>: permissions for chat features (delete, edit, upload, etc.).
-- <code>features</code>: access to general features like api_keys, notes, folders, web_search, etc.</p>
-<p>Values are typically booleans indicating if the permission is granted.</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>workspace</code> (dict, optional): Workspace access permissions<ul>
+<li><code>models</code> (bool, optional): Access to models</li>
+<li><code>knowledge</code> (bool, optional): Access to knowledge</li>
+<li><code>prompts</code> (bool, optional): Access to prompts</li>
+<li><code>tools</code> (bool, optional): Access to tools</li>
+<li><code>models_import</code> (bool, optional): Permission to import models</li>
+<li><code>models_export</code> (bool, optional): Permission to export models</li>
+<li><code>prompts_import</code> (bool, optional): Permission to import prompts</li>
+<li><code>prompts_export</code> (bool, optional): Permission to export prompts</li>
+<li><code>tools_import</code> (bool, optional): Permission to import tools</li>
+<li><code>tools_export</code> (bool, optional): Permission to export tools</li>
+</ul>
+</li>
+<li><code>sharing</code> (dict, optional): Sharing permissions<ul>
+<li><code>models</code> (bool, optional): Permission to share models</li>
+<li><code>public_models</code> (bool, optional): Permission to share models publicly</li>
+<li><code>knowledge</code> (bool, optional): Permission to share knowledge</li>
+<li><code>public_knowledge</code> (bool, optional): Permission to share knowledge publicly</li>
+<li><code>prompts</code> (bool, optional): Permission to share prompts</li>
+<li><code>public_prompts</code> (bool, optional): Permission to share prompts publicly</li>
+<li><code>tools</code> (bool, optional): Permission to share tools</li>
+<li><code>public_tools</code> (bool, optional): Permission to share tools publicly</li>
+<li><code>notes</code> (bool, optional): Permission to share notes</li>
+<li><code>public_notes</code> (bool, optional): Permission to share notes publicly</li>
+</ul>
+</li>
+<li><code>chat</code> (dict, optional): Chat feature permissions<ul>
+<li><code>controls</code> (bool, optional): Access to chat controls</li>
+<li><code>valves</code> (bool, optional): Access to chat valves</li>
+<li><code>system_prompt</code> (bool, optional): Access to system prompt</li>
+<li><code>params</code> (bool, optional): Access to chat parameters</li>
+<li><code>file_upload</code> (bool, optional): Permission to upload files</li>
+<li><code>delete</code> (bool, optional): Permission to delete chats</li>
+<li><code>delete_message</code> (bool, optional): Permission to delete messages</li>
+<li><code>continue_response</code> (bool, optional): Permission to continue responses</li>
+<li><code>regenerate_response</code> (bool, optional): Permission to regenerate responses</li>
+<li><code>rate_response</code> (bool, optional): Permission to rate responses</li>
+<li><code>edit</code> (bool, optional): Permission to edit chats</li>
+<li><code>share</code> (bool, optional): Permission to share chats</li>
+<li><code>export</code> (bool, optional): Permission to export chats</li>
+<li><code>stt</code> (bool, optional): Permission to use speech-to-text</li>
+<li><code>tts</code> (bool, optional): Permission to use text-to-speech</li>
+<li><code>call</code> (bool, optional): Permission to make calls</li>
+<li><code>multiple_models</code> (bool, optional): Permission to use multiple models</li>
+<li><code>temporary</code> (bool, optional): Permission to use temporary chats</li>
+<li><code>temporary_enforced</code> (bool, optional): Enforced temporary chat usage</li>
+</ul>
+</li>
+<li><code>features</code> (dict, optional): General feature permissions<ul>
+<li><code>api_keys</code> (bool, optional): Access to API keys</li>
+<li><code>notes</code> (bool, optional): Access to notes</li>
+<li><code>folders</code> (bool, optional): Access to folders</li>
+<li><code>channels</code> (bool, optional): Access to channels</li>
+<li><code>direct_tool_servers</code> (bool, optional): Access to direct tool servers</li>
+<li><code>web_search</code> (bool, optional): Access to web search</li>
+<li><code>image_generation</code> (bool, optional): Access to image generation</li>
+<li><code>code_interpreter</code> (bool, optional): Access to code interpreter</li>
+</ul>
+</li>
+</ul>
+</details>        <p>This dictionary follows the structure of <code>USER_PERMISSIONS</code> in the backend configuration.
+Values are typically booleans indicating if the permission is granted.</p>
 
           
     </div>
@@ -3265,6 +3346,9 @@ It contains nested dictionaries for different categories:
 
 
         <p>Response model for group details, including member count.</p>
+<p>This model extends <code>GroupModel</code> to include additional response-specific information
+such as the number of members in the group. The inherited data field contains
+group configuration that affects how the group is displayed and filtered.</p>
 
           
 
@@ -3435,6 +3519,11 @@ It contains nested dictionaries for different categories:
 
 
         <p>Response model for exporting a group, including user IDs.</p>
+<p>This model is used when exporting complete group data for backup and migration purposes.
+It includes all standard group information plus the list of member user IDs.</p>
+<p>The permissions attribute in this context represents the complete set of permissions
+that will be exported with the group, preserving the group's access control configuration
+for restoration in another system or instance.</p>
 
           
 
@@ -3686,7 +3775,73 @@ It contains nested dictionaries for different categories:
     <div class="doc doc-contents ">
 
         <p>Permissions settings for the group.</p>
-<p>See <code>GroupModel.permissions</code> for structure details.</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>workspace</code> (dict, optional): Workspace access permissions<ul>
+<li><code>models</code> (bool, optional): Access to models</li>
+<li><code>knowledge</code> (bool, optional): Access to knowledge</li>
+<li><code>prompts</code> (bool, optional): Access to prompts</li>
+<li><code>tools</code> (bool, optional): Access to tools</li>
+<li><code>models_import</code> (bool, optional): Permission to import models</li>
+<li><code>models_export</code> (bool, optional): Permission to export models</li>
+<li><code>prompts_import</code> (bool, optional): Permission to import prompts</li>
+<li><code>prompts_export</code> (bool, optional): Permission to export prompts</li>
+<li><code>tools_import</code> (bool, optional): Permission to import tools</li>
+<li><code>tools_export</code> (bool, optional): Permission to export tools</li>
+</ul>
+</li>
+<li><code>sharing</code> (dict, optional): Sharing permissions<ul>
+<li><code>models</code> (bool, optional): Permission to share models</li>
+<li><code>public_models</code> (bool, optional): Permission to share models publicly</li>
+<li><code>knowledge</code> (bool, optional): Permission to share knowledge</li>
+<li><code>public_knowledge</code> (bool, optional): Permission to share knowledge publicly</li>
+<li><code>prompts</code> (bool, optional): Permission to share prompts</li>
+<li><code>public_prompts</code> (bool, optional): Permission to share prompts publicly</li>
+<li><code>tools</code> (bool, optional): Permission to share tools</li>
+<li><code>public_tools</code> (bool, optional): Permission to share tools publicly</li>
+<li><code>notes</code> (bool, optional): Permission to share notes</li>
+<li><code>public_notes</code> (bool, optional): Permission to share notes publicly</li>
+</ul>
+</li>
+<li><code>chat</code> (dict, optional): Chat feature permissions<ul>
+<li><code>controls</code> (bool, optional): Access to chat controls</li>
+<li><code>valves</code> (bool, optional): Access to chat valves</li>
+<li><code>system_prompt</code> (bool, optional): Access to system prompt</li>
+<li><code>params</code> (bool, optional): Access to chat parameters</li>
+<li><code>file_upload</code> (bool, optional): Permission to upload files</li>
+<li><code>delete</code> (bool, optional): Permission to delete chats</li>
+<li><code>delete_message</code> (bool, optional): Permission to delete messages</li>
+<li><code>continue_response</code> (bool, optional): Permission to continue responses</li>
+<li><code>regenerate_response</code> (bool, optional): Permission to regenerate responses</li>
+<li><code>rate_response</code> (bool, optional): Permission to rate responses</li>
+<li><code>edit</code> (bool, optional): Permission to edit chats</li>
+<li><code>share</code> (bool, optional): Permission to share chats</li>
+<li><code>export</code> (bool, optional): Permission to export chats</li>
+<li><code>stt</code> (bool, optional): Permission to use speech-to-text</li>
+<li><code>tts</code> (bool, optional): Permission to use text-to-speech</li>
+<li><code>call</code> (bool, optional): Permission to make calls</li>
+<li><code>multiple_models</code> (bool, optional): Permission to use multiple models</li>
+<li><code>temporary</code> (bool, optional): Permission to use temporary chats</li>
+<li><code>temporary_enforced</code> (bool, optional): Enforced temporary chat usage</li>
+</ul>
+</li>
+<li><code>features</code> (dict, optional): General feature permissions<ul>
+<li><code>api_keys</code> (bool, optional): Access to API keys</li>
+<li><code>notes</code> (bool, optional): Access to notes</li>
+<li><code>folders</code> (bool, optional): Access to folders</li>
+<li><code>channels</code> (bool, optional): Access to channels</li>
+<li><code>direct_tool_servers</code> (bool, optional): Access to direct tool servers</li>
+<li><code>web_search</code> (bool, optional): Access to web search</li>
+<li><code>image_generation</code> (bool, optional): Access to image generation</li>
+<li><code>code_interpreter</code> (bool, optional): Access to code interpreter</li>
+</ul>
+</li>
+</ul>
+</details>        <p>This dictionary follows the structure of <code>USER_PERMISSIONS</code> in the backend configuration.
+Values are typically booleans indicating if the permission is granted.</p>
 
           
     </div>
@@ -3708,7 +3863,18 @@ It contains nested dictionaries for different categories:
     <div class="doc doc-contents ">
 
         <p>Additional data for the group.</p>
-<p>See <code>GroupModel.data</code> for structure details.</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>config</code> (dict, optional): Configuration settings for the group<ul>
+<li><code>share</code> (bool, optional): Whether the group is shared and visible to non-members</li>
+</ul>
+</li>
+</ul>
+</details>        <p>This field is used to store group-specific configuration options.
+The <code>share</code> setting determines if the group should be visible to users who are not members.</p>
 
           
     </div>

@@ -3238,6 +3238,21 @@
 
         <p>Metadata associated with the knowledge base.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>legacy</code> (bool, optional): Whether this is a legacy knowledge base migrated from older versions</li>
+<li><code>document</code> (bool, optional): Whether this knowledge base represents a document-type structure</li>
+<li><code>tags</code> (list[str], optional): List of tags associated with the knowledge base</li>
+<li><code>id</code> (str, optional): Knowledge base ID</li>
+<li><code>name</code> (str, optional): Knowledge base name</li>
+<li><code>collection_name</code> (str, optional): Collection name</li>
+<li><code>type</code> (str, optional): Type of knowledge (e.g., 'file', 'collection')</li>
+<li><code>collection_names</code> (list[str], optional): List of collection names for collection-type knowledge</li>
+</ul>
+</details>        <p>Additional keys may exist. Complete structure not found in reference code.</p>
+
           
     </div>
 
@@ -3259,7 +3274,8 @@
 
         <p>Access control settings.</p>
 <ul>
-<li><code>None</code>: Public access, available to all users with the "user" role.</li>
+<li><code>None</code>: Public access, available to all users with the "user" role.
+  Requires "sharing.public_knowledge" permission for non-admin users to set.</li>
 <li><code>{}</code>: Private access, restricted exclusively to the owner.</li>
 <li>Custom permissions: Specific access control for reading and writing.
   Can specify group or user-level restrictions.
@@ -3277,6 +3293,18 @@
 </span></code></pre></div></li>
 </ul>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>read</code> (dict, optional): Read access permissions</li>
+<li><code>write</code> (dict, optional): Write access permissions</li>
+<li><code>read.group_ids</code> (list[str], optional): List of group IDs with read access</li>
+<li><code>read.user_ids</code> (list[str], optional): List of user IDs with read access</li>
+<li><code>write.group_ids</code> (list[str], optional): List of group IDs with write access</li>
+<li><code>write.user_ids</code> (list[str], optional): List of user IDs with write access</li>
+</ul>
+</details>
           
     </div>
 
@@ -3353,6 +3381,10 @@
 
 
         <p>Represents a knowledge base with user information.</p>
+<p>Inherits access_control from <code>KnowledgeModel</code>. Access is determined by:
+- Direct user ownership (user_id matches)
+- Access control permissions (read/write for groups and users)
+- Admin users have full access regardless of access_control settings</p>
 
           
 
@@ -3454,6 +3486,8 @@
 
 
         <p>Represents a knowledge base response, optionally including files.</p>
+<p>Inherits meta from <code>KnowledgeModel</code>. See <code>KnowledgeModel.meta</code> for complete documentation
+of the metadata structure and valid fields.</p>
 
           
 
@@ -3602,6 +3636,8 @@
 
 
         <p>Represents a knowledge base response including user information and files.</p>
+<p>Inherits access_control from <code>KnowledgeModel</code>. See <code>KnowledgeModel.access_control</code>
+for complete documentation of the access control structure and permissions.</p>
 
           
 
@@ -3870,6 +3906,18 @@
 </span></code></pre></div></li>
 </ul>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>read</code> (dict, optional): Read access permissions</li>
+<li><code>write</code> (dict, optional): Write access permissions</li>
+<li><code>read.group_ids</code> (list[str], optional): List of group IDs with read access</li>
+<li><code>read.user_ids</code> (list[str], optional): List of user IDs with read access</li>
+<li><code>write.group_ids</code> (list[str], optional): List of group IDs with write access</li>
+<li><code>write.user_ids</code> (list[str], optional): List of user IDs with write access</li>
+</ul>
+</details>
           
     </div>
 
@@ -3904,6 +3952,7 @@
 
 
         <p>Represents a knowledge base response with full file metadata.</p>
+<p>Inherits access_control from <code>KnowledgeModel</code>. Access control determines who can read and write to this knowledge base.</p>
 
           
 
@@ -4012,7 +4061,7 @@
 
     <div class="doc doc-contents ">
 
-        <p>List of files with metadata associated with the knowledge base.</p>
+        <p>List of files associated with the knowledge base.</p>
 
           
     </div>
@@ -4033,9 +4082,16 @@
 
     <div class="doc doc-contents ">
 
-        <p>Warnings returned during processing, e.g., if some files failed to process in a batch operation.
-Structure: <code>{"message": str, "errors": list[str]}</code>.</p>
+        <p>Warnings returned during processing, e.g., if some files failed to process in a batch operation.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>message</code> (str, required): Human-readable warning message describing the issue</li>
+<li><code>errors</code> (list[str], required): List of specific error details for failed operations</li>
+</ul>
+</details>
           
     </div>
 

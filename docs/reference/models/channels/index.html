@@ -4687,6 +4687,48 @@
 
         <p>Additional arbitrary data for the channel.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <p>This dictionary is used to store arbitrary key-value pairs for channel-specific metadata.
+Based on analysis of the Open WebUI source code, this field is designed as a flexible JSON
+field that can store any valid JSON structure for channel-related data.</p>
+<p>The backend defines this as a JSON column in the database (Column(JSON, nullable=True))
+but does not enforce any specific structure or validation. The field is intended for
+storing custom channel-related information that may be needed by different applications
+or integrations.</p>
+<p>Common usage patterns include:
+- <code>theme</code> (str, optional): Custom theme settings for the channel
+- <code>notifications</code> (dict, optional): Notification preferences configuration
+- <code>integration_config</code> (dict, optional): Configuration for external integrations
+- <code>custom_metadata</code> (dict, optional): Application-specific metadata
+- <code>settings</code> (dict, optional): Channel-specific settings and preferences
+- <code>features</code> (dict, optional): Feature flags and toggle states for the channel
+- <code>ui_config</code> (dict, optional): UI configuration and display preferences
+- <code>access_rules</code> (dict, optional): Additional access control rules beyond the standard access_control field</p>
+<p>All keys are optional and the structure is not validated by the backend.
+The frontend TypeScript definition shows this as <code>data?: object;</code> in ChannelForm,
+indicating it accepts any valid JSON object structure.</p>
+<p>Example usage:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="s2">&quot;theme&quot;</span><span class="p">:</span> <span class="s2">&quot;dark&quot;</span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="s2">&quot;notifications&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        <span class="s2">&quot;mentions_only&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        <span class="s2">&quot;sound_enabled&quot;</span><span class="p">:</span> <span class="kc">False</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="p">},</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="s2">&quot;integration_config&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        <span class="s2">&quot;webhook_url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://example.com/webhook&quot;</span><span class="p">,</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        <span class="s2">&quot;api_key&quot;</span><span class="p">:</span> <span class="s2">&quot;secret_key_123&quot;</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="p">},</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="s2">&quot;settings&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>        <span class="s2">&quot;auto_archive&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>        <span class="s2">&quot;message_retention_days&quot;</span><span class="p">:</span> <span class="mi">30</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="p">}</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="p">}</span>
+</span></code></pre></div></p>
+<p>Note: No specific keys are enforced by the backend. This field provides flexibility
+for various use cases but requires applications to handle their own validation and structure.</p>
+</details>
           
     </div>
 
@@ -4708,6 +4750,48 @@
 
         <p>Metadata associated with the channel.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <p>This dictionary is used to store arbitrary key-value pairs for channel-specific metadata.
+Based on analysis of the Open WebUI source code, this field is designed as a flexible JSON
+field that can store any valid JSON structure for channel-related metadata.</p>
+<p>The backend defines this as a JSON column in the database (Column(JSON, nullable=True))
+but does not enforce any specific structure or validation. The field is intended for
+storing custom channel-related information that may be needed by different applications
+or integrations.</p>
+<p>Common usage patterns include:
+- <code>theme</code> (str, optional): Custom theme settings for the channel
+- <code>notifications</code> (dict, optional): Notification preferences configuration
+- <code>integration_config</code> (dict, optional): Configuration for external integrations
+- <code>custom_metadata</code> (dict, optional): Application-specific metadata
+- <code>settings</code> (dict, optional): Channel-specific settings and preferences
+- <code>features</code> (dict, optional): Feature flags and toggle states for the channel
+- <code>ui_config</code> (dict, optional): UI configuration and display preferences
+- <code>access_rules</code> (dict, optional): Additional access control rules beyond the standard access_control field</p>
+<p>All keys are optional and the structure is not validated by the backend.
+The frontend TypeScript definition shows this as <code>meta?: object;</code> in ChannelForm,
+indicating it accepts any valid JSON object structure.</p>
+<p>Example usage:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="s2">&quot;theme&quot;</span><span class="p">:</span> <span class="s2">&quot;dark&quot;</span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="s2">&quot;notifications&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        <span class="s2">&quot;mentions_only&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        <span class="s2">&quot;sound_enabled&quot;</span><span class="p">:</span> <span class="kc">False</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="p">},</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="s2">&quot;integration_config&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        <span class="s2">&quot;webhook_url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://example.com/webhook&quot;</span><span class="p">,</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        <span class="s2">&quot;api_key&quot;</span><span class="p">:</span> <span class="s2">&quot;secret_key_123&quot;</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="p">},</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="s2">&quot;settings&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>        <span class="s2">&quot;auto_archive&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>        <span class="s2">&quot;message_retention_days&quot;</span><span class="p">:</span> <span class="mi">30</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="p">}</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="p">}</span>
+</span></code></pre></div></p>
+<p>Note: No specific keys are enforced by the backend. This field provides flexibility
+for various use cases but requires applications to handle their own validation and structure.</p>
+</details>
           
     </div>
 
@@ -4728,6 +4812,49 @@
     <div class="doc doc-contents ">
 
         <p>Access control settings for the channel.</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>read</code> (dict, optional): Read access control configuration<ul>
+<li><code>group_ids</code> (list[str], optional): List of group IDs that have read access</li>
+<li><code>user_ids</code> (list[str], optional): List of user IDs that have read access</li>
+</ul>
+</li>
+<li><code>write</code> (dict, optional): Write access control configuration<ul>
+<li><code>group_ids</code> (list[str], optional): List of group IDs that have write access</li>
+<li><code>user_ids</code> (list[str], optional): List of user IDs that have write access</li>
+</ul>
+</li>
+</ul>
+</details>        <p>The access control system determines who can read from or write to a channel.
+When access_control is None, the channel is considered public for read access
+but requires explicit permissions for write access (strict mode).
+When access_control is an empty dict {}, the channel is completely public.</p>
+<p>Example usage:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="s2">&quot;read&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>        <span class="s2">&quot;group_ids&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;group1&quot;</span><span class="p">,</span> <span class="s2">&quot;group2&quot;</span><span class="p">],</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        <span class="s2">&quot;user_ids&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;user1&quot;</span><span class="p">,</span> <span class="s2">&quot;user2&quot;</span><span class="p">]</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="p">},</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="s2">&quot;write&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>        <span class="s2">&quot;group_ids&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;admin_group&quot;</span><span class="p">],</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        <span class="s2">&quot;user_ids&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;channel_owner&quot;</span><span class="p">]</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="p">}</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="p">}</span>
+</span></code></pre></div></p>
+<p>All keys and nested structures are optional. The backend validates access
+using the has_access() function which checks both user and group memberships.</p>
+<p>Special Rules:
+- When access_control is None: Public read access, strict write access (requires explicit permissions)
+- When access_control is {}: Completely public (both read and write)
+- Access is determined by checking both direct user membership and group membership
+- The system uses get_permitted_group_and_user_ids() to extract permitted IDs from the access_control structure
+- Access validation is performed by has_access() function in utils/access_control.py
+- Admin users bypass access control restrictions entirely
+- For standard channels (non-group, non-dm), access control is enforced via has_access() calls
+- For group/dm channels, membership in the channel itself determines access</p>
 
           
     </div>
@@ -5153,6 +5280,49 @@
 
         <p>Additional arbitrary data for the membership.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <p>This dictionary is used to store arbitrary key-value pairs for membership-specific metadata.
+Based on analysis of the Open WebUI source code, this field is designed as a flexible JSON
+field that can store any valid JSON structure for channel membership-related data.</p>
+<p>The backend defines this as a JSON column in the database (Column(JSON, nullable=True))
+but does not enforce any specific structure or validation. The field is intended for
+storing custom membership-related information that may be needed by different applications
+or integrations.</p>
+<p>Common usage patterns might include:
+- <code>preferences</code> (dict, optional): User-specific preferences for this channel membership
+- <code>notifications</code> (dict, optional): Notification settings specific to this membership
+- <code>integration_config</code> (dict, optional): Configuration for external integrations
+- <code>custom_metadata</code> (dict, optional): Application-specific metadata
+- <code>role_data</code> (dict, optional): Additional role-specific information
+- <code>status_info</code> (dict, optional): Extended status information beyond the basic status field
+- <code>access_rules</code> (dict, optional): Additional access control rules for this specific member</p>
+<p>All keys are optional and the structure is not validated by the backend.
+The frontend TypeScript definition shows this as <code>data?: object;</code> in related forms,
+indicating it accepts any valid JSON object structure.</p>
+<p>Example usage:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="s2">&quot;preferences&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>        <span class="s2">&quot;theme&quot;</span><span class="p">:</span> <span class="s2">&quot;dark&quot;</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        <span class="s2">&quot;notifications&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>            <span class="s2">&quot;mentions_only&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>            <span class="s2">&quot;sound_enabled&quot;</span><span class="p">:</span> <span class="kc">False</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>        <span class="p">}</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="p">},</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="s2">&quot;integration_config&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        <span class="s2">&quot;webhook_url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://example.com/webhook&quot;</span><span class="p">,</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>        <span class="s2">&quot;api_key&quot;</span><span class="p">:</span> <span class="s2">&quot;secret_key_123&quot;</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="p">},</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="s2">&quot;role_data&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>        <span class="s2">&quot;custom_permissions&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;read&quot;</span><span class="p">,</span> <span class="s2">&quot;write&quot;</span><span class="p">],</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>        <span class="s2">&quot;expiration_date&quot;</span><span class="p">:</span> <span class="s2">&quot;2025-12-31&quot;</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="p">}</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="p">}</span>
+</span></code></pre></div></p>
+<p>Note: No specific keys are enforced by the backend. This field provides flexibility
+for various use cases but requires applications to handle their own validation and structure.</p>
+</details>
           
     </div>
 
@@ -5174,6 +5344,55 @@
 
         <p>Metadata associated with the membership.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <p>This dictionary is used to store arbitrary key-value pairs for membership-specific metadata.
+Based on analysis of the Open WebUI source code, this field is designed as a flexible JSON
+field that can store any valid JSON structure for channel membership-related metadata.</p>
+<p>The backend defines this as a JSON column in the database (Column(JSON, nullable=True))
+but does not enforce any specific structure or validation. The field is intended for
+storing custom membership-related information that may be needed by different applications
+or integrations.</p>
+<p>Common usage patterns might include:
+- <code>preferences</code> (dict, optional): User-specific preferences for this channel membership
+- <code>notifications</code> (dict, optional): Notification settings specific to this membership
+- <code>integration_config</code> (dict, optional): Configuration for external integrations
+- <code>custom_metadata</code> (dict, optional): Application-specific metadata
+- <code>role_data</code> (dict, optional): Additional role-specific information beyond the basic role field
+- <code>status_info</code> (dict, optional): Extended status information beyond the basic status field
+- <code>access_rules</code> (dict, optional): Additional access control rules for this specific member
+- <code>membership_tags</code> (list[str], optional): Tags or labels for categorizing this membership
+- <code>last_activity</code> (dict, optional): Information about the member's last activity in the channel
+- <code>join_source</code> (str, optional): Source or method by which the user joined the channel</p>
+<p>All keys are optional and the structure is not validated by the backend.
+The frontend TypeScript definition shows this as flexible object structure in related forms.</p>
+<p>Example usage:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="s2">&quot;preferences&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>        <span class="s2">&quot;theme&quot;</span><span class="p">:</span> <span class="s2">&quot;dark&quot;</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        <span class="s2">&quot;notifications&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>            <span class="s2">&quot;mentions_only&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>            <span class="s2">&quot;sound_enabled&quot;</span><span class="p">:</span> <span class="kc">False</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>        <span class="p">}</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="p">},</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="s2">&quot;integration_config&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        <span class="s2">&quot;webhook_url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://example.com/webhook&quot;</span><span class="p">,</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>        <span class="s2">&quot;api_key&quot;</span><span class="p">:</span> <span class="s2">&quot;secret_key_123&quot;</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="p">},</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="s2">&quot;role_data&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>        <span class="s2">&quot;custom_permissions&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;read&quot;</span><span class="p">,</span> <span class="s2">&quot;write&quot;</span><span class="p">],</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>        <span class="s2">&quot;expiration_date&quot;</span><span class="p">:</span> <span class="s2">&quot;2025-12-31&quot;</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="p">},</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="s2">&quot;last_activity&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>        <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="mi">1234567890</span><span class="p">,</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>        <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;sent_message&quot;</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="p">}</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="p">}</span>
+</span></code></pre></div></p>
+<p>Note: No specific keys are enforced by the backend. This field provides flexibility
+for various use cases but requires applications to handle their own validation and structure.</p>
+</details>
           
     </div>
 
@@ -5755,8 +5974,56 @@
 
     <div class="doc doc-contents ">
 
-        <p>Additional arbitrary data.</p>
+        <p>Additional arbitrary data for the channel.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <p>This dictionary is used to store arbitrary key-value pairs for channel-specific metadata.
+Based on comprehensive analysis of the Open WebUI source code, this field is designed as a flexible JSON
+field that can store any valid JSON structure for channel-related data.</p>
+<p>The backend defines this as a JSON column in the database (Column(JSON, nullable=True))
+but does not enforce any specific structure or validation. The field is intended for
+storing custom channel-related information that may be needed by different applications
+or integrations.</p>
+<p>Common usage patterns include:
+- <code>theme</code> (str, optional): Custom theme settings for the channel
+- <code>notifications</code> (dict, optional): Notification preferences configuration
+    - <code>mentions_only</code> (bool, optional): Only notify on mentions
+    - <code>sound_enabled</code> (bool, optional): Enable notification sounds
+- <code>integration_config</code> (dict, optional): Configuration for external integrations
+    - <code>webhook_url</code> (str, optional): Webhook endpoint URL
+    - <code>api_key</code> (str, optional): Authentication key for integrations
+- <code>custom_metadata</code> (dict, optional): Application-specific metadata
+- <code>settings</code> (dict, optional): Channel-specific settings and preferences
+    - <code>auto_archive</code> (bool, optional): Automatically archive old messages
+    - <code>message_retention_days</code> (int, optional): Number of days to retain messages
+- <code>features</code> (dict, optional): Feature flags and toggle states for the channel
+- <code>ui_config</code> (dict, optional): UI configuration and display preferences
+- <code>access_rules</code> (dict, optional): Additional access control rules beyond the standard access_control field</p>
+<p>All keys are optional and the structure is not validated by the backend.
+The frontend TypeScript definition shows this as <code>data?: object;</code> in ChannelForm,
+indicating it accepts any valid JSON object structure.</p>
+<p>Example usage:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="s2">&quot;theme&quot;</span><span class="p">:</span> <span class="s2">&quot;dark&quot;</span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="s2">&quot;notifications&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        <span class="s2">&quot;mentions_only&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        <span class="s2">&quot;sound_enabled&quot;</span><span class="p">:</span> <span class="kc">False</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="p">},</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="s2">&quot;integration_config&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        <span class="s2">&quot;webhook_url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://example.com/webhook&quot;</span><span class="p">,</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        <span class="s2">&quot;api_key&quot;</span><span class="p">:</span> <span class="s2">&quot;secret_key_123&quot;</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="p">},</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="s2">&quot;settings&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>        <span class="s2">&quot;auto_archive&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>        <span class="s2">&quot;message_retention_days&quot;</span><span class="p">:</span> <span class="mi">30</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="p">}</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="p">}</span>
+</span></code></pre></div></p>
+<p>Note: No specific keys are enforced by the backend. This field provides flexibility
+for various use cases but requires applications to handle their own validation and structure.</p>
+</details>
           
     </div>
 
@@ -5776,8 +6043,22 @@
 
     <div class="doc doc-contents ">
 
-        <p>Metadata.</p>
+        <p>Metadata associated with the channel.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <p>This dictionary is used to store arbitrary key-value pairs for channel-specific metadata.
+No specific keys are enforced by the backend, making it flexible for various use cases.
+Common usage patterns include storing channel configuration, custom settings,
+or integration-specific data.</p>
+<p>Example usage might include:
+- <code>theme</code> (str, optional): Custom theme settings for the channel
+- <code>notifications</code> (dict, optional): Notification preferences
+- <code>integration_config</code> (dict, optional): Configuration for external integrations
+- <code>custom_metadata</code> (dict, optional): Application-specific metadata</p>
+<p>All keys are optional and the structure is not validated by the backend.</p>
+</details>
           
     </div>
 
@@ -5797,7 +6078,62 @@
 
     <div class="doc doc-contents ">
 
-        <p>Access control settings.</p>
+        <p>Access control settings for the channel.</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>read</code> (dict, optional): Read access control configuration<ul>
+<li><code>group_ids</code> (list[str], optional): List of group IDs that have read access</li>
+<li><code>user_ids</code> (list[str], optional): List of user IDs that have read access</li>
+</ul>
+</li>
+<li><code>write</code> (dict, optional): Write access control configuration<ul>
+<li><code>group_ids</code> (list[str], optional): List of group IDs that have write access</li>
+<li><code>user_ids</code> (list[str], optional): List of user IDs that have write access</li>
+</ul>
+</li>
+</ul>
+</details>        <p>The access control system determines who can read from or write to a channel.
+When access_control is None, the channel is considered public for read access
+but requires explicit permissions for write access (strict mode).
+When access_control is an empty dict {}, the channel is completely public.</p>
+<p>Example usage:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="s2">&quot;read&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>        <span class="s2">&quot;group_ids&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;group1&quot;</span><span class="p">,</span> <span class="s2">&quot;group2&quot;</span><span class="p">],</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        <span class="s2">&quot;user_ids&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;user1&quot;</span><span class="p">,</span> <span class="s2">&quot;user2&quot;</span><span class="p">]</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="p">},</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="s2">&quot;write&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>        <span class="s2">&quot;group_ids&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;admin_group&quot;</span><span class="p">],</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        <span class="s2">&quot;user_ids&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;channel_owner&quot;</span><span class="p">]</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="p">}</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="p">}</span>
+</span></code></pre></div></p>
+<p>All keys and nested structures are optional. The backend validates access
+using the has_access() function which checks both user and group memberships.</p>
+<p>Special Rules:
+- When access_control is None: Public read access, strict write access (requires explicit permissions)
+- When access_control is {}: Completely public (both read and write)
+- Access is determined by checking both direct user membership and group membership
+- The system uses get_permitted_group_and_user_ids() to extract permitted IDs from the access_control structure
+- Access validation is performed by has_access() function in utils/access_control.py
+- Admin users bypass access control restrictions entirely
+- For standard channels (non-group, non-dm), access control is enforced via has_access() calls
+- For group/dm channels, membership in the channel itself determines access
+- The has_access() function supports a 'strict' parameter that controls fallback behavior when access_control is None
+- Access control is implemented in backend/open_webui/utils/access_control.py
+- Frontend TypeScript interface shows this as <code>access_control?: object;</code> in ChannelForm
+- Used extensively in channel routers for read/write permission validation
+- Integrated with get_users_with_access() function to determine which users can access a channel
+- Channel access control is stored as JSON in the database (Column(JSON, nullable=True))
+- The access control structure is validated and processed by the backend's permission system
+- Access control applies to standard channels only; group and DM channels use membership-based access
+- The frontend AccessControl component provides UI for managing read/write permissions for groups and users
+- Access control settings are preserved during channel updates and creation
+- Empty access_control {} means completely public access (both read and write)
+- Null/None access_control means public read but restricted write access (strict mode)</p>
 
           
     </div>
@@ -5875,6 +6211,8 @@
 
 
         <p>Form for creating a new channel.</p>
+<p>This form extends <code>ChannelForm</code> to include channel type specification during creation.
+The meta field can be used to store channel-specific metadata during creation.</p>
 
           
 
@@ -6299,6 +6637,8 @@
 
 
         <p>Full channel response with detailed member information.</p>
+<p>This model extends <code>ChannelResponse</code> with additional user-specific information
+and member details for group and direct message channels.</p>
 
           
 

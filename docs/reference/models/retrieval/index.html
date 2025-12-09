@@ -9551,6 +9551,16 @@
 
         <p>Parameters for Docling.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>image_export_mode</code> (str, optional): How images should be exported. Defaults to "placeholder" if not specified.</li>
+<li>Additional VLM (Vision Language Model) pipeline parameters may be supported by the Docling API.</li>
+</ul>
+</details>        <p>This dictionary is passed directly to the Docling API's /v1/convert/file endpoint.
+See the Docling API documentation for additional supported parameters.</p>
+
           
     </div>
 
@@ -9739,6 +9749,19 @@
     <div class="doc doc-contents ">
 
         <p>Parameters for MinerU.</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>enable_ocr</code> (bool, optional): Enable OCR processing. Defaults to False.</li>
+<li><code>enable_formula</code> (bool, optional): Enable formula processing. Defaults to True.</li>
+<li><code>enable_table</code> (bool, optional): Enable table processing. Defaults to True.</li>
+<li><code>language</code> (str, optional): Language code for processing. Defaults to "en".</li>
+<li><code>model_version</code> (str, optional): Model version to use. Defaults to "pipeline".</li>
+<li><code>page_ranges</code> (str, optional): Page ranges to process. Defaults to empty string.</li>
+</ul>
+</details>        <p>This dictionary is passed directly to the MinerU API for document parsing configuration.</p>
 
           
     </div>

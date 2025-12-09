@@ -3488,6 +3488,18 @@
 
         <p>Additional data associated with the file, such as processing status or extracted content.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>status</code> (str, optional): Processing status of the file - 'pending', 'completed', or 'failed'</li>
+<li><code>error</code> (str, optional): Error message if file processing failed</li>
+<li><code>content</code> (str, optional): Extracted text content from the file</li>
+</ul>
+</details>        <p>The data dictionary stores file processing metadata and content. During file upload, the status starts as 'pending',
+changes to 'completed' when processing succeeds, or 'failed' with an error message when processing fails.
+The content field contains the extracted text from the file after successful processing.</p>
+
           
     </div>
 
@@ -3735,6 +3747,16 @@
 
         <p>File metadata dictionary.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>name</code> (str, optional): Original name of the file</li>
+<li><code>content_type</code> (str, optional): MIME type of the file (e.g., 'application/pdf', 'image/png')</li>
+<li><code>size</code> (int, optional): Size of the file in bytes</li>
+<li><code>data</code> (dict, optional): Additional metadata associated with the file</li>
+</ul>
+</details>
           
     </div>
 
@@ -4020,8 +4042,17 @@
 
     <div class="doc doc-contents ">
 
-        <p>Additional data such as processing status.</p>
+        <p>Additional data associated with the file, including processing status and extracted content.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>status</code> (str, optional): Processing status of the file - 'pending', 'completed', or 'failed'</li>
+<li><code>error</code> (str, optional): Error message if file processing failed</li>
+<li><code>content</code> (str, optional): Extracted text content from the file</li>
+</ul>
+</details>
           
     </div>
 
@@ -4041,7 +4072,20 @@
 
     <div class="doc doc-contents ">
 
-        <p>File metadata.</p>
+        <p>File metadata containing information about the file.</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>name</code> (str, optional): Original name of the file as uploaded</li>
+<li><code>content_type</code> (str, optional): MIME type of the file (e.g., 'application/pdf', 'image/png', 'text/plain')</li>
+<li><code>size</code> (int, optional): Size of the file in bytes</li>
+<li><code>data</code> (dict, optional): Additional metadata associated with the file, can contain custom key-value pairs</li>
+<li><code>collection_name</code> (str, optional): Knowledge base collection name this file belongs to, used for access control</li>
+</ul>
+</details>        <p>The meta dictionary stores core file attributes and can be extended with additional custom metadata.
+Common usage includes file identification, content type handling, and knowledge base association.</p>
 
           
     </div>
@@ -4063,6 +4107,23 @@
     <div class="doc doc-contents ">
 
         <p>Access control rules for the file.</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>read</code> (dict, optional): Read access permissions<ul>
+<li><code>group_ids</code> (list[str], optional): List of group IDs that have read access</li>
+<li><code>user_ids</code> (list[str], optional): List of user IDs that have read access</li>
+</ul>
+</li>
+<li><code>write</code> (dict, optional): Write access permissions<ul>
+<li><code>group_ids</code> (list[str], optional): List of group IDs that have write access</li>
+<li><code>user_ids</code> (list[str], optional): List of user IDs that have write access</li>
+</ul>
+</li>
+</ul>
+</details>        <p>Controls which users and groups can read or write to the file. If None, access follows default system permissions.</p>
 
           
     </div>

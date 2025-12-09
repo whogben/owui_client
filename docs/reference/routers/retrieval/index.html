@@ -4030,7 +4030,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>BatchProcessFilesResponse containing the results.</p>
+                <p><code>BatchProcessFilesResponse</code> containing the results.</p>
               </div>
             </td>
           </tr>
@@ -4060,7 +4060,7 @@
 </span><span id="__span-0-183"><a id="__codelineno-0-183" name="__codelineno-0-183"></a><span class="sd">        form_data: The batch processing data.</span>
 </span><span id="__span-0-184"><a id="__codelineno-0-184" name="__codelineno-0-184"></a>
 </span><span id="__span-0-185"><a id="__codelineno-0-185" name="__codelineno-0-185"></a><span class="sd">    Returns:</span>
-</span><span id="__span-0-186"><a id="__codelineno-0-186" name="__codelineno-0-186"></a><span class="sd">        BatchProcessFilesResponse containing the results.</span>
+</span><span id="__span-0-186"><a id="__codelineno-0-186" name="__codelineno-0-186"></a><span class="sd">        `BatchProcessFilesResponse` containing the results.</span>
 </span><span id="__span-0-187"><a id="__codelineno-0-187" name="__codelineno-0-187"></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="__span-0-188"><a id="__codelineno-0-188" name="__codelineno-0-188"></a>    <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="s2">&quot;/v1/retrieval/process/files/batch&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">form_data</span><span class="o">.</span><span class="n">model_dump</span><span class="p">())</span>
 </span><span id="__span-0-189"><a id="__codelineno-0-189" name="__codelineno-0-189"></a>    <span class="k">return</span> <span class="n">BatchProcessFilesResponse</span><span class="p">(</span><span class="o">**</span><span class="n">response</span><span class="p">)</span>

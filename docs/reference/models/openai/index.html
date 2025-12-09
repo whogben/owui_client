@@ -2655,15 +2655,24 @@
     <div class="doc doc-contents ">
 
         <p>Configuration dictionary for each provider.</p>
-<p>Keys are string string indices (e.g. "0", "1") corresponding to the index in <code>OPENAI_API_BASE_URLS</code>.
-Values are dictionaries containing settings like:
-- <code>enable</code> (bool): Whether this specific provider is enabled.
-- <code>model_ids</code> (List[str]): List of specific model IDs to expose (if empty, all are fetched).
-- <code>prefix_id</code> (str): Prefix to add to model IDs from this provider.
-- <code>connection_type</code> (str): e.g. "external".
-- <code>azure</code> (bool): Whether this is an Azure OpenAI endpoint.
-- <code>api_version</code> (str): API version for Azure.</p>
+<p>Keys are string indices (e.g. "0", "1") corresponding to the index in <code>OPENAI_API_BASE_URLS</code>.
+Values are dictionaries containing provider-specific configuration.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>enable</code> (bool, optional): Whether this specific provider is enabled. Defaults to True.</li>
+<li><code>model_ids</code> (List[str], optional): List of specific model IDs to expose. If empty, all models are fetched from the provider.</li>
+<li><code>prefix_id</code> (str, optional): Prefix to add to model IDs from this provider to avoid naming conflicts.</li>
+<li><code>connection_type</code> (str, optional): Type of connection, typically "external" or "local".</li>
+<li><code>azure</code> (bool, optional): Whether this is an Azure OpenAI endpoint.</li>
+<li><code>api_version</code> (str, optional): API version for Azure OpenAI endpoints (e.g., "2023-03-15-preview").</li>
+<li><code>auth_type</code> (str, optional): Authentication type. Valid values: "bearer", "session", "system_oauth", "azure_ad", "microsoft_entra_id", "none".</li>
+<li><code>headers</code> (dict, optional): Additional HTTP headers as JSON object for custom authentication or request modifications.</li>
+<li><code>tags</code> (List[str], optional): Tags for categorization and filtering of models.</li>
+</ul>
+</details>
           
     </div>
 
@@ -2814,8 +2823,17 @@ Values are dictionaries containing settings like:
     <div class="doc doc-contents ">
 
         <p>Optional configuration overrides for the verification request.</p>
-<p>Can include keys like <code>azure</code> (bool), <code>auth_type</code> (str), <code>api_version</code> (str), etc.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>azure</code> (bool, optional): Whether this is an Azure OpenAI endpoint.</li>
+<li><code>auth_type</code> (str, optional): Authentication type. Valid values: "bearer", "session", "system_oauth", "azure_ad", "microsoft_entra_id", "none".</li>
+<li><code>api_version</code> (str, optional): API version for Azure OpenAI endpoints (e.g., "2023-03-15-preview").</li>
+<li><code>headers</code> (dict, optional): Additional HTTP headers as JSON object for custom authentication or request modifications.</li>
+</ul>
+</details>
           
     </div>
 

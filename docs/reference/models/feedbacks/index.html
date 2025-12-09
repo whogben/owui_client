@@ -902,6 +902,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#owui_client.models.feedbacks.FeedbackResponse.snapshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        snapshot
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#owui_client.models.feedbacks.FeedbackResponse.created_at" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3138,6 +3149,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#owui_client.models.feedbacks.FeedbackResponse.snapshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        snapshot
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#owui_client.models.feedbacks.FeedbackResponse.created_at" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3922,6 +3944,18 @@
 
         <p>Content of the feedback, structure depends on 'type'.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>model_id</code> (str, optional): ID of the model being rated</li>
+<li><code>rating</code> (str|int, optional): The rating value (e.g., 1, 0, -1 for win/draw/lose)</li>
+<li><code>sibling_model_ids</code> (list[str], optional): IDs of sibling models in comparison scenarios (e.g., arena)</li>
+<li><code>tags</code> (list[str], optional): Tags associated with the feedback</li>
+<li><code>reason</code> (str, optional): Reason for the rating</li>
+<li><code>comment</code> (str, optional): Additional comment provided by the user</li>
+</ul>
+</details>
           
     </div>
 
@@ -3941,8 +3975,21 @@
 
     <div class="doc doc-contents ">
 
-        <p>Metadata associated with the feedback (e.g., tags, context).</p>
+        <p>Metadata associated with the feedback.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>arena</code> (bool, optional): Whether the feedback is related to the arena feature</li>
+<li><code>chat_id</code> (str, optional): ID of the chat session where feedback was given</li>
+<li><code>message_id</code> (str, optional): ID of the message being rated or commented on</li>
+<li><code>tags</code> (list[str], optional): Tags associated with the feedback</li>
+<li><code>model_id</code> (str, optional): ID of the model being rated</li>
+<li><code>message_index</code> (int, optional): Index of the message in the chat history</li>
+<li><code>base_models</code> (dict[str, str], optional): Mapping of model IDs to their base model IDs</li>
+</ul>
+</details>
           
     </div>
 
@@ -3964,6 +4011,22 @@
 
         <p>Snapshot of the context (e.g., chat history) when feedback was given.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>chat</code> (dict, optional): Complete chat object containing the conversation state</li>
+<li><code>chat.chat</code> (dict, optional): Nested chat data structure</li>
+<li><code>chat.chat.history</code> (dict, optional): Chat history information</li>
+<li><code>chat.chat.history.messages</code> (dict[str, object], optional): Message history mapping message IDs to message objects</li>
+<li><code>chat.chat.history.messages[*].parentId</code> (str, optional): ID of parent message</li>
+<li><code>chat.chat.history.messages[*].childrenIds</code> (list[str], optional): List of child message IDs</li>
+<li><code>chat.chat.history.messages[*].content</code> (str, optional): Message content text</li>
+<li><code>chat.chat.history.messages[*].role</code> (str, optional): Message role (e.g., 'user', 'assistant')</li>
+<li><code>chat.chat.history.messages[*].model</code> (str, optional): Model used for the message</li>
+<li><code>chat.chat.history.messages[*].done</code> (bool, optional): Whether message processing is complete</li>
+</ul>
+</details>
           
     </div>
 
@@ -4223,8 +4286,20 @@
 
     <div class="doc doc-contents ">
 
-        <p>Content of the feedback.</p>
+        <p>Content of the feedback, structure depends on 'type'.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>model_id</code> (str, optional): ID of the model being rated</li>
+<li><code>rating</code> (str|int, optional): The rating value (e.g., 1, 0, -1 for win/draw/lose)</li>
+<li><code>sibling_model_ids</code> (list[str], optional): IDs of sibling models in comparison scenarios (e.g., arena)</li>
+<li><code>tags</code> (list[str], optional): Tags associated with the feedback</li>
+<li><code>reason</code> (str, optional): Reason for the rating</li>
+<li><code>comment</code> (str, optional): Additional comment provided by the user</li>
+</ul>
+</details>
           
     </div>
 
@@ -4246,6 +4321,56 @@
 
         <p>Metadata associated with the feedback.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>arena</code> (bool, optional): Whether the feedback is related to the arena feature</li>
+<li><code>chat_id</code> (str, optional): ID of the chat session where feedback was given</li>
+<li><code>message_id</code> (str, optional): ID of the message being rated or commented on</li>
+<li><code>tags</code> (list[str], optional): Tags associated with the feedback</li>
+<li><code>model_id</code> (str, optional): ID of the model being rated</li>
+<li><code>message_index</code> (int, optional): Index of the message in the chat history</li>
+<li><code>base_models</code> (dict[str, str], optional): Mapping of model IDs to their base model IDs</li>
+</ul>
+</details>
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h5 id="owui_client.models.feedbacks.FeedbackResponse.snapshot" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">snapshot</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">snapshot</span><span class="p">:</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="dict">dict</span></span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Snapshot of the context (e.g., chat history) when feedback was given.</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>chat</code> (dict, optional): Complete chat object containing the conversation state</li>
+<li><code>chat.chat</code> (dict, optional): Nested chat data structure</li>
+<li><code>chat.chat.history</code> (dict, optional): Chat history information</li>
+<li><code>chat.chat.history.messages</code> (dict[str, object], optional): Message history mapping message IDs to message objects</li>
+<li><code>chat.chat.history.messages[*].parentId</code> (str, optional): ID of parent message</li>
+<li><code>chat.chat.history.messages[*].childrenIds</code> (list[str], optional): List of child message IDs</li>
+<li><code>chat.chat.history.messages[*].content</code> (str, optional): Message content text</li>
+<li><code>chat.chat.history.messages[*].role</code> (str, optional): Message role (e.g., 'user', 'assistant')</li>
+<li><code>chat.chat.history.messages[*].model</code> (str, optional): Model used for the message</li>
+<li><code>chat.chat.history.messages[*].done</code> (bool, optional): Whether message processing is complete</li>
+</ul>
+</details>
           
     </div>
 
@@ -4723,6 +4848,22 @@
 
         <p>The state of the chat when feedback was submitted.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>chat</code> (dict, optional): Nested chat data structure</li>
+<li><code>chat.chat</code> (dict, optional): Chat data structure</li>
+<li><code>chat.chat.history</code> (dict, optional): Chat history information</li>
+<li><code>chat.chat.history.messages</code> (dict[str, object], optional): Message history mapping message IDs to message objects</li>
+<li><code>chat.chat.history.messages[*].parentId</code> (str, optional): ID of parent message</li>
+<li><code>chat.chat.history.messages[*].childrenIds</code> (list[str], optional): List of child message IDs</li>
+<li><code>chat.chat.history.messages[*].content</code> (str, optional): Message content text</li>
+<li><code>chat.chat.history.messages[*].role</code> (str, optional): Message role (e.g., 'user', 'assistant')</li>
+<li><code>chat.chat.history.messages[*].model</code> (str, optional): Model used for the message</li>
+<li><code>chat.chat.history.messages[*].done</code> (bool, optional): Whether message processing is complete</li>
+</ul>
+</details>
           
     </div>
 
@@ -4883,8 +5024,21 @@
 
     <div class="doc doc-contents ">
 
-        <p>Metadata for the feedback.</p>
+        <p>Metadata associated with the feedback.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>arena</code> (bool, optional): Whether the feedback is related to the arena feature</li>
+<li><code>chat_id</code> (str, optional): ID of the chat session where feedback was given</li>
+<li><code>message_id</code> (str, optional): ID of the message being rated or commented on</li>
+<li><code>tags</code> (list[str], optional): Tags associated with the feedback</li>
+<li><code>model_id</code> (str, optional): ID of the model being rated</li>
+<li><code>message_index</code> (int, optional): Index of the message in the chat history</li>
+<li><code>base_models</code> (dict[str, str], optional): Mapping of model IDs to their base model IDs</li>
+</ul>
+</details>
           
     </div>
 

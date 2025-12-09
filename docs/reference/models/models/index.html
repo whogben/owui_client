@@ -4468,21 +4468,16 @@ Supported providers will return token usage information in the response when set
     <div class="doc doc-contents ">
 
         <p>Access control settings for the model.</p>
-<p>Structure:
-- <code>None</code>: Public access, available to all users with the "user" role.
-- <code>{}</code>: Private access, restricted exclusively to the owner.
-- Custom permissions:
-    <div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">&quot;read&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">&quot;group_ids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;group_id1&quot;</span><span class="p">],</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">        </span><span class="nt">&quot;user_ids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;user_id1&quot;</span><span class="p">]</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="p">},</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="nt">&quot;write&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">        </span><span class="nt">&quot;group_ids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;group_id2&quot;</span><span class="p">],</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">        </span><span class="nt">&quot;user_ids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;user_id2&quot;</span><span class="p">]</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="p">}</span>
-</span></code></pre></div></p>
+<p>Dict Fields:
+- <code>read</code> (dict, optional): Read access permissions
+  - <code>group_ids</code> (list[str], optional): List of group IDs with read access
+  - <code>user_ids</code> (list[str], optional): List of user IDs with read access
+- <code>write</code> (dict, optional): Write access permissions
+  - <code>group_ids</code> (list[str], optional): List of group IDs with write access
+  - <code>user_ids</code> (list[str], optional): List of user IDs with write access</p>
+<p>Special Values:
+- <code>None</code>: Public access, available to all users with the "user" role
+- <code>{}</code>: Private access, restricted exclusively to the owner</p>
 
           
     </div>
@@ -5114,22 +5109,17 @@ Supported providers will return token usage information in the response when set
 
     <div class="doc doc-contents ">
 
-        <p>Access control settings.</p>
-<p>Structure:
-- <code>None</code>: Public access, available to all users with the "user" role.
-- <code>{}</code>: Private access, restricted exclusively to the owner.
-- Custom permissions:
-    <div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">&quot;read&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">&quot;group_ids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;group_id1&quot;</span><span class="p">],</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">        </span><span class="nt">&quot;user_ids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;user_id1&quot;</span><span class="p">]</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="p">},</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="nt">&quot;write&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">        </span><span class="nt">&quot;group_ids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;group_id2&quot;</span><span class="p">],</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">        </span><span class="nt">&quot;user_ids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;user_id2&quot;</span><span class="p">]</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="p">}</span>
-</span></code></pre></div></p>
+        <p>Access control settings for the model.</p>
+<p>Dict Fields:
+- <code>read</code> (dict, optional): Read access permissions
+  - <code>group_ids</code> (list[str], optional): List of group IDs with read access
+  - <code>user_ids</code> (list[str], optional): List of user IDs with read access
+- <code>write</code> (dict, optional): Write access permissions
+  - <code>group_ids</code> (list[str], optional): List of group IDs with write access
+  - <code>user_ids</code> (list[str], optional): List of user IDs with write access</p>
+<p>Special Values:
+- <code>None</code>: Public access, available to all users with the "user" role
+- <code>{}</code>: Private access, restricted exclusively to the owner</p>
 
           
     </div>
@@ -5330,6 +5320,26 @@ Supported providers will return token usage information in the response when set
     <div class="doc doc-contents ">
 
         <p>List of model data dictionaries to import.</p>
+<p>Dict Fields:
+- <code>id</code> (str, required): Unique identifier for the model
+- <code>base_model_id</code> (str, optional): ID of the base model this model is derived from
+- <code>name</code> (str, required): Display name of the model
+- <code>meta</code> (dict, optional): Model metadata dictionary
+  - <code>profile_image_url</code> (str, optional): URL of the model's profile image
+  - <code>description</code> (str, optional): User-facing description of the model
+  - <code>capabilities</code> (dict, optional): Dictionary of model capabilities
+- <code>params</code> (dict, optional): Model parameters dictionary (allows extra fields)
+- <code>access_control</code> (dict, optional): Access control settings for the model
+  - <code>read</code> (dict, optional): Read access permissions
+    - <code>group_ids</code> (list[str], optional): List of group IDs with read access
+    - <code>user_ids</code> (list[str], optional): List of user IDs with read access
+  - <code>write</code> (dict, optional): Write access permissions
+    - <code>group_ids</code> (list[str], optional): List of group IDs with write access
+    - <code>user_ids</code> (list[str], optional): List of user IDs with write access
+- <code>is_active</code> (bool, optional): Whether the model is active, defaults to True</p>
+<p>Special Values:
+- <code>access_control: None</code>: Public access, available to all users with the "user" role
+- <code>access_control: {}</code>: Private access, restricted exclusively to the owner</p>
 
           
     </div>

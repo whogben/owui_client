@@ -3208,16 +3208,21 @@
     <div class="doc doc-contents ">
 
         <p>The content of the note.</p>
-<p>Structure:
-<div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">&quot;json&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">&quot;html&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="nt">&quot;md&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">}</span>
-</span></code></pre></div></p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>content</code> (dict, required): Content in multiple formats</li>
+<li><code>content.json</code> (Any, optional): JSON representation of content, typically null</li>
+<li><code>content.html</code> (str, optional): HTML formatted content</li>
+<li><code>content.md</code> (str, optional): Markdown formatted content</li>
+<li><code>versions</code> (list, optional): Historical versions of the note content</li>
+<li><code>versions[].content</code> (dict, optional): Version content structure</li>
+<li><code>versions[].timestamp</code> (int, optional): Version timestamp in epoch</li>
+<li><code>versions[].user_id</code> (str, optional): User ID who created the version</li>
+</ul>
+</details>
           
     </div>
 
@@ -3239,6 +3244,15 @@
 
         <p>Metadata associated with the note.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <p>This dictionary is used to store additional metadata about the note.
+It can contain arbitrary key-value pairs for extensibility.
+No specific keys are enforced by the backend - it accepts any valid JSON structure.
+Common usage patterns include storing custom attributes, tags, or application-specific metadata.
+When updating notes, the backend merges new meta data with existing meta data.</p>
+</details>
           
     </div>
 
@@ -3259,6 +3273,20 @@
     <div class="doc doc-contents ">
 
         <p>Access control settings for the note.</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>read</code> (dict, optional): Read access control configuration</li>
+<li><code>read.group_ids</code> (list[str], optional): List of group IDs that have read access</li>
+<li><code>read.user_ids</code> (list[str], optional): List of user IDs that have read access</li>
+<li><code>write</code> (dict, optional): Write access control configuration</li>
+<li><code>write.group_ids</code> (list[str], optional): List of group IDs that have write access</li>
+<li><code>write.user_ids</code> (list[str], optional): List of user IDs that have write access</li>
+</ul>
+</details>        <p>When None: Public read access, no write access (except owner)
+When {}: No special access control (public access for both read and write)</p>
 
           
     </div>
@@ -3442,16 +3470,21 @@
     <div class="doc doc-contents ">
 
         <p>The content of the note.</p>
-<p>Structure:
-<div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">&quot;json&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">&quot;html&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="nt">&quot;md&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">}</span>
-</span></code></pre></div></p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>content</code> (dict, required): Content in multiple formats</li>
+<li><code>content.json</code> (Any, optional): JSON representation of content, typically null</li>
+<li><code>content.html</code> (str, optional): HTML formatted content</li>
+<li><code>content.md</code> (str, optional): Markdown formatted content</li>
+<li><code>versions</code> (list, optional): Historical versions of the note content</li>
+<li><code>versions[].content</code> (dict, optional): Version content structure</li>
+<li><code>versions[].timestamp</code> (int, optional): Version timestamp in epoch</li>
+<li><code>versions[].user_id</code> (str, optional): User ID who created the version</li>
+</ul>
+</details>
           
     </div>
 
@@ -3473,6 +3506,14 @@
 
         <p>Metadata associated with the note.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <p>This dictionary is used to store additional metadata about the note.
+It can contain arbitrary key-value pairs for extensibility.
+No specific keys are enforced by the backend - it accepts any valid JSON structure.
+Common usage patterns include storing custom attributes, tags, or application-specific metadata.</p>
+</details>
           
     </div>
 
@@ -3493,6 +3534,20 @@
     <div class="doc doc-contents ">
 
         <p>Access control settings for the note.</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>read</code> (dict, optional): Read access control configuration</li>
+<li><code>read.group_ids</code> (list[str], optional): List of group IDs that have read access</li>
+<li><code>read.user_ids</code> (list[str], optional): List of user IDs that have read access</li>
+<li><code>write</code> (dict, optional): Write access control configuration</li>
+<li><code>write.group_ids</code> (list[str], optional): List of group IDs that have write access</li>
+<li><code>write.user_ids</code> (list[str], optional): List of user IDs that have write access</li>
+</ul>
+</details>        <p>When None: Public read access, no write access (except owner)
+When {}: No special access control (public access for both read and write)</p>
 
           
     </div>
@@ -3584,16 +3639,21 @@
     <div class="doc doc-contents ">
 
         <p>The content of the note.</p>
-<p>Structure:
-<div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">&quot;json&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">&quot;html&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="nt">&quot;md&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">}</span>
-</span></code></pre></div></p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>content</code> (dict, required): Content in multiple formats</li>
+<li><code>content.json</code> (Any, optional): JSON representation of content, typically null</li>
+<li><code>content.html</code> (str, optional): HTML formatted content</li>
+<li><code>content.md</code> (str, optional): Markdown formatted content</li>
+<li><code>versions</code> (list, optional): Historical versions of the note content</li>
+<li><code>versions[].content</code> (dict, optional): Version content structure</li>
+<li><code>versions[].timestamp</code> (int, optional): Version timestamp in epoch</li>
+<li><code>versions[].user_id</code> (str, optional): User ID who created the version</li>
+</ul>
+</details>
           
     </div>
 
@@ -3615,6 +3675,16 @@
 
         <p>Metadata associated with the note.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <p>This dictionary is used to store additional metadata about the note.
+It can contain arbitrary key-value pairs for extensibility.
+No specific keys are enforced by the backend - it accepts any valid JSON structure.
+Common usage patterns include storing custom attributes, tags, or application-specific metadata.
+When updating notes, the backend merges new meta data with existing meta data using shallow merge.
+If the same key exists in both existing and new meta, the new value overwrites the existing one.</p>
+</details>
           
     </div>
 
@@ -3635,6 +3705,20 @@
     <div class="doc doc-contents ">
 
         <p>Access control settings for the note.</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>read</code> (dict, optional): Read access control configuration</li>
+<li><code>read.group_ids</code> (list[str], optional): List of group IDs that have read access</li>
+<li><code>read.user_ids</code> (list[str], optional): List of user IDs that have read access</li>
+<li><code>write</code> (dict, optional): Write access control configuration</li>
+<li><code>write.group_ids</code> (list[str], optional): List of group IDs that have write access</li>
+<li><code>write.user_ids</code> (list[str], optional): List of user IDs that have write access</li>
+</ul>
+</details>        <p>When None: Public read access, no write access (except owner)
+When {}: No special access control (public access for both read and write)</p>
 
           
     </div>

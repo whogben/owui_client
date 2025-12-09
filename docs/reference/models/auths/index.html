@@ -5427,6 +5427,71 @@
 
         <p>The user's permissions.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>workspace</code> (dict, required): Workspace-related permissions<ul>
+<li><code>models</code> (bool, required): Access to models in workspace</li>
+<li><code>knowledge</code> (bool, required): Access to knowledge in workspace</li>
+<li><code>prompts</code> (bool, required): Access to prompts in workspace</li>
+<li><code>tools</code> (bool, required): Access to tools in workspace</li>
+<li><code>models_import</code> (bool, required): Permission to import models</li>
+<li><code>models_export</code> (bool, required): Permission to export models</li>
+<li><code>prompts_import</code> (bool, required): Permission to import prompts</li>
+<li><code>prompts_export</code> (bool, required): Permission to export prompts</li>
+<li><code>tools_import</code> (bool, required): Permission to import tools</li>
+<li><code>tools_export</code> (bool, required): Permission to export tools</li>
+</ul>
+</li>
+<li><code>sharing</code> (dict, required): Sharing-related permissions<ul>
+<li><code>models</code> (bool, required): Permission to share models</li>
+<li><code>public_models</code> (bool, required): Permission to share models publicly</li>
+<li><code>knowledge</code> (bool, required): Permission to share knowledge</li>
+<li><code>public_knowledge</code> (bool, required): Permission to share knowledge publicly</li>
+<li><code>prompts</code> (bool, required): Permission to share prompts</li>
+<li><code>public_prompts</code> (bool, required): Permission to share prompts publicly</li>
+<li><code>tools</code> (bool, required): Permission to share tools</li>
+<li><code>public_tools</code> (bool, required): Permission to share tools publicly</li>
+<li><code>notes</code> (bool, required): Permission to share notes</li>
+<li><code>public_notes</code> (bool, required): Permission to share notes publicly</li>
+</ul>
+</li>
+<li><code>chat</code> (dict, required): Chat-related permissions<ul>
+<li><code>controls</code> (bool, required): Access to chat controls</li>
+<li><code>valves</code> (bool, required): Access to chat valves</li>
+<li><code>system_prompt</code> (bool, required): Access to system prompt configuration</li>
+<li><code>params</code> (bool, required): Access to chat parameters</li>
+<li><code>file_upload</code> (bool, required): Permission to upload files</li>
+<li><code>delete</code> (bool, required): Permission to delete chats</li>
+<li><code>delete_message</code> (bool, required): Permission to delete messages</li>
+<li><code>continue_response</code> (bool, required): Permission to continue responses</li>
+<li><code>regenerate_response</code> (bool, required): Permission to regenerate responses</li>
+<li><code>rate_response</code> (bool, required): Permission to rate responses</li>
+<li><code>edit</code> (bool, required): Permission to edit chats</li>
+<li><code>share</code> (bool, required): Permission to share chats</li>
+<li><code>export</code> (bool, required): Permission to export chats</li>
+<li><code>stt</code> (bool, required): Permission to use speech-to-text</li>
+<li><code>tts</code> (bool, required): Permission to use text-to-speech</li>
+<li><code>call</code> (bool, required): Permission to make calls</li>
+<li><code>multiple_models</code> (bool, required): Permission to use multiple models</li>
+<li><code>temporary</code> (bool, required): Permission to use temporary chats</li>
+<li><code>temporary_enforced</code> (bool, required): Enforced temporary chat usage</li>
+</ul>
+</li>
+<li><code>features</code> (dict, required): Feature-related permissions<ul>
+<li><code>api_keys</code> (bool, required): Access to API keys feature</li>
+<li><code>notes</code> (bool, required): Access to notes feature</li>
+<li><code>folders</code> (bool, required): Access to folders feature</li>
+<li><code>channels</code> (bool, required): Access to channels feature</li>
+<li><code>direct_tool_servers</code> (bool, required): Access to direct tool servers</li>
+<li><code>web_search</code> (bool, required): Access to web search feature</li>
+<li><code>image_generation</code> (bool, required): Access to image generation feature</li>
+<li><code>code_interpreter</code> (bool, required): Access to code interpreter feature</li>
+</ul>
+</li>
+</ul>
+</details>
           
     </div>
 

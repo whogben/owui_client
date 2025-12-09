@@ -3537,6 +3537,16 @@
 
         <p>Manifest of the tool, usually parsed from the tool's file frontmatter.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>version</code> (str, optional): Version of the tool</li>
+<li><code>funding_url</code> (str, optional): URL for funding/supporting the tool</li>
+<li><code>icon_url</code> (str, optional): URL for the tool's icon</li>
+<li><code>required_open_webui_version</code> (str, optional): Minimum required Open WebUI version for this tool</li>
+</ul>
+</details>
           
     </div>
 
@@ -3773,6 +3783,31 @@
 
         <p>List of function specifications (JSON schema) for the tool's functions.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>name</code> (str, required): Name of the function</li>
+<li><code>description</code> (str, optional): Description of what the function does</li>
+<li><code>parameters</code> (dict, required): Parameters schema for the function<ul>
+<li><code>type</code> (str, required): Should be "object"</li>
+<li><code>properties</code> (dict, required): Dictionary of parameter definitions<ul>
+<li>Each property key is the parameter name</li>
+<li>Each property value is a parameter specification with:<ul>
+<li><code>type</code> (str, required): Parameter type (e.g., "string", "number", "boolean", "array", "object")</li>
+<li><code>description</code> (str, optional): Description of the parameter</li>
+<li><code>required</code> (list[str], optional): List of required parameter names</li>
+<li>Additional OpenAPI-style parameter constraints</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>required</code> (list[str], optional): List of required parameter names</li>
+</ul>
+</li>
+<li>Additional OpenAI function specification fields as needed</li>
+</ul>
+</details>
           
     </div>
 
@@ -3815,6 +3850,30 @@
 
         <p>Access control settings for the tool.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>read</code> (dict, optional): Read access permissions<ul>
+<li><code>group_ids</code> (list[str], optional): List of group IDs that have read access</li>
+<li><code>user_ids</code> (list[str], optional): List of user IDs that have read access</li>
+</ul>
+</li>
+<li><code>write</code> (dict, optional): Write access permissions<ul>
+<li><code>group_ids</code> (list[str], optional): List of group IDs that have write access</li>
+<li><code>user_ids</code> (list[str], optional): List of user IDs that have write access</li>
+</ul>
+</li>
+</ul>
+</details>
+
+<details class="special-values" open>
+  <summary>Special values</summary>
+  <ul>
+<li><code>None</code>: Public access, available to all users with the "user" role</li>
+<li><code>{}</code>: Private access, restricted exclusively to the owner</li>
+</ul>
+</details>
           
     </div>
 
@@ -4146,6 +4205,30 @@
 
         <p>Access control settings for the tool.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>read</code> (dict, optional): Read access permissions<ul>
+<li><code>group_ids</code> (list[str], optional): List of group IDs that have read access</li>
+<li><code>user_ids</code> (list[str], optional): List of user IDs that have read access</li>
+</ul>
+</li>
+<li><code>write</code> (dict, optional): Write access permissions<ul>
+<li><code>group_ids</code> (list[str], optional): List of group IDs that have write access</li>
+<li><code>user_ids</code> (list[str], optional): List of user IDs that have write access</li>
+</ul>
+</li>
+</ul>
+</details>
+
+<details class="special-values" open>
+  <summary>Special values</summary>
+  <ul>
+<li><code>None</code>: Public access, available to all users with the "user" role</li>
+<li><code>{}</code>: Private access, restricted exclusively to the owner</li>
+</ul>
+</details>
           
     </div>
 
@@ -4554,6 +4637,30 @@
 
         <p>Access control settings for the tool.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>read</code> (dict, optional): Read access permissions<ul>
+<li><code>group_ids</code> (list[str], optional): List of group IDs that have read access</li>
+<li><code>user_ids</code> (list[str], optional): List of user IDs that have read access</li>
+</ul>
+</li>
+<li><code>write</code> (dict, optional): Write access permissions<ul>
+<li><code>group_ids</code> (list[str], optional): List of group IDs that have write access</li>
+<li><code>user_ids</code> (list[str], optional): List of user IDs that have write access</li>
+</ul>
+</li>
+</ul>
+</details>
+
+<details class="special-values" open>
+  <summary>Special values</summary>
+  <ul>
+<li><code>None</code>: Public access, available to all users with the "user" role</li>
+<li><code>{}</code>: Private access, restricted exclusively to the owner</li>
+</ul>
+</details>
           
     </div>
 
@@ -4622,8 +4729,44 @@
 
     <div class="doc doc-contents ">
 
-        <p>Dictionary of valve values.</p>
+        <p>Dictionary of valve values representing tool-specific configuration settings.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li>Arbitrary key-value pairs defined by each tool's <code>Valves</code> class</li>
+<li>Common examples from tool implementations:<ul>
+<li><code>priority</code> (int, optional): Priority level for tool operations</li>
+<li><code>max_turns</code> (int, optional): Maximum allowable conversation turns</li>
+<li><code>OPENAI_API_BASE_URL</code> (str, optional): Base URL for OpenAI API calls</li>
+<li><code>OPENAI_API_KEY</code> (str, optional): API key for OpenAI services</li>
+<li>Other tool-specific configuration parameters</li>
+</ul>
+</li>
+</ul>
+</details>        <p>Valves are tool-specific configuration settings that control the behavior of tools.
+Each tool can define its own Valves class with custom parameters.
+The valves dictionary contains the current configuration values for the tool.</p>
+
+
+<details class="special-behavior" open>
+  <summary>Special behavior</summary>
+  <ul>
+<li><code>None</code>: No valves configured for this tool</li>
+<li><code>{}</code>: Empty valves configuration (tool uses default settings)</li>
+<li>When present: Contains the active configuration for the tool</li>
+</ul>
+</details>
+
+<details class="valves-can-be-managed-via-the-following-endpoints" open>
+  <summary>Valves can be managed via the following endpoints</summary>
+  <ul>
+<li>GET <code>/tools/id/{id}/valves</code> - Get current valves for a tool</li>
+<li>POST <code>/tools/id/{id}/valves/update</code> - Update valves for a tool</li>
+<li>GET <code>/tools/id/{id}/valves/spec</code> - Get the Valves schema definition for a tool</li>
+</ul>
+</details>
           
     </div>
 

@@ -6710,7 +6710,74 @@ It allows extra fields to accommodate future settings without strict schema chan
 
     <div class="doc doc-contents ">
 
-        <p>Dictionary containing UI-specific settings (e.g., theme, notifications).</p>
+        <p>Dictionary containing UI-specific settings and preferences.</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>pinnedModels</code> (list[str], optional): List of model IDs pinned to the sidebar</li>
+<li><code>toolServers</code> (list[dict], optional): List of tool server configurations</li>
+<li><code>detectArtifacts</code> (bool, optional): Enable artifact detection in responses</li>
+<li><code>showUpdateToast</code> (bool, optional): Show update notification toasts</li>
+<li><code>showChangelog</code> (bool, optional): Show changelog notifications</li>
+<li><code>showEmojiInCall</code> (bool, optional): Show emoji during call interactions</li>
+<li><code>voiceInterruption</code> (bool, optional): Allow voice interruption during calls</li>
+<li><code>collapseCodeBlocks</code> (bool, optional): Collapse code blocks by default</li>
+<li><code>expandDetails</code> (bool, optional): Expand detail sections by default</li>
+<li><code>notificationSound</code> (bool, optional): Enable notification sounds</li>
+<li><code>notificationSoundAlways</code> (bool, optional): Always play notification sounds</li>
+<li><code>stylizedPdfExport</code> (bool, optional): Use stylized PDF export format</li>
+<li><code>notifications</code> (dict, optional): Notification configuration</li>
+<li><code>imageCompression</code> (bool, optional): Enable image compression</li>
+<li><code>imageCompressionSize</code> (any, optional): Image compression size settings</li>
+<li><code>textScale</code> (number, optional): Text scaling factor</li>
+<li><code>widescreenMode</code> (null, optional): Widescreen mode setting</li>
+<li><code>largeTextAsFile</code> (bool, optional): Treat large text as file attachments</li>
+<li><code>promptAutocomplete</code> (bool, optional): Enable prompt autocomplete</li>
+<li><code>hapticFeedback</code> (bool, optional): Enable haptic feedback</li>
+<li><code>responseAutoCopy</code> (any, optional): Auto-copy response settings</li>
+<li><code>richTextInput</code> (bool, optional): Enable rich text input</li>
+<li><code>params</code> (any, optional): Additional UI parameters</li>
+<li><code>userLocation</code> (any, optional): User location settings</li>
+<li><code>webSearch</code> (any, optional): Web search configuration</li>
+<li><code>memory</code> (bool, optional): Enable memory features</li>
+<li><code>autoTags</code> (bool, optional): Enable automatic tagging</li>
+<li><code>autoFollowUps</code> (bool, optional): Enable automatic follow-ups</li>
+<li><code>backgroundImageUrl</code> (null, optional): Background image URL</li>
+<li><code>landingPageMode</code> (str, optional): Landing page display mode</li>
+<li><code>iframeSandboxAllowForms</code> (bool, optional): Allow forms in iframe sandbox</li>
+<li><code>iframeSandboxAllowSameOrigin</code> (bool, optional): Allow same-origin in iframe sandbox</li>
+<li><code>scrollOnBranchChange</code> (bool, optional): Scroll on branch change</li>
+<li><code>directConnections</code> (null, optional): Direct connections setting</li>
+<li><code>chatBubble</code> (bool, optional): Show chat bubble interface</li>
+<li><code>copyFormatted</code> (bool, optional): Copy formatted text</li>
+<li><code>models</code> (list[str], optional): List of available model IDs</li>
+<li><code>conversationMode</code> (bool, optional): Enable conversation mode</li>
+<li><code>speechAutoSend</code> (bool, optional): Auto-send speech input</li>
+<li><code>responseAutoPlayback</code> (bool, optional): Auto-playback responses</li>
+<li><code>audio</code> (AudioSettings, optional): Audio settings configuration</li>
+<li><code>showUsername</code> (bool, optional): Show username in UI</li>
+<li><code>notificationEnabled</code> (bool, optional): Enable notifications</li>
+<li><code>highContrastMode</code> (bool, optional): Enable high contrast mode</li>
+<li><code>title</code> (TitleSettings, optional): Title settings configuration</li>
+<li><code>showChatTitleInTab</code> (bool, optional): Show chat title in browser tab</li>
+<li><code>splitLargeDeltas</code> (bool, optional): Split large delta updates</li>
+<li><code>chatDirection</code> (str, optional): Chat direction ('LTR', 'RTL', 'auto')</li>
+<li><code>ctrlEnterToSend</code> (bool, optional): Use Ctrl+Enter to send messages</li>
+<li><code>system</code> (str, optional): System configuration</li>
+<li><code>seed</code> (number, optional): Random seed value</li>
+<li><code>temperature</code> (str, optional): Temperature setting</li>
+<li><code>repeat_penalty</code> (str, optional): Repeat penalty value</li>
+<li><code>top_k</code> (str, optional): Top-k sampling value</li>
+<li><code>top_p</code> (str, optional): Top-p sampling value</li>
+<li><code>num_ctx</code> (str, optional): Context window size</li>
+<li><code>num_batch</code> (str, optional): Batch size</li>
+<li><code>num_keep</code> (str, optional): Number of tokens to keep</li>
+<li><code>options</code> (ModelOptions, optional): Model-specific options</li>
+</ul>
+</details>        <p>The <code>notifications</code> field contains:
+    - <code>webhook_url</code> (str, optional): Webhook URL for notifications</p>
 
           
     </div>
@@ -7223,6 +7290,14 @@ and system metadata.</p>
 
         <p>Additional user information dictionary.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>location</code> (str, optional): User's location information, used for geolocation features and template variable replacement (e.g., {{USER_LOCATION}} in prompts)</li>
+<li>Additional arbitrary key-value pairs may be stored as needed. This field is a flexible JSON storage that can contain any user-specific metadata.</li>
+</ul>
+</details>
           
     </div>
 
@@ -7286,6 +7361,24 @@ and system metadata.</p>
 
         <p>OAuth provider data.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>google</code> (dict, optional): Google OAuth provider data</li>
+<li><code>github</code> (dict, optional): GitHub OAuth provider data</li>
+<li><code>microsoft</code> (dict, optional): Microsoft OAuth provider data</li>
+<li><code>oidc</code> (dict, optional): OpenID Connect OAuth provider data</li>
+<li><code>feishu</code> (dict, optional): Feishu OAuth provider data</li>
+</ul>
+</details>
+
+<details class="each-provider-dictionary-contains" open>
+  <summary>Each provider dictionary contains</summary>
+  <ul>
+<li><code>sub</code> (str, required): Subject identifier from the OAuth provider</li>
+</ul>
+</details>
           
     </div>
 

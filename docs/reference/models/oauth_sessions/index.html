@@ -2587,8 +2587,19 @@ the provider, tokens, and expiration details.</p>
     <div class="doc doc-contents ">
 
         <p>The OAuth tokens.</p>
-<p>Typically contains keys like 'access_token', 'id_token', and 'refresh_token'.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>access_token</code> (str, required): The access token for OAuth authentication</li>
+<li><code>refresh_token</code> (str, optional): The refresh token for obtaining new access tokens</li>
+<li><code>id_token</code> (str, optional): The ID token containing user identity information</li>
+<li><code>expires_at</code> (int, optional): Timestamp when the token expires (epoch)</li>
+<li><code>expires_in</code> (int, optional): Duration in seconds until token expires</li>
+<li><code>issued_at</code> (int, optional): Timestamp when the token was issued</li>
+</ul>
+</details>
           
     </div>
 

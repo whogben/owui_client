@@ -3709,6 +3709,13 @@
 
         <p>Additional data associated with the message.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>files</code> (list, optional): List of file objects associated with the message, each containing file metadata like URLs and types</li>
+</ul>
+</details>
           
     </div>
 
@@ -3730,6 +3737,15 @@
 
         <p>Metadata associated with the message.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>model_id</code> (str, optional): ID of the model that generated the message</li>
+<li><code>model_name</code> (str, optional): Name of the model that generated the message</li>
+<li><code>done</code> (bool, optional): Flag indicating if model processing is complete</li>
+</ul>
+</details>
           
     </div>
 
@@ -3976,6 +3992,16 @@
 
         <p>Additional data associated with the message.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>files</code> (list, optional): List of file objects associated with the message, each containing file metadata like URLs and types</li>
+<li><code>content</code> (str, optional): Additional message content data used in message and replace events</li>
+<li><code>embeds</code> (list, optional): List of embedded content objects in the message</li>
+<li><code>status</code> (dict, optional): Status information about the message processing state</li>
+</ul>
+</details>
           
     </div>
 
@@ -3997,6 +4023,15 @@
 
         <p>Metadata associated with the message.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>model_id</code> (str, optional): ID of the model that generated the message</li>
+<li><code>model_name</code> (str, optional): Name of the model that generated the message</li>
+<li><code>done</code> (bool, optional): Flag indicating if model processing is complete</li>
+</ul>
+</details>
           
     </div>
 
@@ -4214,8 +4249,16 @@
 
     <div class="doc doc-contents ">
 
-        <p>List of users who reacted (contains 'id' and 'name').</p>
+        <p>List of users who reacted with this reaction.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>id</code> (str, required): User ID of the user who reacted</li>
+<li><code>name</code> (str, required): Name of the user who reacted</li>
+</ul>
+</details>
           
     </div>
 

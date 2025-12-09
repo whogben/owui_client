@@ -4247,10 +4247,30 @@ metadata, and status flags like archived or pinned.</p>
 
         <p>The full chat content and history.</p>
 <p>Contains the messages, model configuration, and other conversation state.
-Key fields typically include:
-- <code>history</code>: Dict containing <code>messages</code> (map of message IDs to message objects) and <code>currentId</code>.
-- <code>models</code>: List of model IDs used in this chat.
-- <code>params</code>: Model parameters used.</p>
+This dictionary represents the complete chat structure used throughout the Open WebUI system.</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>title</code> (str, optional): The title of the chat conversation</li>
+<li><code>name</code> (str, optional): Alternative name for the chat</li>
+<li><code>description</code> (str, optional): Description of the chat</li>
+<li><code>tags</code> (list[str], optional): List of tag names associated with this chat</li>
+<li><code>history</code> (dict, required): Contains the conversation history with:<ul>
+<li><code>currentId</code> (str, required): ID of the current message in the conversation</li>
+<li><code>messages</code> (dict[str, object], required): Map of message IDs to message objects</li>
+</ul>
+</li>
+<li><code>models</code> (list[str], optional): List of model IDs used in this chat</li>
+<li><code>params</code> (dict, optional): Model parameters and configuration</li>
+<li><code>options</code> (dict, optional): Additional chat options and settings</li>
+<li><code>timestamp</code> (int, optional): Creation timestamp (Unix epoch)</li>
+<li><code>originalChatId</code> (str, optional): ID of the original chat if this is a clone</li>
+<li><code>branchPointMessageId</code> (str, optional): Message ID where branching occurred for cloned chats</li>
+</ul>
+</details>        <p>The <code>chat</code> dictionary is the core data structure that stores all conversation state,
+message history, and metadata. It's used for creating, updating, and managing chats.</p>
 
           
     </div>
@@ -4378,8 +4398,20 @@ Key fields typically include:
     <div class="doc doc-contents ">
 
         <p>Additional metadata for the chat.</p>
-<p>Common keys:
-- <code>tags</code>: List of tag names associated with this chat.</p>
+<p>The meta dictionary stores various metadata about the chat, primarily used for organizational and filtering purposes.
+This field is used extensively throughout the Open WebUI system for tagging, searching, and managing chats.</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>tags</code> (list[str], optional): List of tag identifiers associated with this chat for categorization and filtering.
+  Tags are used throughout the system for organizing chats and enabling tag-based search functionality.
+  When chats are archived, tags may be automatically cleaned up if no other chats use them.
+  Tag names are normalized to lowercase with spaces replaced by underscores (e.g., "my tag" becomes "my_tag").</li>
+</ul>
+</details>        <p>The meta field is preserved when chats are cloned, shared, or imported, maintaining the organizational structure.
+It plays a crucial role in the chat management system, particularly in tag-based operations.</p>
 
           
     </div>
@@ -4547,7 +4579,31 @@ Key fields typically include:
     <div class="doc doc-contents ">
 
         <p>The chat content.</p>
-<p>Must minimally contain the <code>history</code> or initial state of the conversation.</p>
+<p>Contains the full conversation state including messages, metadata, and configuration.
+This dictionary represents the complete chat structure used throughout the Open WebUI system.</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>title</code> (str, optional): The title of the chat conversation</li>
+<li><code>name</code> (str, optional): Alternative name for the chat</li>
+<li><code>description</code> (str, optional): Description of the chat</li>
+<li><code>tags</code> (list[str], optional): List of tag names associated with this chat</li>
+<li><code>history</code> (dict, required): Contains the conversation history with:<ul>
+<li><code>currentId</code> (str, required): ID of the current message in the conversation</li>
+<li><code>messages</code> (dict[str, object], required): Map of message IDs to message objects</li>
+</ul>
+</li>
+<li><code>models</code> (list[str], optional): List of model IDs used in this chat</li>
+<li><code>params</code> (dict, optional): Model parameters and configuration</li>
+<li><code>options</code> (dict, optional): Additional chat options and settings</li>
+<li><code>timestamp</code> (int, optional): Creation timestamp (Unix epoch)</li>
+<li><code>originalChatId</code> (str, optional): ID of the original chat if this is a clone</li>
+<li><code>branchPointMessageId</code> (str, optional): Message ID where branching occurred for cloned chats</li>
+</ul>
+</details>        <p>The <code>chat</code> dictionary is the core data structure that stores all conversation state,
+message history, and metadata. It's used for creating, updating, and managing chats.</p>
 
           
     </div>
@@ -4604,6 +4660,9 @@ Key fields typically include:
 
 
         <p>Form for importing a chat, including metadata and timestamps.</p>
+<p>This form extends <code>ChatForm</code> to include additional metadata and timestamps
+for chat import operations. The chat attribute contains the complete
+conversation state including messages, metadata, and configuration.</p>
 
           
 
@@ -4677,7 +4736,16 @@ Key fields typically include:
 
     <div class="doc doc-contents ">
 
-        <p>Metadata for the chat (e.g., tags).</p>
+        <p>Metadata for the chat import operation.</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>tags</code> (list[str], optional): List of tag names associated with this chat for categorization and filtering</li>
+</ul>
+</details>        <p>The meta dictionary stores additional metadata about the chat, primarily used for organizational purposes.
+The most common and well-documented key is 'tags', which allows chats to be categorized and filtered.</p>
 
           
     </div>
@@ -4980,6 +5048,18 @@ Key fields typically include:
     <div class="doc doc-contents ">
 
         <p>List of message objects from the chat history.</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>role</code> (str, required): The role of the message sender, typically 'user' or 'assistant'</li>
+<li><code>content</code> (str, required): The text content of the message</li>
+<li><code>timestamp</code> (float, optional): UNIX timestamp (seconds since epoch) when the message was created</li>
+<li><code>model</code> (str, optional): The model identifier used for generating assistant messages (e.g., 'gpt-4', 'claude-3')</li>
+</ul>
+</details>        <p>This list contains the complete conversation history in chronological order, used for PDF generation
+and other export operations. Each message represents one turn in the conversation between user and assistant.</p>
 
           
     </div>
@@ -5317,6 +5397,31 @@ Key fields typically include:
     <div class="doc doc-contents ">
 
         <p>The full chat content and history.</p>
+<p>Contains the messages, model configuration, and other conversation state.
+This dictionary represents the complete chat structure used throughout the Open WebUI system.</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>title</code> (str, optional): The title of the chat conversation</li>
+<li><code>name</code> (str, optional): Alternative name for the chat</li>
+<li><code>description</code> (str, optional): Description of the chat</li>
+<li><code>tags</code> (list[str], optional): List of tag names associated with this chat</li>
+<li><code>history</code> (dict, required): Contains the conversation history with:<ul>
+<li><code>currentId</code> (str, required): ID of the current message in the conversation</li>
+<li><code>messages</code> (dict[str, object], required): Map of message IDs to message objects</li>
+</ul>
+</li>
+<li><code>models</code> (list[str], optional): List of model IDs used in this chat</li>
+<li><code>params</code> (dict, optional): Model parameters and configuration</li>
+<li><code>options</code> (dict, optional): Additional chat options and settings</li>
+<li><code>timestamp</code> (int, optional): Creation timestamp (Unix epoch)</li>
+<li><code>originalChatId</code> (str, optional): ID of the original chat if this is a clone</li>
+<li><code>branchPointMessageId</code> (str, optional): Message ID where branching occurred for cloned chats</li>
+</ul>
+</details>        <p>The <code>chat</code> dictionary is the core data structure that stores all conversation state,
+message history, and metadata. It's used for creating, updating, and managing chats.</p>
 
           
     </div>
@@ -5443,6 +5548,20 @@ Key fields typically include:
     <div class="doc doc-contents ">
 
         <p>Additional metadata for the chat.</p>
+<p>The meta dictionary stores various metadata about the chat, primarily used for organizational and filtering purposes.
+This field is used extensively throughout the Open WebUI system for tagging, searching, and managing chats.</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>tags</code> (list[str], optional): List of tag identifiers associated with this chat for categorization and filtering.
+  Tags are used throughout the system for organizing chats and enabling tag-based search functionality.
+  When chats are archived, tags may be automatically cleaned up if no other chats use them.
+  Tag names are normalized to lowercase with spaces replaced by underscores (e.g., "my tag" becomes "my_tag").</li>
+</ul>
+</details>        <p>The meta field is preserved when chats are cloned, shared, or imported, maintaining the organizational structure.
+It plays a crucial role in the chat management system, particularly in tag-based operations.</p>
 
           
     </div>
@@ -6188,6 +6307,36 @@ Key fields typically include:
     <div class="doc doc-contents ">
 
         <p>The data payload for the event.</p>
+<p>Contains event-specific data that varies based on the event type.
+This dictionary holds the actual content and metadata for the event being triggered.</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>content</code> (str, optional): Text content for message-related events (used in 'message' and 'replace' event types)</li>
+<li><code>embeds</code> (list, optional): List of embed objects for embed-related events</li>
+<li><code>files</code> (list, optional): List of file objects for file-related events</li>
+<li><code>status</code> (dict, optional): Status information for status-related events</li>
+<li><code>type</code> (str, optional): Additional type specification for certain event types</li>
+<li><code>source</code> (dict, optional): Source information for source/citation events</li>
+<li><code>citation</code> (dict, optional): Citation information for source/citation events</li>
+</ul>
+</details>        <p>The data structure is event-type specific:
+- For 'message' events: contains <code>content</code> field with additional message text
+- For 'replace' events: contains <code>content</code> field with replacement message text
+- For 'embeds' events: contains <code>embeds</code> field with list of embed objects
+- For 'files' events: contains <code>files</code> field with list of file objects
+- For 'status' events: contains status information in the data object
+- For 'source'/'citation' events: contains source/citation data with optional <code>type</code> field</p>
+<p>Event types discovered in backend code:
+- 'status': Updates message status information
+- 'message': Appends content to existing messages
+- 'replace': Replaces entire message content
+- 'embeds': Adds embed objects to messages
+- 'files': Adds file objects to messages
+- 'source'/'citation': Handles source and citation data</p>
+<p>The data field is passed through the event emission system and processed based on the event type.</p>
 
           
     </div>

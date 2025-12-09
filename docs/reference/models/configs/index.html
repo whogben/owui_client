@@ -3934,6 +3934,24 @@
 
         <p>The configuration dictionary to import. This should match the structure returned by the export endpoint.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <p>This dictionary contains the complete Open WebUI configuration that can be exported and imported.
+It includes all settings from the backend config system. For a complete reference of all possible
+keys and their descriptions, see the backend configuration in:
+owui_client/refs/owui_source_main/backend/open_webui/main.py</p>
+<p>The config includes but is not limited to:
+- API integrations (Ollama, OpenAI, etc.)
+- Feature flags (folders, channels, notes, etc.)
+- Authentication settings (OAuth, LDAP, etc.)
+- RAG and retrieval configurations
+- Image generation and editing settings
+- Audio processing configurations
+- Web search and loader configurations
+- Code execution and interpreter settings
+- UI and permission settings</p>
+</details>
           
     </div>
 
@@ -4485,7 +4503,26 @@
 
     <div class="doc doc-contents ">
 
-        <p>Custom headers to send with requests.</p>
+        <p>Custom headers to send with requests to the tool server.</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>Authorization</code> (str, optional): Authorization header for tool server authentication</li>
+<li><code>Content-Type</code> (str, optional): Content type header for requests</li>
+<li><code>X-OpenWebUI-User-Name</code> (str, optional): User name header for user context</li>
+<li><code>X-OpenWebUI-Chat-Id</code> (str, optional): Chat ID header for context tracking</li>
+<li><code>Accept</code> (str, optional): Accept header for response content type</li>
+<li>Any other custom headers needed for specific tool server requirements</li>
+</ul>
+</details>        <p>The headers dictionary allows customization of HTTP headers sent to tool servers.
+Common use cases include:
+- Adding authentication headers beyond the standard bearer token
+- Setting custom content types for specific API requirements
+- Forwarding user information headers when ENABLE_FORWARD_USER_INFO_HEADERS is enabled
+- Including chat context headers for tracking and logging purposes</p>
+<p>When provided as a string, it should be a JSON-encoded dictionary.</p>
 
           
     </div>
@@ -4528,6 +4565,18 @@
     <div class="doc doc-contents ">
 
         <p>Additional configuration for the connection.</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>enable</code> (bool, optional): Whether the tool server connection is enabled. Defaults to True.</li>
+<li><code>function_name_filter_list</code> (str, optional): Comma-separated list of function names to filter/allow for this tool server. Used to restrict which functions from the tool server are exposed.</li>
+<li><code>access_control</code> (dict, optional): Access control configuration for the tool server connection. Defines permissions and restrictions for user access.</li>
+<li><code>oauth_server_key</code> (str, optional): OAuth server key for OAuth 2.1 authentication with MCP tool servers. Used during dynamic client registration.</li>
+</ul>
+</details>        <p>The config dictionary provides additional connection-specific settings that control
+behavior, security, and functionality of the tool server integration.</p>
 
           
     </div>

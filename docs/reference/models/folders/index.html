@@ -3571,6 +3571,16 @@
 
         <p>Dictionary of items contained in the folder (contents).</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>chat_ids</code> (list[str], optional): List of chat IDs contained in the folder</li>
+<li><code>file_ids</code> (list[str], optional): List of file IDs contained in the folder</li>
+</ul>
+</details>        <p>This field represents the contents of the folder, including references to chats and files.
+The frontend uses this to manage folder contents via the <code>/folders/{id}/update/items</code> endpoint.</p>
+
           
     </div>
 
@@ -3592,6 +3602,13 @@
 
         <p>Metadata for the folder, such as icon.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>icon</code> (str, optional): Emoji icon for the folder (e.g., "📁", "🗂️", "📂"). Used for visual representation in the UI. When not provided, a default folder icon is displayed. The icon can be set or updated via the emoji picker in the frontend interface.</li>
+</ul>
+</details>
           
     </div>
 
@@ -3611,7 +3628,22 @@
 
     <div class="doc doc-contents ">
 
-        <p>Additional data associated with the folder, such as file references (e.g. <code>{"files": [...]}</code>).</p>
+        <p>Additional data associated with the folder, containing configuration and file references.</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>system_prompt</code> (str, optional): System prompt associated with the folder. Used to provide context or instructions for chats within this folder.</li>
+<li><code>files</code> (list, optional): List of file references associated with the folder. Each file reference can have a <code>type</code> field (e.g., "file" or "collection") and an <code>id</code> field for the file/collection ID. Used for knowledge management and chat context.</li>
+<li><code>model_ids</code> (list[str], optional): List of model IDs associated with the folder. Determines which models are available/selected when chatting within this folder.</li>
+</ul>
+</details>        <p>The <code>data</code> field is used extensively in the frontend for:
+- Setting default models for chats within the folder (via <code>model_ids</code>)
+- Providing system prompts that apply to all chats in the folder
+- Managing knowledge files that should be available in folder chats
+- Synchronizing folder settings between frontend and backend</p>
+<p>When a folder is selected in the UI, the frontend automatically applies the folder's <code>model_ids</code> to the chat interface and makes the folder's files available for knowledge retrieval.</p>
 
           
     </div>
@@ -4041,6 +4073,15 @@
 
         <p>Additional data for the folder, such as files.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>system_prompt</code> (str, optional): System prompt associated with the folder</li>
+<li><code>files</code> (list, optional): List of file references associated with the folder</li>
+<li><code>model_ids</code> (list, optional): List of model IDs associated with the folder</li>
+</ul>
+</details>
           
     </div>
 
@@ -4062,6 +4103,13 @@
 
         <p>Metadata for the folder, such as icon.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>icon</code> (str, optional): Emoji icon for the folder (e.g., "📁", "🗂️", "📂"). Used for visual representation in the UI.</li>
+</ul>
+</details>
           
     </div>
 
@@ -4192,6 +4240,15 @@
 
         <p>New additional data for the folder.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>system_prompt</code> (str, optional): System prompt associated with the folder</li>
+<li><code>files</code> (list, optional): List of file references associated with the folder. Each file reference can have a <code>type</code> field (e.g., "file" or "collection") and an <code>id</code> field for the file/collection ID.</li>
+<li><code>model_ids</code> (list, optional): List of model IDs associated with the folder</li>
+</ul>
+</details>
           
     </div>
 
@@ -4213,6 +4270,13 @@
 
         <p>New metadata for the folder.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>icon</code> (str, optional): Emoji icon for the folder (e.g., "📁", "🗂️", "📂"). Used for visual representation in the UI.</li>
+</ul>
+</details>
           
     </div>
 

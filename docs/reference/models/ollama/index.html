@@ -1071,6 +1071,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#owui_client.models.ollama.OllamaConfigForm.access_control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        access_control
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3195,6 +3206,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#owui_client.models.ollama.OllamaConfigForm.access_control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        access_control
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4308,13 +4330,57 @@ the API, setting base URLs, and configuring specific API settings like keys.</p>
     <div class="doc doc-contents ">
 
         <p>A dictionary mapping URL indices (as strings) or URLs to configuration objects.</p>
-<p>Each configuration object can contain keys like:
-- <code>enable</code> (bool): Whether this specific URL is enabled.
-- <code>key</code> (str): API key for authentication (if required).
-- <code>prefix_id</code> (str): A prefix to prepend to model names from this source.
-- <code>tags</code> (List[str]): Tags to apply to models from this source.
-- <code>model_ids</code> (List[str]): Allowlist of model IDs to show.
-- <code>connection_type</code> (str): Type of connection (e.g., "local").</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>enable</code> (bool, optional): Whether this specific URL is enabled.</li>
+<li><code>key</code> (str, optional): API key for authentication (if required).</li>
+<li><code>prefix_id</code> (str, optional): A prefix to prepend to model names from this source.</li>
+<li><code>tags</code> (List[str], optional): Tags to apply to models from this source.</li>
+<li><code>model_ids</code> (List[str], optional): Allowlist of model IDs to show.</li>
+<li><code>connection_type</code> (str, optional): Type of connection (e.g., "local").</li>
+</ul>
+</details>
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h5 id="owui_client.models.ollama.OllamaConfigForm.access_control" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">access_control</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">access_control</span><span class="p">:</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="dict">dict</span></span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Access control configuration for Ollama resources.</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>read</code> (dict, optional): Read access control configuration<ul>
+<li><code>group_ids</code> (List[str], optional): List of group IDs that have read access</li>
+<li><code>user_ids</code> (List[str], optional): List of user IDs that have read access</li>
+</ul>
+</li>
+<li><code>write</code> (dict, optional): Write access control configuration<ul>
+<li><code>group_ids</code> (List[str], optional): List of group IDs that have write access</li>
+<li><code>user_ids</code> (List[str], optional): List of user IDs that have write access</li>
+</ul>
+</li>
+</ul>
+</details>        <p>When <code>access_control</code> is <code>None</code>, resources are publicly accessible.
+When <code>access_control</code> is provided, only specified users and groups have access.</p>
 
           
     </div>
@@ -5053,6 +5119,11 @@ the API, setting base URLs, and configuring specific API settings like keys.</p>
 
         <p>Model options (e.g., temperature, context size).</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <p>See <a href="https://github.com/ollama/ollama/blob/main/docs/modelfile.md#valid-parameters-and-values">Ollama Modelfile documentation</a> for valid parameters.</p>
+</details>
           
     </div>
 
@@ -5225,6 +5296,11 @@ the API, setting base URLs, and configuring specific API settings like keys.</p>
 
         <p>Model options.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <p>See <a href="https://github.com/ollama/ollama/blob/main/docs/modelfile.md#valid-parameters-and-values">Ollama Modelfile documentation</a> for valid parameters.</p>
+</details>
           
     </div>
 
@@ -5439,6 +5515,11 @@ the API, setting base URLs, and configuring specific API settings like keys.</p>
 
         <p>The format of the response (e.g., "json").</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <p>If provided as a dictionary, it should be a JSON Schema to enforce a specific output structure.</p>
+</details>
           
     </div>
 
@@ -5460,6 +5541,11 @@ the API, setting base URLs, and configuring specific API settings like keys.</p>
 
         <p>Model parameters like temperature, top_k, etc.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <p>See <a href="https://github.com/ollama/ollama/blob/main/docs/modelfile.md#valid-parameters-and-values">Ollama Modelfile documentation</a> for valid parameters.</p>
+</details>
           
     </div>
 
@@ -5737,6 +5823,19 @@ the API, setting base URLs, and configuring specific API settings like keys.</p>
 
         <p>List of tool calls generated by the model.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>index</code> (int, optional): The index of the tool call in the sequence</li>
+<li><code>id</code> (str, optional): Unique identifier for the tool call</li>
+<li><code>function</code> (dict, required): Function call details<ul>
+<li><code>name</code> (str, required): Name of the function/tool to call</li>
+<li><code>arguments</code> (dict, required): JSON-serializable arguments for the function</li>
+</ul>
+</li>
+</ul>
+</details>
           
     </div>
 
@@ -5909,6 +6008,11 @@ the API, setting base URLs, and configuring specific API settings like keys.</p>
 
         <p>Response format (e.g., "json").</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <p>If provided as a dictionary, it should be a JSON Schema to enforce a specific output structure.</p>
+</details>
           
     </div>
 
@@ -5930,6 +6034,11 @@ the API, setting base URLs, and configuring specific API settings like keys.</p>
 
         <p>Model parameters.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <p>See <a href="https://github.com/ollama/ollama/blob/main/docs/modelfile.md#valid-parameters-and-values">Ollama Modelfile documentation</a> for valid parameters.</p>
+</details>
           
     </div>
 
@@ -6014,6 +6123,19 @@ the API, setting base URLs, and configuring specific API settings like keys.</p>
 
         <p>List of tools available to the model.</p>
 
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>type</code> (str, required): The type of tool, e.g. "function".</li>
+<li><code>function</code> (dict, required): The function definition.<ul>
+<li><code>name</code> (str, required): The name of the function.</li>
+<li><code>description</code> (str, optional): A description of the function.</li>
+<li><code>parameters</code> (dict, required): A JSON schema defining the function parameters.</li>
+</ul>
+</li>
+</ul>
+</details>
           
     </div>
 
