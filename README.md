@@ -1,19 +1,12 @@
-# Unofficial Open WebUI API Documentation
+# Unofficial Open WebUI API Documentation and Python Client
 
-This is **unofficial documentation** for the Open WebUI API in general. It provides comprehensive coverage of all API endpoints, models, and their fields.
+[**📚 Full Documentation Site**](https://whogben.github.io/owui_client/)
 
-## What's Included
+This project provides **both** a robust, async Python client for the complete [Open WebUI](https://github.com/open-webui/open-webui) API **and** comprehensive unofficial documentation for the Open WebUI API in general.
 
-This documentation includes **detailed descriptions of every field of every model**, calculated automatically by examining their usage in the Open WebUI source code. The field descriptions are extracted from:
+## Python Client
 
-- Type annotations and Pydantic model definitions
-- Docstrings and comments in the source code
-- Actual usage patterns found throughout the codebase
-- API response examples and validation logic
-
-## Python Client Library
-
-While this documentation is API-focused and language-agnostic, it is generated from the [owui-client](https://github.com/whogben/owui_client) Python library, which provides a fully typed, async interface to the Open WebUI API.
+A fully typed, async Python client that mirrors the backend structure of Open WebUI, providing an auto-completable interface for every endpoint.
 
 ### Installation
 
@@ -28,30 +21,26 @@ import asyncio
 from owui_client import OpenWebUI
 
 async def main():
+    # Connect to your Open WebUI instance
     client = OpenWebUI(
         api_url="http://localhost:8080/api", 
         api_key="sk-..."
     )
-    
-    # Get current user info
+
+    # Example: Get current user info
     user = await client.auths.get_session_user()
     print(f"Hello, {user.name}!")
+
+    # Example: List all models
+    models = await client.models.get_models()
+    for model in models.data:
+        print(model.id)
 
 if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-## Documentation Structure
-
-- **Code Reference**: Browse all models, routers, and client classes with complete field descriptions
-- **Models**: Every Pydantic model with detailed field documentation
-- **Routers**: All API endpoints organized by resource type
-
-## Note
-
-This documentation is maintained independently and may not always reflect the latest changes in Open WebUI. For the official Open WebUI documentation, please visit the [Open WebUI repository](https://github.com/open-webui/open-webui).
-
-## Locating Endpoints
+### Locating Endpoints
 
 The client structure matches the Open WebUI backend router structure exactly. If you know the API endpoint or backend path, you know the client function.
 
@@ -74,3 +63,20 @@ The client structure matches the Open WebUI backend router structure exactly. If
 | | `client.functions`| Function management |
 
 *Tip: Use your IDE's autocomplete on the `client` object to explore all available resources.*
+
+## API Documentation
+
+The [documentation site](https://whogben.github.io/owui_client/) provides comprehensive coverage of all API endpoints, models, and their fields. This includes **detailed descriptions of every field of every model**, calculated automatically by examining their usage in the Open WebUI source code.
+
+The field descriptions are extracted from:
+
+- Type annotations and Pydantic model definitions
+- Docstrings and comments in the source code
+- Actual usage patterns found throughout the codebase
+- API response examples and validation logic
+
+This documentation is useful even if you're not using the Python client - it serves as a complete reference for the Open WebUI API, including all valid key/values accepted by dict fields.
+
+## Note
+
+This project is maintained independently and may not always reflect the latest changes in Open WebUI. For the official Open WebUI documentation, please visit the [Open WebUI repository](https://github.com/open-webui/open-webui).
