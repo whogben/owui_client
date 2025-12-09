@@ -1,13 +1,19 @@
 import ast
 import sys
 import re
+import importlib
+import inspect
 from pathlib import Path
 from typing import Dict, Set, List, Tuple, Any
+from pydantic import BaseModel
 
 # Configuration
 PROJECT_ROOT = Path(__file__).parent.parent
 REF_BASE = PROJECT_ROOT / "refs/owui_source_main/backend/open_webui"
 CLIENT_BASE = PROJECT_ROOT / "src/owui_client"
+
+# Add client source to path for importing
+sys.path.append(str(PROJECT_ROOT / "src"))
 
 
 class DriftIssue:
@@ -73,7 +79,7 @@ def get_class_details(file_path: Path) -> Dict[str, Dict[str, Any]]:
                 if isinstance(item, ast.AnnAssign):
                     if isinstance(item.target, ast.Name):
                         fields.add(item.target.id)
-            
+
             classes[node.name] = {"fields": fields, "bases": bases}
 
     return classes
@@ -205,6 +211,63 @@ def heuristic_search(file_content: str, path: str) -> bool:
     return clean_path in file_content
 
 
+def get_redundant_candidates() -> List[Dict[str, str]]:
+    """
+    Scans all client models to find attributes that are redefined in a child class
+    but were already present in a parent class.
+    Returns list of {"class": cls_name, "attribute": attr_name, "base": base_name, "file": file_name}
+    """
+    models_dir = CLIENT_BASE / "models"
+    model_modules = []
+
+    if models_dir.exists():
+        for file_path in models_dir.glob("*.py"):
+            if file_path.name != "__init__.py":
+                module_name = f"owui_client.models.{file_path.stem}"
+                try:
+                    module = importlib.import_module(module_name)
+                    model_modules.append((module, file_path.name))
+                except ImportError as e:
+                    # Ignore import errors here, other tests catch them
+                    pass
+
+    # Import shortcuts
+    try:
+        shortcuts_module = importlib.import_module("owui_client.shortcuts")
+        model_modules.append((shortcuts_module, "shortcuts.py"))
+    except ImportError:
+        pass
+
+    candidates = []
+
+    for module, file_name in model_modules:
+        for name, cls in inspect.getmembers(module, inspect.isclass):
+            if (
+                issubclass(cls, BaseModel)
+                and cls is not BaseModel
+                and cls.__module__ == module.__name__
+            ):
+                if not hasattr(cls, "__annotations__"):
+                    continue
+
+                for attr_name in cls.__annotations__:
+                    # Check if this attribute exists in any parent class (excluding BaseModel/object)
+                    for base in cls.__mro__[1:]:
+                        if issubclass(base, BaseModel) and base is not BaseModel:
+                            # Check if the field is defined in this base
+                            if attr_name in base.model_fields:
+                                candidates.append(
+                                    {
+                                        "class": cls.__name__,
+                                        "attribute": attr_name,
+                                        "base": base.__name__,
+                                        "file": file_name,
+                                    }
+                                )
+                                break  # Found in one parent
+    return candidates
+
+
 def find_drift(ignore_files: List[str] = None) -> List[DriftIssue]:
     if ignore_files is None:
         ignore_files = []
@@ -226,6 +289,42 @@ def find_drift(ignore_files: List[str] = None) -> List[DriftIssue]:
         )
         return issues
 
+    # Collect all reference classes to check for intentional redundancies
+    all_ref_classes = {}
+
+    # helper to process a directory into all_ref_classes
+    def scan_ref_dir(directory):
+        if directory.exists():
+            for f in directory.glob("*.py"):
+                all_ref_classes.update(get_class_details(f))
+
+    scan_ref_dir(ref_models_dir)
+    scan_ref_dir(ref_routers_dir)
+
+    # 3. Check for Redundant Attributes (with Reference Check)
+    # Get candidates from client code
+    redundant_candidates = get_redundant_candidates()
+
+    for candidate in redundant_candidates:
+        cls_name = candidate["class"]
+        attr_name = candidate["attribute"]
+
+        # Check if this redundancy is intentional (present in reference)
+        is_intentional = False
+        if cls_name in all_ref_classes:
+            ref_details = all_ref_classes[cls_name]
+            if attr_name in ref_details["fields"]:
+                is_intentional = True
+
+        if not is_intentional:
+            issues.append(
+                DriftIssue(
+                    "REDUNDANT_FIELD",
+                    f"Attribute '{attr_name}' in {cls_name} is redefined but already exists in parent {candidate['base']}. Not found in reference source.",
+                    candidate["file"],
+                )
+            )
+
     # Drive check from Client Models (what we have implemented)
     for client_file in client_models_dir.glob("*.py"):
         if client_file.name == "__init__.py":
@@ -235,10 +334,10 @@ def find_drift(ignore_files: List[str] = None) -> List[DriftIssue]:
 
         ref_model_file = ref_models_dir / client_file.name
         ref_router_file = ref_routers_dir / client_file.name
-        
+
         # Get details from client
         client_classes = get_class_details(client_file)
-        
+
         # Build reference classes map by combining Model and Router files
         ref_classes = {}
         if ref_model_file.exists():
@@ -250,9 +349,9 @@ def find_drift(ignore_files: List[str] = None) -> List[DriftIssue]:
         for cls_name, client_details in client_classes.items():
             if cls_name in ref_classes:
                 ref_details = ref_classes[cls_name]
-                
+
                 # Check for Missing Fields
-                missing_fields = ref_details['fields'] - client_details['fields']
+                missing_fields = ref_details["fields"] - client_details["fields"]
                 if missing_fields:
                     issues.append(
                         DriftIssue(
@@ -261,14 +360,16 @@ def find_drift(ignore_files: List[str] = None) -> List[DriftIssue]:
                             client_file.name,
                         )
                     )
-                
+
                 # Check for Missing Bases
                 # We filter out common bases that aren't relevant for drift like 'BaseModel'
-                ignored_bases = {'BaseModel', 'object'}
-                missing_bases = ref_details['bases'] - client_details['bases'] - ignored_bases
-                
+                ignored_bases = {"BaseModel", "object"}
+                missing_bases = (
+                    ref_details["bases"] - client_details["bases"] - ignored_bases
+                )
+
                 if missing_bases:
-                     issues.append(
+                    issues.append(
                         DriftIssue(
                             "MISSING_BASE",
                             f"Model {cls_name} missing base classes: {', '.join(missing_bases)}",
@@ -328,13 +429,15 @@ def find_drift(ignore_files: List[str] = None) -> List[DriftIssue]:
             if not found and method == "API_ROUTE":
                 # If we have a client request with dynamic method (empty string) and matching URL, assume it's the one.
                 for c_method, c_url in client_requests:
-                     if c_method == "":
+                    if c_method == "":
                         norm_client_url = normalize_path(c_url)
                         if norm_ref_path == "/" or norm_ref_path == "":
-                             if norm_client_url.endswith(f"/{ref_file.stem}/") or norm_client_url.endswith(f"/{ref_file.stem}"):
-                                 found = True
+                            if norm_client_url.endswith(
+                                f"/{ref_file.stem}/"
+                            ) or norm_client_url.endswith(f"/{ref_file.stem}"):
+                                found = True
                         elif norm_client_url.endswith(norm_ref_path):
-                             found = True
+                            found = True
 
             if not found:
                 issues.append(

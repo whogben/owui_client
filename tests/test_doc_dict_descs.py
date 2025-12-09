@@ -3,6 +3,7 @@ import inspect
 from pathlib import Path
 from typing import Any, get_args, get_origin
 
+import pytest
 from pydantic import BaseModel
 
 
@@ -59,12 +60,71 @@ def test_dict_attributes_are_documented():
 
     # Raise descriptive error if any dict attributes are missing documentation
     if dictattrs_without_documentation:
-        issue_description = ""
+        # Calculate stats
+        total_classes = len(dictattrs_without_documentation)
+        total_attributes = sum(len(attrs) for attrs in dictattrs_without_documentation.values())
+        
+        modules_set = set()
+        for key in dictattrs_without_documentation:
+            # key is like "owui_client.models.module_name.ClassName"
+            module_name = key.rsplit(".", 1)[0]
+            modules_set.add(module_name)
+        total_modules = len(modules_set)
+
+        issue_description = f"\nMissing 'Dict Fields:' documentation stats:\n"
+        issue_description += f"- Modules: {total_modules}\n"
+        issue_description += f"- Classes: {total_classes}\n"
+        issue_description += f"- Attributes: {total_attributes}\n"
+
         for modclass, dictattrs in dictattrs_without_documentation.items():
             issue_description += f"\n- Module {modclass}\n"
             for dictattr in dictattrs:
                 issue_description += f"  - Attribute {dictattr['name']}: {str(dictattr['annotation'])} missing 'Dict Fields:' section to describe valid key/value pairs\n"
-        raise ValueError(issue_description[1:])
+        
+        pytest.fail(issue_description, pytrace=False)
+
+
+def test_doc_inheritance_resolution():
+    """Verify that extract_attributes correctly resolves the defining class for documentation."""
+    class Parent(BaseModel):
+        parent_only: dict
+        """Parent doc."""
+        
+        overridden: dict
+        """Parent overridden doc."""
+
+    class Child(Parent):
+        overridden: dict
+        """Child doc."""
+        
+        child_only: dict
+        """Child only doc."""
+
+    class GrandChild(Child):
+        pass
+
+    # Test Parent
+    parent_attrs = extract_attributes(Parent)
+    assert "Parent doc" in parent_attrs["parent_only"]["docstr"]
+    assert "Parent overridden doc" in parent_attrs["overridden"]["docstr"]
+
+    # Test Child
+    child_attrs = extract_attributes(Child)
+    # parent_only should come from Parent
+    assert "Parent doc" in child_attrs["parent_only"]["docstr"]
+    # overridden should come from Child
+    assert "Child doc" in child_attrs["overridden"]["docstr"]
+    # child_only from Child
+    assert "Child only doc" in child_attrs["child_only"]["docstr"]
+
+    # Test GrandChild
+    gc_attrs = extract_attributes(GrandChild)
+    # parent_only from Parent
+    assert "Parent doc" in gc_attrs["parent_only"]["docstr"]
+    # overridden from Child (closest definition)
+    assert "Child doc" in gc_attrs["overridden"]["docstr"]
+    # child_only from Child
+    assert "Child only doc" in gc_attrs["child_only"]["docstr"]
 
 
 def extract_attributes(from_class: type[BaseModel]) -> dict[str, dict[str, Any]]:
@@ -78,17 +138,28 @@ def extract_attributes(from_class: type[BaseModel]) -> dict[str, dict[str, Any]]
     """
     result = {}
 
-    # Get the source code to extract documentation comments
-    try:
-        source_lines = inspect.getsourcelines(from_class)[0]
-        source_text = "".join(source_lines)
-    except (OSError, TypeError):
-        source_lines = []
-        source_text = ""
-
     # Iterate through Pydantic model fields
     for field_name, field_info in from_class.model_fields.items():
         annotation = field_info.annotation
+
+        # Find which class in the MRO actually defines this field
+        defining_class = from_class
+        for base_class in inspect.getmro(from_class):
+            if (
+                issubclass(base_class, BaseModel)
+                and base_class is not BaseModel
+                and field_name in base_class.__annotations__
+            ):
+                defining_class = base_class
+                break
+
+        # Get the source code from the DEFINING class, not the current class
+        try:
+            source_lines = inspect.getsourcelines(defining_class)[0]
+            source_text = "".join(source_lines)
+        except (OSError, TypeError):
+            source_lines = []
+            source_text = ""
 
         # Determine if optional
         origin = get_origin(annotation)
@@ -151,7 +222,8 @@ def extract_attributes(from_class: type[BaseModel]) -> dict[str, dict[str, Any]]
         if source_lines:
             # Look for the attribute definition and check next line for docstring
             for i, line in enumerate(source_lines):
-                if f"{field_name}:" in line or f"{field_name} =" in line:
+                stripped_line = line.strip()
+                if stripped_line.startswith(f"{field_name}:") or stripped_line.startswith(f"{field_name} =") or stripped_line.startswith(f"{field_name}="):
                     # Check if next line contains a string literal (docstring)
                     if i + 1 < len(source_lines):
                         next_line = source_lines[i + 1].strip()
