@@ -22,8 +22,8 @@ description: |
   - Report any issues at https://github.com/open-webui/owui_client/issues
 
 required_open_webui_version: 0.6.0
-requirements: pydantic, owui-client
-version: 0.2.0
+requirements: --upgrade, owui-client~=1.0
+version: 0.3.0
 license: MIT
 """
 
@@ -67,20 +67,68 @@ class Tools:
         __metadata__: dict = {},
     ) -> dict:
         """
-        Inspects the current context, returning metadata about the current chat, current user, and current model (thats you!).
+        Inspects the current context, returning metadata about the current chat (including it's folder hierarchy), current user, and current model (thats you!).
         Use this when you need to act on the user, the chat, or yourself - to find out the appropriate ids.
         """
-
-        # Obtain folder information and inject it into metadata
         owui = _get_api(self)
-        chat_info = await owui.chats.get(__metadata__["chat_id"])
-        if chat_info.folder_id:
-            __metadata__["folder_id"] = chat_info.folder_id
-            folder_info = await owui.folders.get_folder_by_id(chat_info.folder_id)
-            __metadata__["folder_name"] = folder_info.name
-        else:
-            __metadata__["folder_id"] = ""
-            __metadata__["folder_name"] = ""
+
+        # Obtain additional context that we may need in parallel
+        get_user = owui.users.get_user_by_id(__metadata__["user_id"])
+        get_chat = owui.chats.get(__metadata__["chat_id"])
+
+        user_info, chat_info = await asyncio.gather(get_user, get_chat)
+
+        # Extract and combine user information into it's own dict
+        __metadata__["user"] = {
+            "id": __metadata__.pop("user_id"),
+            "name": user_info.name,
+            "email": user_info.email,
+            "role": user_info.role,
+        }
+
+        # Build the folder inheritance chain to find all influences on the chat
+        current_folder_id = chat_info.folder_id
+        folders = []  # Collect folders in order from immediate parent to root
+
+        while current_folder_id:
+            folder_info = await owui.folders.get_folder_by_id(current_folder_id)
+
+            folder_files = folder_info.data.get("files", [])
+            collection_files = [
+                file for file in folder_files if file.get("type") == "collection"
+            ]
+            single_files = [
+                file for file in folder_files if file.get("type") != "collection"
+            ]
+
+            system_prompt_preview = folder_info.data.get("system_prompt", "")[:140]
+            if system_prompt_preview:
+                system_prompt_preview += "..."
+
+            folder = {
+                "id": folder_info.id,
+                "name": folder_info.name,
+                "system_prompt_preview": system_prompt_preview,
+                "knowledge_file_ct": len(single_files),
+                "knowledge_collection_ct": len(collection_files),
+            }
+
+            folders.append(folder)
+            current_folder_id = folder_info.parent_id
+
+        # Build the nested structure from the collected folders
+        # Start with the root folder (last in the list) and nest upwards
+        nested_folder = None
+        for folder in reversed(folders):
+            if nested_folder is None:
+                nested_folder = folder
+            else:
+                # Create a copy of the folder and add the nested parent
+                folder_with_parent = folder.copy()
+                folder_with_parent["parent_folder"] = nested_folder
+                nested_folder = folder_with_parent
+
+        __metadata__["parent_folder"] = nested_folder
 
         return __metadata__
 
