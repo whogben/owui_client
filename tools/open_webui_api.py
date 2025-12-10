@@ -2,25 +2,39 @@
 title: Open WebUI API
 author: William Hogben
 description: |
-    Manage your Open WebUI instance with an Open WebUI Agent.
+  Give your Open WebUI agents the ability to manage an Open WebUI insance.
 
-    *USE AT YOUR OWN RISK!*
-    This is a pre-release, it is very plausible that your AI can use this to break your Open WebUI instance.
-    - Don't run it on prod unless you've got a good backup strategy in place.
-    - Inspect all AI tool calls marked "call_api", and abort the AI if it's acting suspiciously.
-    - Report any issues at https://github.com/open-webui/owui_client/issues
+  > The API call.. is coming from inside the house!
+
+  Using this tool your AI agent can call *any* command from the full Open WebUI API.
+
+  *HOW IT WORKS*
+  There are 4 tools which provide access to the API:
+  - inspect_context lets the AI find out who the user is, what chat it's in, and what model it is.
+  - find_apis can be used to search for specific APIs, helping the AI orient itself
+  - get_api_details returns the documentation for a given API, along with the schemas of it's parameters
+  - call_api is used to send an API command.
+
+  *USE AT YOUR OWN RISK!*
+  This is a pre-release, it is very plausible that your AI can use this to break your Open WebUI instance.
+  - Don't run it on prod unless you've got a good backup strategy in place.
+  - Inspect all AI tool calls marked "call_api", and abort the AI if it's acting suspiciously.
+  - Report any issues at https://github.com/open-webui/owui_client/issues
 
 required_open_webui_version: 0.6.0
 requirements: pydantic, owui-client
-version: 0.1.0
+version: 0.2.0
 license: MIT
 """
 
 import asyncio
-import inspect
 import os
+import inspect
+from typing import Any, Callable
+
 from owui_client import OpenWebUI
 from owui_client.client_base import ResourceBase
+
 from pydantic import BaseModel, Field
 
 
@@ -47,6 +61,28 @@ class Tools:
     def __init__(self):
         self.valves = self.Valves()
         self.user_valves = self.UserValves()
+
+    async def inspect_context(
+        self,
+        __metadata__: dict = {},
+    ) -> dict:
+        """
+        Inspects the current context, returning metadata about the current chat, current user, and current model (thats you!).
+        Use this when you need to act on the user, the chat, or yourself - to find out the appropriate ids.
+        """
+
+        # Obtain folder information and inject it into metadata
+        owui = _get_api(self)
+        chat_info = await owui.chats.get(__metadata__["chat_id"])
+        if chat_info.folder_id:
+            __metadata__["folder_id"] = chat_info.folder_id
+            folder_info = await owui.folders.get_folder_by_id(chat_info.folder_id)
+            __metadata__["folder_name"] = folder_info.name
+        else:
+            __metadata__["folder_id"] = ""
+            __metadata__["folder_name"] = ""
+
+        return __metadata__
 
     def find_apis(
         self,
