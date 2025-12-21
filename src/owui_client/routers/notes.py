@@ -4,7 +4,8 @@ from owui_client.models.notes import (
     NoteModel,
     NoteForm,
     NoteUserResponse,
-    NoteTitleIdResponse,
+    NoteItemResponse,
+    NoteListResponse,
 )
 
 
@@ -13,7 +14,7 @@ class NotesClient(ResourceBase):
     Client for the Notes endpoints.
     """
 
-    async def get_notes(self) -> List[NoteUserResponse]:
+    async def get_notes(self) -> List[NoteItemResponse]:
         """
         Get all notes visible to the user.
 
@@ -22,37 +23,55 @@ class NotesClient(ResourceBase):
         Otherwise, they can see their own notes and notes shared with them.
 
         Returns:
-            A list of `NoteUserResponse` objects.
+            A list of `NoteItemResponse` objects.
         """
         return await self._request(
             "GET",
             "/v1/notes/",
-            model=NoteUserResponse,
+            model=NoteItemResponse,
         )
 
-    async def get_note_list(
-        self, page: Optional[int] = None
-    ) -> List[NoteTitleIdResponse]:
+    async def search_notes(
+        self,
+        query: Optional[str] = None,
+        view_option: Optional[str] = None,
+        permission: Optional[str] = None,
+        order_by: Optional[str] = None,
+        direction: Optional[str] = None,
+        page: Optional[int] = 1,
+    ) -> NoteListResponse:
         """
-        Get a paginated list of notes visible to the user.
-
-        This endpoint returns a simplified list of notes (only ID, title, timestamps).
-        It supports pagination via the `page` parameter. The page size is fixed at 60.
+        Search for notes.
 
         Args:
-            page: The page number to retrieve (1-based index).
+            query: Search query string.
+            view_option: View option filter (e.g., 'created', 'shared').
+            permission: Permission filter (e.g., 'read', 'write').
+            order_by: Field to order by.
+            direction: Sort direction ('asc', 'desc').
+            page: Page number (default 1).
 
         Returns:
-            A list of `NoteTitleIdResponse` objects.
+            `NoteListResponse`: List of notes matching the search criteria.
         """
         params = {}
-        if page is not None:
+        if query:
+            params["query"] = query
+        if view_option:
+            params["view_option"] = view_option
+        if permission:
+            params["permission"] = permission
+        if order_by:
+            params["order_by"] = order_by
+        if direction:
+            params["direction"] = direction
+        if page:
             params["page"] = page
 
         return await self._request(
             "GET",
-            "/v1/notes/list",
-            model=NoteTitleIdResponse,
+            "/v1/notes/search",
+            model=NoteListResponse,
             params=params,
         )
 

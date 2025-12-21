@@ -30,7 +30,7 @@ description: |
   - Inspect all AI tool calls marked "call_api", and abort the AI if it's acting suspiciously.
   - Report any issues at https://github.com/open-webui/owui_client/issues
 
-required_open_webui_version: 0.6.0
+required_open_webui_version: 0.6.1
 requirements: --upgrade, owui-client<2.0, httpx<1.0
 version: 0.3.0
 license: MIT
@@ -119,7 +119,9 @@ class Tools:
         get_user = owui.users.get_user_by_id(__metadata__["user_id"])
         get_chat = owui.chats.get(__metadata__["chat_id"])
 
-        user_info, chat_info = await asyncio.gather(get_user, get_chat)
+        user_info, chat_info = await asyncio.gather(
+            get_user, get_chat, return_exceptions=True
+        )
 
         # Extract and combine user information into it's own dict
         __metadata__["user"] = {
@@ -129,49 +131,52 @@ class Tools:
             "role": user_info.role,
         }
 
-        # Build the folder inheritance chain to find all influences on the chat
-        current_folder_id = chat_info.folder_id
-        folders = []  # Collect folders in order from immediate parent to root
+        if isinstance(chat_info, Exception):
+            __metadata__["temporary_chat"] = True
+        else:
+            # Build the folder inheritance chain to find all influences on the chat
+            current_folder_id = chat_info.folder_id
+            folders = []  # Collect folders in order from immediate parent to root
 
-        while current_folder_id:
-            folder_info = await owui.folders.get_folder_by_id(current_folder_id)
+            while current_folder_id:
+                folder_info = await owui.folders.get_folder_by_id(current_folder_id)
 
-            folder_files = folder_info.data.get("files", [])
-            collection_files = [
-                file for file in folder_files if file.get("type") == "collection"
-            ]
-            single_files = [
-                file for file in folder_files if file.get("type") != "collection"
-            ]
+                folder_files = folder_info.data.get("files", [])
+                collection_files = [
+                    file for file in folder_files if file.get("type") == "collection"
+                ]
+                single_files = [
+                    file for file in folder_files if file.get("type") != "collection"
+                ]
 
-            system_prompt_preview = folder_info.data.get("system_prompt", "")[:140]
-            if system_prompt_preview:
-                system_prompt_preview += "..."
+                system_prompt_preview = folder_info.data.get("system_prompt", "")[:140]
+                if system_prompt_preview:
+                    system_prompt_preview += "..."
 
-            folder = {
-                "id": folder_info.id,
-                "name": folder_info.name,
-                "system_prompt_preview": system_prompt_preview,
-                "knowledge_file_ct": len(single_files),
-                "knowledge_collection_ct": len(collection_files),
-            }
+                folder = {
+                    "id": folder_info.id,
+                    "name": folder_info.name,
+                    "system_prompt_preview": system_prompt_preview,
+                    "knowledge_file_ct": len(single_files),
+                    "knowledge_collection_ct": len(collection_files),
+                }
 
-            folders.append(folder)
-            current_folder_id = folder_info.parent_id
+                folders.append(folder)
+                current_folder_id = folder_info.parent_id
 
-        # Build the nested structure from the collected folders
-        # Start with the root folder (last in the list) and nest upwards
-        nested_folder = None
-        for folder in reversed(folders):
-            if nested_folder is None:
-                nested_folder = folder
-            else:
-                # Create a copy of the folder and add the nested parent
-                folder_with_parent = folder.copy()
-                folder_with_parent["parent_folder"] = nested_folder
-                nested_folder = folder_with_parent
+            # Build the nested structure from the collected folders
+            # Start with the root folder (last in the list) and nest upwards
+            nested_folder = None
+            for folder in reversed(folders):
+                if nested_folder is None:
+                    nested_folder = folder
+                else:
+                    # Create a copy of the folder and add the nested parent
+                    folder_with_parent = folder.copy()
+                    folder_with_parent["parent_folder"] = nested_folder
+                    nested_folder = folder_with_parent
 
-        __metadata__["parent_folder"] = nested_folder
+            __metadata__["parent_folder"] = nested_folder
 
         return await _finalize_tool_response(self, __metadata__)
 

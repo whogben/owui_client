@@ -176,9 +176,9 @@ class NoteUserResponse(NoteModel):
     """The user who created the note."""
 
 
-class NoteTitleIdResponse(BaseModel):
+class NoteItemResponse(BaseModel):
     """
-    Simplified note model containing only ID, title and timestamps.
+    Response model for a note item in a list.
     """
 
     id: str
@@ -187,8 +187,38 @@ class NoteTitleIdResponse(BaseModel):
     title: str
     """The title of the note."""
 
+    data: Optional[dict] = None
+    """
+    The content of the note.
+
+    Dict Fields:
+        - `content` (dict, required): Content in multiple formats
+        - `content.json` (Any, optional): JSON representation of content, typically null
+        - `content.html` (str, optional): HTML formatted content
+        - `content.md` (str, optional): Markdown formatted content
+        - `versions` (list, optional): Historical versions of the note content
+        - `versions[].content` (dict, optional): Version content structure
+        - `versions[].timestamp` (int, optional): Version timestamp in epoch
+        - `versions[].user_id` (str, optional): User ID who created the version
+    """
+
     updated_at: int
     """Timestamp when the note was last updated (in epoch)."""
 
     created_at: int
     """Timestamp when the note was created (in epoch)."""
+
+    user: Optional[UserResponse] = None
+    """The user who created the note."""
+
+
+class NoteListResponse(BaseModel):
+    """
+    Response model for a list of notes with pagination.
+    """
+
+    items: list[NoteUserResponse]
+    """List of note items."""
+
+    total: int
+    """Total number of notes matching the query."""

@@ -4,6 +4,12 @@ from owui_client.models.messages import MessageForm
 
 @pytest.mark.asyncio
 async def test_channels_crud(client):
+    # Enable channels if not enabled
+    admin_config = await client.auths.get_admin_config()
+    if not admin_config.ENABLE_CHANNELS:
+        admin_config.ENABLE_CHANNELS = True
+        await client.auths.update_admin_config(admin_config)
+
     # Create a channel
     create_form = CreateChannelForm(
         name="test-channel",

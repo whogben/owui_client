@@ -265,6 +265,92 @@ class ChatResponse(BaseModel):
     """ID of the folder containing this chat, if any."""
 
 
+class ChatListResponse(BaseModel):
+    """
+    Response model for a list of chats with pagination.
+    """
+
+    items: list[ChatModel]
+    """List of chat items."""
+
+    total: int
+    """Total number of chats."""
+
+
+class ChatUsageStatsResponse(BaseModel):
+    """
+    Response model for chat usage statistics.
+    """
+
+    id: str
+    """Unique identifier for the chat."""
+
+    models: dict = {}
+    """Models used in the chat with their usage counts.
+
+    Dict Fields:
+        - `key` (str): The model ID.
+        - `value` (int): The usage count for that model.
+    """
+
+    message_count: int
+    """Number of messages in the chat."""
+
+    history_models: dict = {}
+    """Models used in the chat history with their usage counts.
+
+    Dict Fields:
+        - `key` (str): The model ID.
+        - `value` (int): The usage count for that model.
+    """
+
+    history_message_count: int
+    """Number of messages in the chat history."""
+
+    history_user_message_count: int
+    """Number of user messages in the chat history."""
+
+    history_assistant_message_count: int
+    """Number of assistant messages in the chat history."""
+
+    average_response_time: float
+    """Average response time of assistant messages in seconds."""
+
+    average_user_message_content_length: float
+    """Average length of user message contents."""
+
+    average_assistant_message_content_length: float
+    """Average length of assistant message contents."""
+
+    tags: list[str] = []
+    """Tags associated with the chat."""
+
+    last_message_at: int
+    """Timestamp of the last message (epoch)."""
+
+    updated_at: int
+    """Timestamp when the chat was last updated (epoch)."""
+
+    created_at: int
+    """Timestamp when the chat was created (epoch)."""
+
+    model_config = ConfigDict(extra="allow")
+
+
+class ChatUsageStatsListResponse(BaseModel):
+    """
+    Response model for a list of chat usage statistics with pagination.
+    """
+
+    items: list[ChatUsageStatsResponse]
+    """List of chat usage statistics."""
+
+    total: int
+    """Total number of chats."""
+
+    model_config = ConfigDict(extra="allow")
+
+
 class ChatTitleIdResponse(BaseModel):
     """
     Lightweight chat response containing only essential metadata.

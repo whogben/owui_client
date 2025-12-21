@@ -2,7 +2,7 @@ from typing import Optional, Union
 from pydantic import BaseModel, ConfigDict
 
 from owui_client.models.users import UserResponse
-from owui_client.models.files import FileMetadataResponse
+from owui_client.models.files import FileMetadataResponse, FileModelResponse
 
 
 class KnowledgeModel(BaseModel):
@@ -168,8 +168,11 @@ class KnowledgeFilesResponse(KnowledgeResponse):
     Inherits access_control from `KnowledgeModel`. Access control determines who can read and write to this knowledge base.
     """
 
-    files: list[FileMetadataResponse]
+    files: Optional[list[FileMetadataResponse]] = None
     """List of files associated with the knowledge base."""
+
+    write_access: Optional[bool] = False
+    """Whether the current user has write access to the knowledge base."""
 
     warnings: Optional[dict] = None
     """
@@ -179,6 +182,48 @@ class KnowledgeFilesResponse(KnowledgeResponse):
         - `message` (str, required): Human-readable warning message describing the issue
         - `errors` (list[str], required): List of specific error details for failed operations
     """
+
+
+class KnowledgeAccessResponse(KnowledgeUserResponse):
+    """
+    Response model for knowledge base access information.
+    """
+
+    write_access: Optional[bool] = False
+    """Whether the current user has write access."""
+
+
+class KnowledgeAccessListResponse(BaseModel):
+    """
+    Response model for a list of knowledge bases with access info.
+    """
+
+    items: list[KnowledgeAccessResponse]
+    """List of knowledge base access items."""
+
+    total: int
+    """Total number of items."""
+
+
+class FileUserResponse(FileModelResponse):
+    """
+    File response with user details.
+    """
+
+    user: Optional[UserResponse] = None
+    """The user who owns the file."""
+
+
+class KnowledgeFileListResponse(BaseModel):
+    """
+    Response model for a list of knowledge base files.
+    """
+
+    items: list[FileUserResponse]
+    """List of file items."""
+
+    total: int
+    """Total number of items."""
 
 
 class KnowledgeFileIdForm(BaseModel):

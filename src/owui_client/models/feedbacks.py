@@ -134,6 +134,24 @@ class FeedbackResponse(BaseModel):
     """Timestamp when feedback was last updated (epoch)."""
 
 
+class FeedbackIdResponse(BaseModel):
+    """
+    Response model for feedback IDs.
+    """
+
+    id: str
+    """Unique identifier for the feedback."""
+
+    user_id: str
+    """ID of the user who submitted the feedback."""
+
+    created_at: int
+    """Timestamp when feedback was created (epoch)."""
+
+    updated_at: int
+    """Timestamp when feedback was last updated (epoch)."""
+
+
 class RatingData(BaseModel):
     """
     Data structure for rating-type feedback.

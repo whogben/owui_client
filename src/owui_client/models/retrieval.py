@@ -113,6 +113,8 @@ class WebConfig(BaseModel):
     """API key for Ollama Cloud web search."""
     SEARXNG_QUERY_URL: Optional[str] = None
     """The query URL for SearXNG."""
+    SEARXNG_LANGUAGE: Optional[str] = None
+    """The language for SearXNG."""
     YACY_QUERY_URL: Optional[str] = None
     """The query URL for YaCy."""
     YACY_USERNAME: Optional[str] = None
@@ -171,6 +173,8 @@ class WebConfig(BaseModel):
     """The SK for Sougou API."""
     WEB_LOADER_ENGINE: Optional[str] = None
     """The web loader engine to use."""
+    WEB_LOADER_TIMEOUT: Optional[str] = None
+    """The timeout for the web loader."""
     ENABLE_WEB_LOADER_SSL_VERIFICATION: Optional[bool] = None
     """Whether to enable SSL verification for the web loader."""
     PLAYWRIGHT_WS_URL: Optional[str] = None
@@ -294,6 +298,8 @@ class ConfigForm(BaseModel):
     """URL for MinerU API."""
     MINERU_API_KEY: Optional[str] = None
     """API key for MinerU."""
+    MINERU_API_TIMEOUT: Optional[str] = None
+    """The timeout for the MinerU API."""
     MINERU_PARAMS: Optional[Dict] = None
     """Parameters for MinerU.
 
@@ -317,6 +323,8 @@ class ConfigForm(BaseModel):
     """URL for external reranker."""
     RAG_EXTERNAL_RERANKER_API_KEY: Optional[str] = None
     """API key for external reranker."""
+    RAG_EXTERNAL_RERANKER_TIMEOUT: Optional[str] = None
+    """The timeout for the external reranker."""
 
     # Chunking settings
     TEXT_SPLITTER: Optional[str] = None

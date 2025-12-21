@@ -311,6 +311,9 @@ class UserActiveResponse(UserStatus):
     is_active: bool
     """Whether the user is currently active (based on recent activity)."""
 
+    groups: Optional[list] = []
+    """List of groups the user belongs to."""
+
     model_config = ConfigDict(extra="allow")
 
 

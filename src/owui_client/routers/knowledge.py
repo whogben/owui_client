@@ -6,6 +6,8 @@ from owui_client.models.knowledge import (
     KnowledgeFilesResponse,
     KnowledgeForm,
     KnowledgeFileIdForm,
+    KnowledgeAccessListResponse,
+    KnowledgeFileListResponse,
 )
 
 
@@ -14,15 +16,18 @@ class KnowledgeClient(ResourceBase):
     Client for the Knowledge endpoints.
     """
 
-    async def get_knowledge(self) -> List[KnowledgeUserResponse]:
+    async def get_knowledge(self, page: int = 1) -> KnowledgeAccessListResponse:
         """
         Get knowledge bases (read access).
 
+        Args:
+            page: Page number (default 1).
+
         Returns:
-            List[KnowledgeUserResponse]: List of knowledge bases the user has read access to.
+            `KnowledgeAccessListResponse`: List of knowledge bases the user has read access to, with pagination.
         """
         return await self._request(
-            "GET", "/v1/knowledge/", model=KnowledgeUserResponse
+            "GET", "/v1/knowledge/", model=KnowledgeAccessListResponse, params={"page": page}
         )
 
     async def get_knowledge_list(self) -> List[KnowledgeUserResponse]:
@@ -34,6 +39,66 @@ class KnowledgeClient(ResourceBase):
         """
         return await self._request(
             "GET", "/v1/knowledge/list", model=KnowledgeUserResponse
+        )
+
+    async def search_knowledge_bases(
+        self,
+        query: Optional[str] = None,
+        view_option: Optional[str] = None,
+        page: Optional[int] = 1,
+    ) -> KnowledgeAccessListResponse:
+        """
+        Search knowledge bases.
+
+        Args:
+            query: Search query string.
+            view_option: View option filter (e.g., 'created', 'shared').
+            page: Page number (default 1).
+
+        Returns:
+            `KnowledgeAccessListResponse`: List of knowledge bases matching criteria.
+        """
+        params = {}
+        if query:
+            params["query"] = query
+        if view_option:
+            params["view_option"] = view_option
+        if page:
+            params["page"] = page
+
+        return await self._request(
+            "GET",
+            "/v1/knowledge/search",
+            model=KnowledgeAccessListResponse,
+            params=params,
+        )
+
+    async def search_knowledge_files(
+        self,
+        query: Optional[str] = None,
+        page: Optional[int] = 1,
+    ) -> KnowledgeFileListResponse:
+        """
+        Search files across all knowledge bases.
+
+        Args:
+            query: Search query string.
+            page: Page number (default 1).
+
+        Returns:
+            `KnowledgeFileListResponse`: List of files matching criteria.
+        """
+        params = {}
+        if query:
+            params["query"] = query
+        if page:
+            params["page"] = page
+
+        return await self._request(
+            "GET",
+            "/v1/knowledge/search/files",
+            model=KnowledgeFileListResponse,
+            params=params,
         )
 
     async def create_new_knowledge(

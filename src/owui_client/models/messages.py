@@ -1,5 +1,5 @@
 from typing import Optional, List
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_validator
 from owui_client.models.users import UserNameResponse
 
 """
@@ -140,16 +140,34 @@ class MessageUserResponse(MessageModel):
     """User who sent the message."""
 
 
+class MessageUserSlimResponse(MessageUserResponse):
+    """
+    Message model with user details and simplified data field.
+    """
+
+    data: Optional[bool] = None
+    """Simplified data field (boolean indicating presence of data)."""
+
+    @field_validator("data", mode="before")
+    def convert_data_to_bool(cls, v):
+        # No data or not a dict → False
+        if not isinstance(v, dict):
+            return False
+
+        # True if ANY value in the dict is non-empty
+        return any(bool(val) for val in v.values())
+
+
 class MessageReplyToResponse(MessageUserResponse):
     """
     Message model with user details and reply-to message details.
     """
 
-    reply_to_message: Optional[MessageUserResponse] = None
+    reply_to_message: Optional[MessageUserSlimResponse] = None
     """The message this message is replying to."""
 
 
-class MessageWithReactionsResponse(MessageUserResponse):
+class MessageWithReactionsResponse(MessageUserSlimResponse):
     """
     Message model with user details and reactions.
     """

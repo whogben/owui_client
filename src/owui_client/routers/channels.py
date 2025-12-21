@@ -1,4 +1,5 @@
 from typing import Optional, List
+from pydantic import field_validator
 from owui_client.client_base import ResourceBase
 from owui_client.models.channels import (
     ChannelListItemResponse,
@@ -17,8 +18,25 @@ from owui_client.models.messages import (
     MessageForm,
     MessageModel,
     ReactionForm,
+    MessageResponse,
 )
 from owui_client.models.users import UserListResponse
+
+
+class ChannelMessageUserResponse(MessageResponse):
+    """
+    Local `MessageUserResponse` definition for Channels router, overriding data to bool.
+    """
+    data: Optional[bool] = None
+
+    @field_validator("data", mode="before")
+    def convert_data_to_bool(cls, v):
+        # No data or not a dict → False
+        if not isinstance(v, dict):
+            return False
+
+        # True if ANY value in the dict is non-empty
+        return any(bool(val) for val in v.values())
 
 
 class ChannelsClient(ResourceBase):
@@ -235,7 +253,7 @@ class ChannelsClient(ResourceBase):
 
     async def get_messages(
         self, id: str, skip: int = 0, limit: int = 50
-    ) -> List[MessageUserResponse]:
+    ) -> List[ChannelMessageUserResponse]:
         """
         Get messages from a channel.
 
@@ -245,13 +263,13 @@ class ChannelsClient(ResourceBase):
             limit: Number of messages to return.
 
         Returns:
-            List[MessageUserResponse]: List of messages with user details.
+            List[ChannelMessageUserResponse]: List of messages with user details.
         """
         params = {"skip": skip, "limit": limit}
         return await self._request(
             "GET",
             f"/v1/channels/{id}/messages",
-            model=MessageUserResponse,
+            model=ChannelMessageUserResponse,
             params=params,
         )
 
@@ -298,7 +316,7 @@ class ChannelsClient(ResourceBase):
 
     async def get_message(
         self, id: str, message_id: str
-    ) -> Optional[MessageUserResponse]:
+    ) -> Optional[MessageResponse]:
         """
         Get a specific message by ID.
 
@@ -307,17 +325,36 @@ class ChannelsClient(ResourceBase):
             message_id: The message ID.
 
         Returns:
-            Optional[MessageUserResponse]: The message details.
+            Optional[MessageResponse]: The message details.
         """
         return await self._request(
             "GET",
             f"/v1/channels/{id}/messages/{message_id}",
-            model=Optional[MessageUserResponse],
+            model=Optional[MessageResponse],
+        )
+
+    async def get_message_data(
+        self, id: str, message_id: str
+    ) -> Optional[dict]:
+        """
+        Get data for a specific message by ID.
+
+        Args:
+            id: The channel ID.
+            message_id: The message ID.
+
+        Returns:
+            Optional[dict]: The message data dictionary.
+        """
+        return await self._request(
+            "GET",
+            f"/v1/channels/{id}/messages/{message_id}/data",
+            model=Optional[dict],
         )
 
     async def pin_message(
         self, id: str, message_id: str, is_pinned: bool
-    ) -> Optional[MessageUserResponse]:
+    ) -> Optional[ChannelMessageUserResponse]:
         """
         Pin or unpin a message.
 
@@ -327,18 +364,18 @@ class ChannelsClient(ResourceBase):
             is_pinned: True to pin, False to unpin.
 
         Returns:
-            Optional[MessageUserResponse]: The updated message details.
+            Optional[ChannelMessageUserResponse]: The updated message details.
         """
         return await self._request(
             "POST",
             f"/v1/channels/{id}/messages/{message_id}/pin",
-            model=Optional[MessageUserResponse],
+            model=Optional[ChannelMessageUserResponse],
             json={"is_pinned": is_pinned},
         )
 
     async def get_thread_messages(
         self, id: str, message_id: str, skip: int = 0, limit: int = 50
-    ) -> List[MessageUserResponse]:
+    ) -> List[ChannelMessageUserResponse]:
         """
         Get thread messages for a specific message.
 
@@ -349,13 +386,13 @@ class ChannelsClient(ResourceBase):
             limit: Number of messages to return.
 
         Returns:
-            List[MessageUserResponse]: List of thread messages.
+            List[ChannelMessageUserResponse]: List of thread messages.
         """
         params = {"skip": skip, "limit": limit}
         return await self._request(
             "GET",
             f"/v1/channels/{id}/messages/{message_id}/thread",
-            model=MessageUserResponse,
+            model=ChannelMessageUserResponse,
             params=params,
         )
 

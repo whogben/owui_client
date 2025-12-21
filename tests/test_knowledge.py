@@ -36,9 +36,10 @@ async def test_knowledge_lifecycle(client):
     assert fetched_kb.id == kb_id
 
     # 4. Get all knowledge bases
-    kbs = await client.knowledge.get_knowledge()
-    assert len(kbs) > 0
-    ids = [kb.id for kb in kbs]
+    response = await client.knowledge.get_knowledge()
+    assert response.total > 0
+    assert len(response.items) > 0
+    ids = [kb.id for kb in response.items]
     assert kb_id in ids
 
     # 5. Update knowledge base

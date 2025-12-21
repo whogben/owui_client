@@ -1,6 +1,6 @@
 import pytest
 from owui_client.models.auths import SigninForm
-from owui_client.models.notes import NoteForm, NoteUserResponse, NoteTitleIdResponse, NoteModel
+from owui_client.models.notes import NoteForm, NoteUserResponse, NoteItemResponse, NoteModel
 
 pytestmark = pytest.mark.asyncio
 
@@ -35,15 +35,7 @@ async def test_notes_lifecycle(client):
     assert len(notes) >= 1
     found_note = next((n for n in notes if n.id == note_id), None)
     assert found_note is not None
-    assert isinstance(found_note, NoteUserResponse)
-
-    # 4. Get note list (title/id only)
-    notes_list = await client.notes.get_note_list()
-    assert isinstance(notes_list, list)
-    found_list_item = next((n for n in notes_list if n.id == note_id), None)
-    assert found_list_item is not None
-    assert isinstance(found_list_item, NoteTitleIdResponse)
-    assert found_list_item.title == "Test Note"
+    assert isinstance(found_note, NoteItemResponse)
 
     # 5. Get note by ID
     fetched_note = await client.notes.get_note_by_id(note_id)

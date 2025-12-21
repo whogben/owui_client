@@ -6,6 +6,7 @@ from owui_client.models.chats import (
     ChatsImportForm,
     ChatResponse,
     ChatTitleIdResponse,
+    ChatUsageStatsListResponse,
     TagForm,
     TagFilterForm,
     MessageForm,
@@ -23,6 +24,34 @@ class ChatsClient(ResourceBase):
     Manages chat conversations, including creating, retrieving, updating, and deleting chats,
     as well as managing chat history, tags, and sharing.
     """
+    async def get_chat_usage_stats(
+        self,
+        items_per_page: Optional[int] = 50,
+        page: Optional[int] = 1,
+    ) -> ChatUsageStatsListResponse:
+        """
+        Get chat usage statistics.
+
+        Args:
+            items_per_page: Number of items per page (default 50).
+            page: The page number to retrieve (default 1).
+
+        Returns:
+            `ChatUsageStatsListResponse`: A list of chat usage statistics.
+        """
+        params = {}
+        if items_per_page:
+            params["items_per_page"] = items_per_page
+        if page:
+            params["page"] = page
+
+        return await self._request(
+            "GET",
+            "/v1/chats/stats/usage",
+            model=ChatUsageStatsListResponse,
+            params=params,
+        )
+
     async def get_list(
         self,
         page: Optional[int] = None,

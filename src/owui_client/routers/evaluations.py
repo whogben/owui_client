@@ -4,6 +4,7 @@ from owui_client.models.evaluations import UpdateConfigForm
 from owui_client.models.feedbacks import (
     FeedbackModel,
     FeedbackResponse,
+    FeedbackIdResponse,
     FeedbackForm,
     FeedbackUserResponse,
     FeedbackListResponse,
@@ -56,6 +57,19 @@ class EvaluationsClient(ResourceBase):
             "GET",
             "/v1/evaluations/feedbacks/all",
             model=FeedbackResponse,
+        )
+
+    async def get_all_feedback_ids(self) -> List[FeedbackIdResponse]:
+        """
+        Get all feedback IDs (admin only).
+
+        Returns:
+            List[FeedbackIdResponse]: A list of all feedback IDs in the system.
+        """
+        return await self._request(
+            "GET",
+            "/v1/evaluations/feedbacks/all/ids",
+            model=FeedbackIdResponse,
         )
 
     async def delete_all_feedbacks(self) -> bool:
