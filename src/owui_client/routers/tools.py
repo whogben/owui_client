@@ -6,7 +6,9 @@ from owui_client.models.tools import (
     ToolResponse,
     ToolForm,
     LoadUrlForm,
+    ToolAccessGrantsForm,
 )
+
 
 class ToolsClient(ResourceBase):
     """
@@ -41,7 +43,9 @@ class ToolsClient(ResourceBase):
             model=List[ToolUserResponse],
         )
 
-    async def load_tool_from_url(self, form_data: LoadUrlForm) -> Optional[Dict[str, Any]]:
+    async def load_tool_from_url(
+        self, form_data: LoadUrlForm
+    ) -> Optional[Dict[str, Any]]:
         """
         Load a tool's code and metadata from a URL.
 
@@ -104,7 +108,9 @@ class ToolsClient(ResourceBase):
             model=Optional[ToolModel],
         )
 
-    async def update_tool_by_id(self, id: str, form_data: ToolForm) -> Optional[ToolModel]:
+    async def update_tool_by_id(
+        self, id: str, form_data: ToolForm
+    ) -> Optional[ToolModel]:
         """
         Update a tool by ID.
 
@@ -118,6 +124,29 @@ class ToolsClient(ResourceBase):
         return await self._request(
             "POST",
             f"/v1/tools/id/{id}/update",
+            json=form_data.model_dump(mode="json"),
+            model=Optional[ToolModel],
+        )
+
+    async def update_tool_access_by_id(
+        self, id: str, form_data: ToolAccessGrantsForm
+    ) -> Optional[ToolModel]:
+        """
+        Update access grants for a tool.
+
+        Sets the access grants for a tool, controlling which users and groups
+        can read or write the tool. Requires owner, write access, or admin role.
+
+        Args:
+            id: The tool ID.
+            form_data: The access grants form with list of access grant dicts.
+
+        Returns:
+            Optional[ToolModel]: The updated tool details.
+        """
+        return await self._request(
+            "POST",
+            f"/v1/tools/id/{id}/access/update",
             json=form_data.model_dump(mode="json"),
             model=Optional[ToolModel],
         )
@@ -170,7 +199,9 @@ class ToolsClient(ResourceBase):
             model=Optional[Dict[str, Any]],
         )
 
-    async def update_tool_valves_by_id(self, id: str, valves: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    async def update_tool_valves_by_id(
+        self, id: str, valves: Dict[str, Any]
+    ) -> Optional[Dict[str, Any]]:
         """
         Update the valve settings for a tool.
 
@@ -204,7 +235,9 @@ class ToolsClient(ResourceBase):
             model=Optional[Dict[str, Any]],
         )
 
-    async def get_tool_user_valves_spec_by_id(self, id: str) -> Optional[Dict[str, Any]]:
+    async def get_tool_user_valves_spec_by_id(
+        self, id: str
+    ) -> Optional[Dict[str, Any]]:
         """
         Get the specification (schema) for the tool's user valves.
 
@@ -220,7 +253,9 @@ class ToolsClient(ResourceBase):
             model=Optional[Dict[str, Any]],
         )
 
-    async def update_tool_user_valves_by_id(self, id: str, valves: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    async def update_tool_user_valves_by_id(
+        self, id: str, valves: Dict[str, Any]
+    ) -> Optional[Dict[str, Any]]:
         """
         Update user-specific valve settings for a tool.
 
@@ -237,4 +272,3 @@ class ToolsClient(ResourceBase):
             json=valves,
             model=Optional[Dict[str, Any]],
         )
-

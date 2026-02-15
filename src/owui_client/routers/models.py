@@ -9,6 +9,7 @@ from owui_client.models.models import (
     ModelsImportForm,
     SyncModelsForm,
     ModelIdForm,
+    ModelAccessGrantsForm,
 )
 
 
@@ -93,7 +94,10 @@ class ModelsClient(ResourceBase):
             Optional[ModelModel]: The created model.
         """
         return await self._request(
-            "POST", "/v1/models/create", model=Optional[ModelModel], json=form_data.model_dump()
+            "POST",
+            "/v1/models/create",
+            model=Optional[ModelModel],
+            json=form_data.model_dump(),
         )
 
     async def export_models(self) -> list[ModelModel]:
@@ -130,7 +134,10 @@ class ModelsClient(ResourceBase):
             list[ModelModel]: The list of synced models.
         """
         return await self._request(
-            "POST", "/v1/models/sync", model=list[ModelModel], json=form_data.model_dump()
+            "POST",
+            "/v1/models/sync",
+            model=list[ModelModel],
+            json=form_data.model_dump(),
         )
 
     async def get_model_by_id(self, id: str) -> Optional[ModelResponse]:
@@ -172,7 +179,10 @@ class ModelsClient(ResourceBase):
             Optional[ModelResponse]: The updated model.
         """
         return await self._request(
-            "POST", "/v1/models/model/toggle", model=Optional[ModelResponse], params={"id": id}
+            "POST",
+            "/v1/models/model/toggle",
+            model=Optional[ModelResponse],
+            params={"id": id},
         )
 
     async def update_model_by_id(self, form_data: ModelForm) -> Optional[ModelModel]:
@@ -186,7 +196,10 @@ class ModelsClient(ResourceBase):
             Optional[ModelModel]: The updated model.
         """
         return await self._request(
-            "POST", "/v1/models/model/update", model=Optional[ModelModel], json=form_data.model_dump()
+            "POST",
+            "/v1/models/model/update",
+            model=Optional[ModelModel],
+            json=form_data.model_dump(),
         )
 
     async def delete_model_by_id(self, id: str) -> bool:
@@ -211,3 +224,22 @@ class ModelsClient(ResourceBase):
             bool: True if successful.
         """
         return await self._request("DELETE", "/v1/models/delete/all", model=bool)
+
+    async def update_model_access(
+        self, form_data: ModelAccessGrantsForm
+    ) -> Optional[ModelModel]:
+        """
+        Update a model's access grants.
+
+        Args:
+            form_data: The form containing the model ID and access grants.
+
+        Returns:
+            Optional[ModelModel]: The updated model.
+        """
+        return await self._request(
+            "POST",
+            "/v1/models/model/access/update",
+            model=Optional[ModelModel],
+            json=form_data.model_dump(),
+        )

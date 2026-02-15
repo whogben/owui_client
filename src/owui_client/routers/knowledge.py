@@ -8,6 +8,7 @@ from owui_client.models.knowledge import (
     KnowledgeFileIdForm,
     KnowledgeAccessListResponse,
     KnowledgeFileListResponse,
+    KnowledgeAccessGrantsForm,
 )
 
 
@@ -27,7 +28,10 @@ class KnowledgeClient(ResourceBase):
             `KnowledgeAccessListResponse`: List of knowledge bases the user has read access to, with pagination.
         """
         return await self._request(
-            "GET", "/v1/knowledge/", model=KnowledgeAccessListResponse, params={"page": page}
+            "GET",
+            "/v1/knowledge/",
+            model=KnowledgeAccessListResponse,
+            params={"page": page},
         )
 
     async def get_knowledge_list(self) -> List[KnowledgeUserResponse]:
@@ -124,9 +128,7 @@ class KnowledgeClient(ResourceBase):
             json=form_data.model_dump(),
         )
 
-    async def get_knowledge_by_id(
-        self, id: str
-    ) -> Optional[KnowledgeFilesResponse]:
+    async def get_knowledge_by_id(self, id: str) -> Optional[KnowledgeFilesResponse]:
         """
         Get a knowledge base by ID.
 
@@ -162,6 +164,33 @@ class KnowledgeClient(ResourceBase):
             f"/v1/knowledge/{id}/update",
             model=KnowledgeFilesResponse,
             json=form_data.model_dump(),
+        )
+
+    async def update_knowledge_access(
+        self, id: str, access_grants: list[dict]
+    ) -> Optional[KnowledgeFilesResponse]:
+        """
+        Update access grants for a knowledge base.
+
+        Requires write access to the knowledge base or admin privileges.
+        If setting public access (principal_id='*'), requires `sharing.public_knowledge` permission.
+        If the user lacks permission, public grants will be stripped.
+
+        Args:
+            id: The ID of the knowledge base.
+            access_grants: List of access grant dictionaries. Each dict should contain:
+                - `principal_type` (str): 'user' or 'group'
+                - `principal_id` (str): User/group ID, or '*' for public access
+                - `permission` (str): 'read' or 'write'
+
+        Returns:
+            Optional[KnowledgeFilesResponse]: The updated knowledge base with files.
+        """
+        return await self._request(
+            "POST",
+            f"/v1/knowledge/{id}/access/update",
+            model=KnowledgeFilesResponse,
+            json={"access_grants": access_grants},
         )
 
     async def delete_knowledge_by_id(self, id: str) -> bool:
@@ -255,7 +284,7 @@ class KnowledgeClient(ResourceBase):
     async def reindex_knowledge_files(self) -> bool:
         """
         Reindex all knowledge files.
-        
+
         This is a blocking operation that reprocesses all files in all knowledge bases.
         Requires Admin privileges.
 
@@ -292,7 +321,7 @@ class KnowledgeClient(ResourceBase):
     async def reindex_metadata(self) -> dict:
         """
         Reindex knowledge base metadata embeddings.
-        
+
         Requires Admin privileges.
 
         Returns:
@@ -303,7 +332,7 @@ class KnowledgeClient(ResourceBase):
     async def export(self, id: str) -> bytes:
         """
         Export a knowledge base as a zip file.
-        
+
         Requires Admin privileges.
 
         Args:

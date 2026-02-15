@@ -135,6 +135,39 @@ class GroupResponse(GroupModel):
     """Number of members in the group."""
 
 
+class GroupInfoResponse(BaseModel):
+    """
+    Simplified group info response for verified users.
+
+    This model provides basic group information without sensitive fields like
+    data, meta, or permissions. Used by the `/id/{id}/info` endpoint which
+    is accessible to all verified users (not just admins).
+    """
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: str
+    """Unique identifier for the group."""
+
+    user_id: str
+    """ID of the user who created the group."""
+
+    name: str
+    """Name of the group."""
+
+    description: str
+    """Description of the group."""
+
+    member_count: Optional[int] = None
+    """Number of members in the group."""
+
+    created_at: int
+    """Timestamp of creation (epoch seconds)."""
+
+    updated_at: int
+    """Timestamp of last update (epoch seconds)."""
+
+
 class GroupExportResponse(GroupResponse):
     """
     Response model for exporting a group, including user IDs.

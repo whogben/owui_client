@@ -1,6 +1,7 @@
 from typing import Optional, List, Dict, Any
-from pydantic import BaseModel, ConfigDict, HttpUrl
+from pydantic import BaseModel, ConfigDict, Field, HttpUrl
 from owui_client.models.users import UserResponse
+from owui_client.models.access_grants import AccessGrantModel
 
 
 class ToolMeta(BaseModel):
@@ -68,6 +69,11 @@ class ToolModel(BaseModel):
     """
     Metadata associated with the tool.
     """
+    access_grants: list[AccessGrantModel] = Field(default_factory=list)
+    """
+    List of access grants controlling who can read/write this tool.
+    Replaces the legacy access_control field.
+    """
     access_control: Optional[dict] = None
     """
     Access control settings for the tool.
@@ -128,6 +134,11 @@ class ToolResponse(BaseModel):
     meta: ToolMeta
     """
     Metadata associated with the tool.
+    """
+    access_grants: list[AccessGrantModel] = Field(default_factory=list)
+    """
+    List of access grants controlling who can read/write this tool.
+    Replaces the legacy access_control field.
     """
     access_control: Optional[dict] = None
     """
@@ -196,6 +207,16 @@ class ToolForm(BaseModel):
     """
     Metadata associated with the tool.
     """
+    access_grants: Optional[list[dict]] = None
+    """
+    List of access grants for the tool.
+    
+    Dict Fields:
+    - `id` (str, optional): Unique identifier for the grant
+    - `principal_type` (str, required): 'user' or 'group'
+    - `principal_id` (str, required): User/group ID, or '*' for public access
+    - `permission` (str, required): 'read' or 'write'
+    """
     access_control: Optional[dict] = None
     """
     Access control settings for the tool.
@@ -256,4 +277,21 @@ class LoadUrlForm(BaseModel):
     url: HttpUrl
     """
     The URL to load the tool from (e.g., a GitHub raw URL).
+    """
+
+
+class ToolAccessGrantsForm(BaseModel):
+    """
+    Form for updating tool access grants.
+    """
+
+    access_grants: list[dict]
+    """
+    List of access grants for the tool.
+    
+    Dict Fields:
+    - `id` (str, optional): Unique identifier for the grant
+    - `principal_type` (str, required): 'user' or 'group'
+    - `principal_id` (str, required): User/group ID, or '*' for public access
+    - `permission` (str, required): 'read' or 'write'
     """

@@ -1,5 +1,95 @@
-from typing import Optional, List, Dict, Any
-from pydantic import BaseModel
+from typing import Optional, List, Dict, Any, Union
+from pydantic import BaseModel, ConfigDict
+
+
+class ResponsesForm(BaseModel):
+    """
+    Request form for the OpenAI Responses API.
+
+    The Responses API is an alternative to Chat Completions that uses a simpler input format
+    and supports multi-turn conversations with stored response IDs. This model uses
+    `extra="allow"` to pass through any additional OpenAI API parameters.
+    """
+
+    model: str
+    """The model ID to use (e.g., "gpt-4o", "o1")."""
+
+    input: Optional[Union[list, str]] = None
+    """Input for the response generation.
+
+    Can be a string (treated as a single user message) or a list of input items.
+    Each input item can be a message object with `type: "message"`, `role`, and `content` fields,
+    or output items from previous responses for multi-turn conversations.
+    """
+
+    instructions: Optional[str] = None
+    """System instructions for the model, similar to the system message in Chat Completions."""
+
+    stream: Optional[bool] = None
+    """Whether to stream the response as SSE events."""
+
+    temperature: Optional[float] = None
+    """Sampling temperature between 0.0 and 2.0."""
+
+    max_output_tokens: Optional[int] = None
+    """Maximum number of tokens to generate in the output."""
+
+    top_p: Optional[float] = None
+    """Nucleus sampling parameter between 0.0 and 1.0."""
+
+    tools: Optional[list] = None
+    """List of tools available to the model.
+
+    Uses Responses API format: `{"type": "function", "name": "...", "parameters": {...}}`.
+    """
+
+    tool_choice: Optional[Union[str, dict]] = None
+    """Controls which tool is called. Can be "auto", "none", "required", or a dict.
+
+    Dict Fields:
+        - `type` (str, required): Must be "function"
+        - `function` (dict, required): Function specification
+            - `name` (str, required): Name of the function to call
+
+    String Values:
+        - "auto": Model decides whether to call a tool
+        - "none": Model will not call any tool
+        - "required": Model must call at least one tool
+    """
+
+    text: Optional[dict] = None
+    """Text response format configuration.
+
+    Dict Fields:
+        - `format` (dict, optional): Response format settings, e.g., `{"type": "json_object"}`.
+    """
+
+    truncation: Optional[str] = None
+    """Truncation strategy for the response. Valid values: "auto", "disabled"."""
+
+    metadata: Optional[dict] = None
+    """Metadata to attach to the response.
+
+    Dict Fields:
+        Arbitrary key-value pairs for tracking. Keys must be strings, values
+        can be strings, numbers, or nested objects. Maximum 16 key-value pairs.
+        Commonly used for storing user IDs, session IDs, or other identifiers.
+    """
+
+    store: Optional[bool] = None
+    """Whether to store the response for later retrieval."""
+
+    reasoning: Optional[dict] = None
+    """Reasoning effort configuration for o-series models.
+
+    Dict Fields:
+        - `effort` (str, optional): Reasoning effort level. Valid values: "low", "medium", "high".
+    """
+
+    previous_response_id: Optional[str] = None
+    """ID of a previous response to continue the conversation."""
+
+    model_config = ConfigDict(extra="allow")
 
 
 class OpenAIConfigForm(BaseModel):

@@ -2,6 +2,7 @@ from typing import Optional
 from owui_client.client_base import ResourceBase
 from owui_client.models.groups import (
     GroupResponse,
+    GroupInfoResponse,
     GroupExportResponse,
     GroupForm,
     GroupUpdateForm,
@@ -79,6 +80,27 @@ class GroupsClient(ResourceBase):
             "GET",
             f"/v1/groups/id/{id}",
             model=GroupResponse,
+        )
+
+    async def get_group_info_by_id(self, id: str) -> Optional[GroupInfoResponse]:
+        """
+        Get group info by ID.
+
+        Retrieves basic group information by its ID.
+        Unlike `get_group_by_id`, this endpoint is accessible to all verified users
+        (not just admins) and returns a simplified response without sensitive fields
+        like data, meta, or permissions.
+
+        Args:
+            id: The unique identifier of the group.
+
+        Returns:
+            Basic group info if found, None otherwise.
+        """
+        return await self._request(
+            "GET",
+            f"/v1/groups/id/{id}/info",
+            model=GroupInfoResponse,
         )
 
     async def export_group_by_id(self, id: str) -> Optional[GroupExportResponse]:

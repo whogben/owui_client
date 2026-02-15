@@ -1,6 +1,7 @@
 from typing import Optional, List
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from owui_client.models.users import UserIdNameStatusResponse, UserListResponse
+from owui_client.models.access_grants import AccessGrantModel
 
 
 class ChannelModel(BaseModel):
@@ -127,6 +128,12 @@ class ChannelModel(BaseModel):
         Note: No specific keys are enforced by the backend. This field provides flexibility
         for various use cases but requires applications to handle their own validation and structure.
         """
+
+    access_grants: list[AccessGrantModel] = Field(default_factory=list)
+    """
+    List of access grants controlling who can read/write this channel.
+    Replaces the legacy access_control field.
+    """
 
     access_control: Optional[dict] = None
     """Access control settings for the channel.
@@ -476,6 +483,17 @@ class ChannelForm(BaseModel):
         - `custom_metadata` (dict, optional): Application-specific metadata
 
         All keys are optional and the structure is not validated by the backend.
+    """
+
+    access_grants: Optional[list[dict]] = None
+    """
+    List of access grants for the channel.
+    
+    Dict Fields:
+    - `id` (str, optional): Unique identifier for the grant
+    - `principal_type` (str, required): 'user' or 'group'
+    - `principal_id` (str, required): User/group ID, or '*' for public access
+    - `permission` (str, required): 'read' or 'write'
     """
 
     access_control: Optional[dict] = None

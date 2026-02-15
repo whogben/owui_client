@@ -17,19 +17,15 @@ async def test_prompt_lifecycle(client):
 
     # 2. Create prompt
     command = f"/test_cmd_{int(time.time())}"
-    title = "Test Prompt"
+    name = "Test Prompt"
     content = "This is a test prompt content"
-    
-    form_data = PromptForm(
-        command=command,
-        title=title,
-        content=content
-    )
+
+    form_data = PromptForm(command=command, name=name, content=content)
 
     created_prompt = await client.prompts.create_new_prompt(form_data)
     assert created_prompt is not None
     assert created_prompt.command == command
-    assert created_prompt.title == title
+    assert created_prompt.name == name
 
     # 3. Get prompt by command
     # Remove slash for client call if needed, but client handles stripping?
@@ -49,17 +45,16 @@ async def test_prompt_lifecycle(client):
     assert command in commands
 
     # 5. Update prompt
-    new_title = "Updated Test Prompt"
-    form_data.title = new_title
+    new_name = "Updated Test Prompt"
+    form_data.name = new_name
     updated_prompt = await client.prompts.update_prompt_by_command(command, form_data)
     assert updated_prompt is not None
-    assert updated_prompt.title == new_title
+    assert updated_prompt.name == new_name
 
     # 6. Delete prompt
     deleted = await client.prompts.delete_prompt_by_command(command)
     assert deleted is True
 
-    # 7. Verify deletion
-    from httpx import HTTPStatusError
-    with pytest.raises(HTTPStatusError):
-        await client.prompts.get_prompt_by_command(command)
+    # 7. Verify deletion (client returns None when prompt is not found)
+    post_delete = await client.prompts.get_prompt_by_command(command)
+    assert post_delete is None

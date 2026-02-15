@@ -1,5 +1,9 @@
 from owui_client.client_base import ResourceBase
-from owui_client.models.openai import OpenAIConfigForm, ConnectionVerificationForm
+from owui_client.models.openai import (
+    OpenAIConfigForm,
+    ConnectionVerificationForm,
+    ResponsesForm,
+)
 from urllib.parse import urljoin
 from typing import Optional
 
@@ -128,7 +132,29 @@ class OpenAIClient(ResourceBase):
             "POST", self._get_url("openai/embeddings"), json=payload
         )
 
-    async def proxy(self, method: str, path: str, payload: Optional[dict] = None) -> dict:
+    async def responses(self, form_data: ResponsesForm) -> dict:
+        """
+        Generate a response using the OpenAI Responses API.
+
+        The Responses API is an alternative to Chat Completions that uses a simpler input format
+        and supports multi-turn conversations via `previous_response_id`. Routes to the correct
+        upstream provider based on the model field.
+
+        Args:
+            form_data (`ResponsesForm`): The response request parameters.
+
+        Returns:
+            dict: The response object from the provider. For streaming requests, returns SSE events.
+        """
+        return await self._request(
+            "POST",
+            self._get_url("openai/responses"),
+            json=form_data.model_dump(exclude_none=True),
+        )
+
+    async def proxy(
+        self, method: str, path: str, payload: Optional[dict] = None
+    ) -> dict:
         """
         Deprecated: Proxy arbitrary requests to the first OpenAI provider.
 

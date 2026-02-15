@@ -128,17 +128,3 @@ class MemoriesClient(ResourceBase):
             f"/v1/memories/{memory_id}",
             model=bool,
         )
-
-    async def get_embeddings(self) -> dict:
-        """
-        Test the embedding function.
-
-        Generates an embedding for the text "hello world" to verify the embedding function is working.
-
-        Returns:
-            dict: A dictionary containing the embedding result.
-        """
-        return await self._request(
-            "GET",
-            "/v1/memories/ef",
-        )

@@ -343,3 +343,14 @@ class ApiKey(BaseModel):
 
     api_key: Optional[str] = None
     """The API key string."""
+
+
+class TokenExchangeForm(BaseModel):
+    """
+    Form data for OAuth token exchange.
+
+    Used to exchange an external OAuth provider's access token for an Open WebUI JWT.
+    """
+
+    token: str
+    """The OAuth access token from the external provider."""

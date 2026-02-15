@@ -207,6 +207,20 @@ class WebConfig(BaseModel):
     """The translation language for YouTube loader."""
     DDGS_BACKEND: Optional[str] = None
     """The backend for DDGS."""
+    YANDEX_WEB_SEARCH_URL: Optional[str] = None
+    """The URL for Yandex web search."""
+    YANDEX_WEB_SEARCH_API_KEY: Optional[str] = None
+    """API key for Yandex Search."""
+    YANDEX_WEB_SEARCH_CONFIG: Optional[str] = None
+    """JSON configuration string for Yandex search.
+
+    Dict Fields (when parsed as JSON):
+        - `query` (dict, optional): Query configuration options.
+          - `searchType` (str, optional): Search type, e.g., 'SEARCH_TYPE_COM'.
+        - Additional Yandex API parameters may be included.
+
+    Defaults to '{"query": {"searchType": "SEARCH_TYPE_COM"}}' if not specified.
+    """
 
 
 class ConfigForm(BaseModel):
@@ -241,6 +255,8 @@ class ConfigForm(BaseModel):
     """Engine for content extraction."""
     PDF_EXTRACT_IMAGES: Optional[bool] = None
     """Whether to extract images from PDFs."""
+    PDF_LOADER_MODE: Optional[str] = None
+    """Mode for PDF loading. 'page' creates one document per page, 'single' combines all pages into one document for better chunking across page boundaries."""
 
     DATALAB_MARKER_API_KEY: Optional[str] = None
     """API key for DataLab Marker."""

@@ -113,9 +113,10 @@ async def test_memories_query(client: OpenWebUI):
 
 @pytest.mark.asyncio
 async def test_memories_embeddings(client: OpenWebUI):
-    # Test the /ef endpoint
+    # Test the /v1/retrieval/ef endpoint (embedding function test)
+    # Note: This endpoint is in the retrieval router, not memories router
     try:
-        result = await client.memories.get_embeddings()
+        result = await client.retrieval.get_embeddings()
         assert isinstance(result, dict)
         assert "result" in result
         # result["result"] should be the embedding list or similar

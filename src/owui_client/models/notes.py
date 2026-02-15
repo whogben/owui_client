@@ -1,6 +1,7 @@
 from typing import Optional
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from owui_client.models.users import UserResponse
+from owui_client.models.access_grants import AccessGrantModel
 
 
 class NoteModel(BaseModel):
@@ -43,6 +44,12 @@ class NoteModel(BaseModel):
         No specific keys are enforced by the backend - it accepts any valid JSON structure.
         Common usage patterns include storing custom attributes, tags, or application-specific metadata.
         When updating notes, the backend merges new meta data with existing meta data.
+    """
+
+    access_grants: list[AccessGrantModel] = Field(default_factory=list)
+    """
+    List of access grants controlling who can read/write this note.
+    Replaces the legacy access_control field.
     """
 
     access_control: Optional[dict] = None
@@ -100,6 +107,17 @@ class NoteForm(BaseModel):
         Common usage patterns include storing custom attributes, tags, or application-specific metadata.
     """
 
+    access_grants: Optional[list[dict]] = None
+    """
+    List of access grants for the note.
+    
+    Dict Fields:
+    - `id` (str, optional): Unique identifier for the grant
+    - `principal_type` (str, required): 'user' or 'group'
+    - `principal_id` (str, required): User/group ID, or '*' for public access
+    - `permission` (str, required): 'read' or 'write'
+    """
+
     access_control: Optional[dict] = None
     """Access control settings for the note.
 
@@ -113,6 +131,23 @@ class NoteForm(BaseModel):
 
     When None: Public read access, no write access (except owner)
     When {}: No special access control (public access for both read and write)
+    """
+
+
+class NoteAccessGrantsForm(BaseModel):
+    """
+    Form data for updating access grants on a note.
+    """
+
+    access_grants: list[dict]
+    """
+    List of access grants for the note.
+    
+    Dict Fields:
+    - `id` (str, optional): Unique identifier for the grant
+    - `principal_type` (str, required): 'user' or 'group'
+    - `principal_id` (str, required): User/group ID, or '*' for public access
+    - `permission` (str, required): 'read' or 'write'
     """
 
 
@@ -149,6 +184,17 @@ class NoteUpdateForm(BaseModel):
         Common usage patterns include storing custom attributes, tags, or application-specific metadata.
         When updating notes, the backend merges new meta data with existing meta data using shallow merge.
         If the same key exists in both existing and new meta, the new value overwrites the existing one.
+    """
+
+    access_grants: Optional[list[dict]] = None
+    """
+    List of access grants for the note.
+    
+    Dict Fields:
+    - `id` (str, optional): Unique identifier for the grant
+    - `principal_type` (str, required): 'user' or 'group'
+    - `principal_id` (str, required): User/group ID, or '*' for public access
+    - `permission` (str, required): 'read' or 'write'
     """
 
     access_control: Optional[dict] = None

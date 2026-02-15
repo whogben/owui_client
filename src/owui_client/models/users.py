@@ -187,6 +187,17 @@ class UserModel(BaseModel):
         - `sub` (str, required): Subject identifier from the OAuth provider
     """
 
+    scim: Optional[dict] = None
+    """SCIM provider data for external identity management.
+
+    Dict Fields:
+        - `microsoft` (dict, optional): Microsoft SCIM provider data
+        - `okta` (dict, optional): Okta SCIM provider data
+
+    Each provider dictionary contains:
+        - `external_id` (str, required): External identifier from the SCIM provider
+    """
+
     oauth_sub: Optional[str] = None
     """OAuth subject identifier."""
 
@@ -274,6 +285,15 @@ class UserInfoResponse(UserStatus):
 
     role: str
     """User role."""
+
+    bio: Optional[str] = None
+    """User's biography."""
+
+    groups: Optional[list] = []
+    """List of groups the user belongs to."""
+
+    is_active: bool = False
+    """Whether the user is currently active (based on recent activity)."""
 
 
 class UserInfoListResponse(BaseModel):
@@ -399,6 +419,9 @@ class WorkspacePermissions(BaseModel):
 
     tools: bool = False
     """Access to tools."""
+
+    skills: bool = False
+    """Access to skills."""
 
     models_import: bool = False
     """Permission to import models."""

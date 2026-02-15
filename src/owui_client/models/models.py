@@ -1,6 +1,7 @@
 from typing import Optional, List, Dict, Any
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from owui_client.models.users import UserResponse
+from owui_client.models.access_grants import AccessGrantModel
 
 
 # ModelParams is a model for the data stored in the params field of the Model table
@@ -119,6 +120,12 @@ class ModelModel(BaseModel):
     Model metadata.
     """
 
+    access_grants: list[AccessGrantModel] = Field(default_factory=list)
+    """
+    List of access grants controlling who can read/write this model.
+    Replaces the legacy access_control field.
+    """
+
     access_control: Optional[dict] = None
     """
     Access control settings for the model.
@@ -219,6 +226,17 @@ class ModelForm(BaseModel):
     Model parameters.
     """
 
+    access_grants: Optional[list[dict]] = None
+    """
+    List of access grants for the model.
+    
+    Dict Fields:
+    - `id` (str, optional): Unique identifier for the grant
+    - `principal_type` (str, required): 'user' or 'group'
+    - `principal_id` (str, required): User/group ID, or '*' for public access
+    - `permission` (str, required): 'read' or 'write'
+    """
+
     access_control: Optional[dict] = None
     """
     Access control settings for the model.
@@ -294,4 +312,23 @@ class SyncModelsForm(BaseModel):
     models: list[ModelModel] = []
     """
     List of models to sync.
+    """
+
+
+class ModelAccessGrantsForm(BaseModel):
+    """
+    Form for updating model access grants.
+    """
+
+    id: str
+    """The model ID to update."""
+
+    access_grants: list[dict]
+    """List of access grants for the model.
+
+    Dict Fields:
+        - `id` (str, optional): Unique identifier for the grant
+        - `principal_type` (str, required): 'user' or 'group'
+        - `principal_id` (str, required): User/group ID, or '*' for public access
+        - `permission` (str, required): 'read' or 'write'
     """

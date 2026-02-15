@@ -6,6 +6,7 @@ from owui_client.models.notes import (
     NoteUserResponse,
     NoteItemResponse,
     NoteListResponse,
+    NoteAccessGrantsForm,
 )
 
 
@@ -124,6 +125,31 @@ class NotesClient(ResourceBase):
         return await self._request(
             "POST",
             f"/v1/notes/{id}/update",
+            model=Optional[NoteModel],
+            json=form_data.model_dump(),
+        )
+
+    async def update_note_access_by_id(
+        self, id: str, form_data: NoteAccessGrantsForm
+    ) -> Optional[NoteModel]:
+        """
+        Update access grants for a note.
+
+        This endpoint allows setting access grants for a note, controlling who can
+        read or write to it. Only the note owner or users with write access can
+        modify access grants. Non-admin users cannot set public access grants
+        unless they have the 'sharing.public_notes' permission.
+
+        Args:
+            id: The unique identifier of the note.
+            form_data: The access grants form containing the list of access grants.
+
+        Returns:
+            The updated note, or None if update failed.
+        """
+        return await self._request(
+            "POST",
+            f"/v1/notes/{id}/access/update",
             model=Optional[NoteModel],
             json=form_data.model_dump(),
         )

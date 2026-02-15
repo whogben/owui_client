@@ -1,12 +1,35 @@
 from typing import Dict, Any, List, Optional
 from owui_client.client_base import ResourceBase
-from owui_client.models.tasks import TaskConfigForm
+from owui_client.models.tasks import (
+    TaskConfigForm,
+    ActiveChatsForm,
+    ActiveChatsResponse,
+)
 
 
 class TasksClient(ResourceBase):
     """
     Client for the Tasks endpoints.
     """
+
+    async def check_active_chats(
+        self, form_data: ActiveChatsForm
+    ) -> ActiveChatsResponse:
+        """
+        Check which chat IDs have active background tasks.
+
+        Args:
+            form_data (`ActiveChatsForm`): The form containing the list of chat IDs to check.
+
+        Returns:
+            `ActiveChatsResponse`: Response containing chat IDs with active tasks.
+        """
+        return await self._request(
+            "POST",
+            "/v1/tasks/active/chats",
+            model=ActiveChatsResponse,
+            json=form_data.model_dump(),
+        )
 
     async def get_config(self) -> Dict[str, Any]:
         """
@@ -141,7 +164,9 @@ class TasksClient(ResourceBase):
             json=form_data,
         )
 
-    async def generate_autocompletion(self, form_data: Dict[str, Any]) -> Dict[str, Any]:
+    async def generate_autocompletion(
+        self, form_data: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """
         Generate text autocompletion.
 
@@ -250,4 +275,3 @@ class TasksClient(ResourceBase):
             f"/tasks/chat/{chat_id}",
             model=dict,
         )
-

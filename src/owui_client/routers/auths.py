@@ -16,6 +16,7 @@ from owui_client.models.auths import (
     LdapConfigForm,
     LdapConfigResponse,
     ApiKey,
+    TokenExchangeForm,
 )
 from owui_client.models.users import UpdateProfileForm, UserProfileImageResponse
 
@@ -44,7 +45,9 @@ class AuthsClient(ResourceBase):
             model=SessionUserInfoResponse,
         )
 
-    async def update_profile(self, form_data: UpdateProfileForm) -> UserProfileImageResponse:
+    async def update_profile(
+        self, form_data: UpdateProfileForm
+    ) -> UserProfileImageResponse:
         """
         Update the current user's profile.
 
@@ -387,3 +390,46 @@ class AuthsClient(ResourceBase):
             "/v1/auths/api_key",
             model=ApiKey,
         )
+
+    async def token_exchange(
+        self,
+        provider: str,
+        form_data: TokenExchangeForm,
+        set_client_api_key: bool = True,
+    ) -> SessionUserResponse:
+        """
+        Exchange an external OAuth provider token for an Open WebUI JWT.
+
+        This endpoint allows exchanging an OAuth access token from an external provider
+        (e.g., Google, GitHub, Microsoft) for an Open WebUI session token. The feature
+        must be enabled on the server with ENABLE_OAUTH_TOKEN_EXCHANGE=True.
+
+        The user must already exist in Open WebUI (created via web interface signin) for
+        the token exchange to succeed. The provider must be configured in the server's
+        OAUTH_PROVIDERS setting.
+
+        Args:
+            provider: The OAuth provider name (e.g., "google", "github", "microsoft")
+            form_data: The token exchange form containing the OAuth access token
+            set_client_api_key: If True (default), updates the main client's API key upon success
+
+        Returns:
+            `SessionUserResponse`: Session information including token and user details
+
+        Raises:
+            HTTPError: 403 if token exchange is disabled on the server
+            HTTPError: 404 if the provider is not configured
+            HTTPError: 400 if the token is invalid or user info cannot be fetched
+            HTTPError: 403 if the user is not found (must sign in via web first)
+        """
+        response = await self._request(
+            "POST",
+            f"/v1/auths/oauth/{provider}/token/exchange",
+            model=SessionUserResponse,
+            json=form_data.model_dump(),
+        )
+
+        if set_client_api_key and response.token:
+            self._client.api_key = response.token
+
+        return response

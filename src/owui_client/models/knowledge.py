@@ -1,8 +1,9 @@
 from typing import Optional, Union
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from owui_client.models.users import UserResponse
 from owui_client.models.files import FileMetadataResponse, FileModelResponse
+from owui_client.models.access_grants import AccessGrantModel
 
 
 class KnowledgeModel(BaseModel):
@@ -39,6 +40,12 @@ class KnowledgeModel(BaseModel):
         - `collection_names` (list[str], optional): List of collection names for collection-type knowledge
 
     Additional keys may exist. Complete structure not found in reference code.
+    """
+
+    access_grants: list[AccessGrantModel] = Field(default_factory=list)
+    """
+    List of access grants controlling who can read/write this knowledge base.
+    Replaces the legacy access_control field.
     """
 
     access_control: Optional[dict] = None
@@ -128,6 +135,17 @@ class KnowledgeForm(BaseModel):
 
     description: str
     """A description of the knowledge base."""
+
+    access_grants: Optional[list[dict]] = None
+    """
+    List of access grants for the knowledge base.
+    
+    Dict Fields:
+    - `id` (str, optional): Unique identifier for the grant
+    - `principal_type` (str, required): 'user' or 'group'
+    - `principal_id` (str, required): User/group ID, or '*' for public access
+    - `permission` (str, required): 'read' or 'write'
+    """
 
     access_control: Optional[dict] = None
     """
@@ -233,3 +251,20 @@ class KnowledgeFileIdForm(BaseModel):
 
     file_id: str
     """The ID of the file to add or remove."""
+
+
+class KnowledgeAccessGrantsForm(BaseModel):
+    """
+    Form for updating access grants on a knowledge base.
+    """
+
+    access_grants: list[dict]
+    """
+    List of access grants to set on the knowledge base.
+
+    Dict Fields:
+    - `id` (str, optional): Unique identifier for the grant
+    - `principal_type` (str, required): 'user' or 'group'
+    - `principal_id` (str, required): User/group ID, or '*' for public access
+    - `permission` (str, required): 'read' or 'write'
+    """
