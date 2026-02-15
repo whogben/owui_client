@@ -547,6 +547,18 @@ class FeaturesPermissions(BaseModel):
     folders: bool = True
     """Access to folders."""
 
+    memories: bool = True
+    """Access to memories."""
+
+
+class SettingsPermissions(BaseModel):
+    """
+    Permissions related to settings.
+    """
+
+    interface: bool = True
+    """Access to interface settings."""
+
 
 class UserPermissions(BaseModel):
     """
@@ -567,6 +579,9 @@ class UserPermissions(BaseModel):
 
     features: FeaturesPermissions
     """Feature-related permissions."""
+
+    settings: SettingsPermissions
+    """Settings-related permissions."""
 
 
 class UserResponse(UserNameResponse):

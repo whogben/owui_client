@@ -153,6 +153,8 @@ class WebConfig(BaseModel):
     """The engine to use for SerpAPI."""
     JINA_API_KEY: Optional[str] = None
     """API key for Jina."""
+    JINA_API_BASE_URL: Optional[str] = None
+    """Base URL for Jina API."""
     BING_SEARCH_V7_ENDPOINT: Optional[str] = None
     """The endpoint for Bing Search V7."""
     BING_SEARCH_V7_SUBSCRIPTION_KEY: Optional[str] = None
@@ -185,6 +187,8 @@ class WebConfig(BaseModel):
     """API key for Firecrawl."""
     FIRECRAWL_API_BASE_URL: Optional[str] = None
     """The base URL for Firecrawl."""
+    FIRECRAWL_TIMEOUT: Optional[int] = None
+    """The timeout for Firecrawl."""
     TAVILY_EXTRACT_DEPTH: Optional[str] = None
     """The extract depth for Tavily."""
     EXTERNAL_WEB_SEARCH_URL: Optional[str] = None
@@ -201,6 +205,8 @@ class WebConfig(BaseModel):
     """The proxy URL for YouTube loader."""
     YOUTUBE_LOADER_TRANSLATION: Optional[str] = None
     """The translation language for YouTube loader."""
+    DDGS_BACKEND: Optional[str] = None
+    """The backend for DDGS."""
 
 
 class ConfigForm(BaseModel):
@@ -329,8 +335,12 @@ class ConfigForm(BaseModel):
     # Chunking settings
     TEXT_SPLITTER: Optional[str] = None
     """Text splitter to use."""
+    ENABLE_MARKDOWN_HEADER_TEXT_SPLITTER: Optional[bool] = None
+    """Whether to enable markdown header text splitter."""
     CHUNK_SIZE: Optional[int] = None
     """Size of text chunks."""
+    CHUNK_MIN_SIZE_TARGET: Optional[int] = None
+    """Minimum target size for text chunks."""
     CHUNK_OVERLAP: Optional[int] = None
     """Overlap between text chunks."""
 

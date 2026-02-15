@@ -8,6 +8,7 @@ from owui_client.models.auths import (
     AdminConfig,
     SignoutResponse,
     UpdatePasswordForm,
+    UpdateTimezoneForm,
     AddUserForm,
     SigninResponse,
     AdminDetails,
@@ -61,6 +62,25 @@ class AuthsClient(ResourceBase):
             model=UserProfileImageResponse,
             json=form_data.model_dump(),
         )
+
+    async def update_timezone(self, form_data: UpdateTimezoneForm) -> bool:
+        """
+        Update the current user's timezone.
+
+        Updates the user's timezone preference.
+
+        Args:
+            form_data: The timezone update information
+
+        Returns:
+            bool: True if successful
+        """
+        response = await self._request(
+            "POST",
+            "/v1/auths/update/timezone",
+            json=form_data.model_dump(),
+        )
+        return response.get("status", False)
 
     async def update_password(self, form_data: UpdatePasswordForm) -> bool:
         """

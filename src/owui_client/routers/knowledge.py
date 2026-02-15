@@ -288,3 +288,28 @@ class KnowledgeClient(ResourceBase):
             model=KnowledgeFilesResponse,
             json=data,
         )
+
+    async def reindex_metadata(self) -> dict:
+        """
+        Reindex knowledge base metadata embeddings.
+        
+        Requires Admin privileges.
+
+        Returns:
+            dict: Statistics about the reindexing process (total, success).
+        """
+        return await self._request("POST", "/v1/knowledge/metadata/reindex", model=dict)
+
+    async def export(self, id: str) -> bytes:
+        """
+        Export a knowledge base as a zip file.
+        
+        Requires Admin privileges.
+
+        Args:
+            id: The ID of the knowledge base.
+
+        Returns:
+            bytes: The zip file content.
+        """
+        return await self._request("GET", f"/v1/knowledge/{id}/export", model=bytes)

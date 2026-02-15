@@ -168,6 +168,15 @@ class UpdatePasswordForm(BaseModel):
     """The new password."""
 
 
+class UpdateTimezoneForm(BaseModel):
+    """
+    Form data for updating user timezone.
+    """
+
+    timezone: str
+    """The new timezone (e.g., "America/New_York")."""
+
+
 class SignoutResponse(BaseModel):
     """
     Response model for sign-out operations.
@@ -187,6 +196,9 @@ class AdminConfig(BaseModel):
 
     SHOW_ADMIN_DETAILS: bool
     """Whether to show admin details to users."""
+
+    ADMIN_EMAIL: Optional[str] = None
+    """The admin email address."""
 
     WEBUI_URL: str
     """The base URL of the WebUI."""
@@ -221,14 +233,23 @@ class AdminConfig(BaseModel):
     ENABLE_FOLDERS: bool
     """Whether folders are enabled."""
 
+    FOLDER_MAX_FILE_COUNT: Optional[int | str] = None
+    """Maximum number of files allowed in a folder."""
+
     ENABLE_CHANNELS: bool
     """Whether channels are enabled."""
+
+    ENABLE_MEMORIES: bool
+    """Whether memories are enabled."""
 
     ENABLE_NOTES: bool
     """Whether notes are enabled."""
 
     ENABLE_USER_WEBHOOKS: bool
     """Whether user webhooks are enabled."""
+
+    ENABLE_USER_STATUS: bool
+    """Whether user status updates are enabled."""
 
     PENDING_USER_OVERLAY_TITLE: Optional[str] = None
     """Title for the overlay shown to pending users."""

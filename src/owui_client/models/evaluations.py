@@ -36,3 +36,43 @@ class UpdateConfigForm(BaseModel):
     - Access control settings follow the same structure as the AccessControl component used in the frontend for workspace and model access management.
     - The ID generation algorithm: lowercase the name, replace non-alphanumeric characters with hyphens, collapse multiple hyphens, and remove leading/trailing hyphens.
     """
+
+
+class LeaderboardEntry(BaseModel):
+    """
+    Entry in the model leaderboard.
+
+    Represents a model's standing in the arena, including rating, win/loss statistics, and top tags.
+    """
+
+    model_id: str
+    """ID of the model."""
+
+    rating: int
+    """Elo rating of the model."""
+
+    won: int
+    """Number of wins."""
+
+    lost: int
+    """Number of losses."""
+
+    count: int
+    """Total number of comparisons."""
+
+    top_tags: list[dict]
+    """List of top tags associated with the model's feedback.
+
+    Dict Fields:
+        - `name` (str): Tag name
+        - `count` (int): Usage count
+    """
+
+
+class LeaderboardResponse(BaseModel):
+    """
+    Response containing leaderboard entries.
+    """
+
+    entries: list[LeaderboardEntry]
+    """List of leaderboard entries."""

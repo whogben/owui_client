@@ -463,3 +463,152 @@ class ChatFolderIdForm(BaseModel):
 
     folder_id: Optional[str] = None
     """The ID of the target folder, or None to remove from folder."""
+
+
+class MessageStats(BaseModel):
+    """
+    Statistics for a single message.
+    """
+
+    id: str
+    """Unique identifier for the message."""
+
+    role: str
+    """The role of the message sender (e.g., 'user', 'assistant')."""
+
+    model: Optional[str] = None
+    """The model used to generate the message (if assistant)."""
+
+    content_length: int
+    """Length of the message content."""
+
+    token_count: Optional[int] = None
+    """Number of tokens in the message."""
+
+    timestamp: Optional[int] = None
+    """Timestamp of the message."""
+
+    rating: Optional[int] = None
+    """Rating of the message."""
+
+    tags: Optional[list[str]] = None
+    """Tags associated with the message."""
+
+
+class ChatHistoryStats(BaseModel):
+    """
+    Statistics for chat history.
+    """
+
+    messages: dict[str, MessageStats]
+    """
+    Map of message IDs to message statistics.
+
+    Dict Fields:
+        - `key` (str): Message ID
+        - `value` (MessageStats): Statistics for the message
+    """
+
+    currentId: Optional[str] = None
+    """ID of the current message in the conversation."""
+
+
+class ChatBody(BaseModel):
+    """
+    Body of a chat with history statistics.
+    """
+
+    history: ChatHistoryStats
+    """History statistics for the chat."""
+
+
+class AggregateChatStats(BaseModel):
+    """
+    Aggregated statistics for a chat session.
+
+    Includes metrics such as average response time, message length, and model usage counts.
+    """
+
+    average_response_time: float
+    """Average response time of assistant messages in seconds."""
+
+    average_user_message_content_length: float
+    """Average length of user message contents."""
+
+    average_assistant_message_content_length: float
+    """Average length of assistant message contents."""
+
+    models: dict[str, int]
+    """
+    Counts of models used in the current message path.
+
+    Dict Fields:
+        - `key` (str): Model ID
+        - `value` (int): Usage count
+    """
+
+    message_count: int
+    """Total number of messages in the current path."""
+
+    history_models: dict[str, int]
+    """
+    Counts of models used in the entire history.
+
+    Dict Fields:
+        - `key` (str): Model ID
+        - `value` (int): Usage count
+    """
+
+    history_message_count: int
+    """Total number of messages in the history."""
+
+    history_user_message_count: int
+    """Total number of user messages in the history."""
+
+    history_assistant_message_count: int
+    """Total number of assistant messages in the history."""
+
+
+class ChatStatsExport(BaseModel):
+    """
+    Export model for chat statistics.
+    """
+
+    id: str
+    """Unique identifier for the chat."""
+
+    user_id: str
+    """ID of the user who owns the chat."""
+
+    created_at: int
+    """Timestamp when the chat was created."""
+
+    updated_at: int
+    """Timestamp when the chat was last updated."""
+
+    tags: list[str] = []
+    """List of tags associated with the chat."""
+
+    stats: AggregateChatStats
+    """Aggregated statistics for the chat."""
+
+    chat: ChatBody
+    """Body of the chat containing history statistics."""
+
+
+class ChatStatsExportList(BaseModel):
+    """
+    List of exported chat statistics.
+    """
+
+    type: str = "chats"
+    """Type of export (default: 'chats')."""
+
+    items: list[ChatStatsExport]
+    """List of chat export items."""
+
+    total: int
+    """Total number of items."""
+
+    page: int
+    """Current page number."""

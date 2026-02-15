@@ -152,6 +152,23 @@ class FeedbackIdResponse(BaseModel):
     """Timestamp when feedback was last updated (epoch)."""
 
 
+class LeaderboardFeedbackData(BaseModel):
+    """Minimal feedback data for leaderboard computation (excludes snapshot/meta)."""
+
+    id: str
+    """Unique identifier for the feedback."""
+
+    data: Optional[dict] = None
+    """Content of the feedback.
+
+    Dict Fields:
+        - `model_id_1` (str): ID of the first model
+        - `model_id_2` (str): ID of the second model
+        - `winner` (str): ID of the winning model (or 'tie')
+        - `comment` (str): Optional comment
+    """
+
+
 class RatingData(BaseModel):
     """
     Data structure for rating-type feedback.
@@ -297,3 +314,32 @@ class FeedbackListResponse(BaseModel):
 
     total: int
     """Total number of feedbacks matching the query."""
+
+
+class ModelHistoryEntry(BaseModel):
+    """
+    Entry for model evaluation history.
+
+    Represents a single date entry in a model's history including win/loss counts.
+    """
+
+    date: str
+    """Date of the entry (YYYY-MM-DD)."""
+
+    won: int
+    """Number of wins."""
+
+    lost: int
+    """Number of losses."""
+
+
+class ModelHistoryResponse(BaseModel):
+    """
+    Response model for model evaluation history.
+    """
+
+    model_id: str
+    """ID of the model."""
+
+    history: list[ModelHistoryEntry]
+    """History of wins/losses."""

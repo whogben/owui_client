@@ -1,6 +1,9 @@
 from typing import Optional, List, Dict, Any
 from owui_client.client_base import ResourceBase
-from owui_client.models.evaluations import UpdateConfigForm
+from owui_client.models.evaluations import (
+    UpdateConfigForm,
+    LeaderboardResponse,
+)
 from owui_client.models.feedbacks import (
     FeedbackModel,
     FeedbackResponse,
@@ -8,6 +11,7 @@ from owui_client.models.feedbacks import (
     FeedbackForm,
     FeedbackUserResponse,
     FeedbackListResponse,
+    ModelHistoryResponse,
 )
 
 
@@ -28,6 +32,45 @@ class EvaluationsClient(ResourceBase):
         return await self._request(
             "GET",
             "/v1/evaluations/config",
+        )
+
+    async def get_leaderboard(self, query: Optional[str] = None) -> LeaderboardResponse:
+        """
+        Get model leaderboard with Elo ratings.
+
+        Args:
+            query: Optional search query to filter/re-rank leaderboard based on topic similarity.
+
+        Returns:
+            `LeaderboardResponse`: Leaderboard entries with ratings and stats.
+        """
+        params = {}
+        if query:
+            params["query"] = query
+
+        return await self._request(
+            "GET",
+            "/v1/evaluations/leaderboard",
+            model=LeaderboardResponse,
+            params=params,
+        )
+
+    async def get_model_history(self, model_id: str, days: int = 30) -> ModelHistoryResponse:
+        """
+        Get daily win/loss history for a specific model.
+
+        Args:
+            model_id: ID of the model to get history for.
+            days: Number of days to retrieve history for (default 30).
+
+        Returns:
+            `ModelHistoryResponse`: History data for the model.
+        """
+        return await self._request(
+            "GET",
+            f"/v1/evaluations/leaderboard/{model_id}/history",
+            model=ModelHistoryResponse,
+            params={"days": days},
         )
 
     async def update_config(self, form_data: UpdateConfigForm) -> Dict[str, Any]:

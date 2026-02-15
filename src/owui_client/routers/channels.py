@@ -11,6 +11,9 @@ from owui_client.models.channels import (
     UpdateMembersForm,
     RemoveMembersForm,
     ChannelMemberModel,
+    ChannelWebhookModel,
+    ChannelWebhookForm,
+    WebhookMessageForm,
 )
 from owui_client.models.messages import (
     MessageUserResponse,
@@ -474,4 +477,115 @@ class ChannelsClient(ResourceBase):
             "DELETE",
             f"/v1/channels/{id}/messages/{message_id}/delete",
             model=bool,
+        )
+
+    async def get_webhook_profile_image(self, webhook_id: str) -> bytes:
+        """
+        Get webhook profile image by webhook ID.
+
+        Args:
+            webhook_id: The ID of the webhook.
+
+        Returns:
+            bytes: The image content.
+        """
+        return await self._request(
+            "GET",
+            f"/v1/channels/webhooks/{webhook_id}/profile/image",
+            model=bytes,
+        )
+
+    async def get_webhooks(self, id: str) -> List[ChannelWebhookModel]:
+        """
+        Get all webhooks for a channel.
+
+        Args:
+            id: The channel ID.
+
+        Returns:
+            List[ChannelWebhookModel]: List of webhooks.
+        """
+        return await self._request(
+            "GET",
+            f"/v1/channels/{id}/webhooks",
+            model=ChannelWebhookModel,
+        )
+
+    async def create_webhook(
+        self, id: str, form_data: ChannelWebhookForm
+    ) -> ChannelWebhookModel:
+        """
+        Create a new webhook for a channel.
+
+        Args:
+            id: The channel ID.
+            form_data: The webhook creation form data.
+
+        Returns:
+            `ChannelWebhookModel`: The created webhook.
+        """
+        return await self._request(
+            "POST",
+            f"/v1/channels/{id}/webhooks/create",
+            model=ChannelWebhookModel,
+            json=form_data.model_dump(),
+        )
+
+    async def update_webhook(
+        self, id: str, webhook_id: str, form_data: ChannelWebhookForm
+    ) -> ChannelWebhookModel:
+        """
+        Update an existing webhook.
+
+        Args:
+            id: The channel ID.
+            webhook_id: The webhook ID.
+            form_data: The update form data.
+
+        Returns:
+            `ChannelWebhookModel`: The updated webhook.
+        """
+        return await self._request(
+            "POST",
+            f"/v1/channels/{id}/webhooks/{webhook_id}/update",
+            model=ChannelWebhookModel,
+            json=form_data.model_dump(),
+        )
+
+    async def delete_webhook(self, id: str, webhook_id: str) -> bool:
+        """
+        Delete a webhook.
+
+        Args:
+            id: The channel ID.
+            webhook_id: The webhook ID.
+
+        Returns:
+            bool: True if successful.
+        """
+        return await self._request(
+            "DELETE",
+            f"/v1/channels/{id}/webhooks/{webhook_id}/delete",
+            model=bool,
+        )
+
+    async def post_webhook_message(
+        self, webhook_id: str, token: str, form_data: WebhookMessageForm
+    ) -> dict:
+        """
+        Post a message via webhook (public endpoint).
+
+        Args:
+            webhook_id: The webhook ID.
+            token: The webhook token.
+            form_data: The message content.
+
+        Returns:
+            dict: Response containing success status and message_id.
+        """
+        return await self._request(
+            "POST",
+            f"/v1/channels/webhooks/{webhook_id}/{token}",
+            model=dict,
+            json=form_data.model_dump(),
         )

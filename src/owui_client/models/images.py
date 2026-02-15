@@ -201,6 +201,9 @@ class CreateImageForm(BaseModel):
     negative_prompt: Optional[str] = None
     """The negative prompt to use for image generation (if supported by the engine)."""
 
+    steps: Optional[int] = None
+    """The number of diffusion steps to run."""
+
 
 GenerateImageForm = CreateImageForm  # Alias for backward compatibility
 

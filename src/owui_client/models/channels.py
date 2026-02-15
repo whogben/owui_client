@@ -568,6 +568,27 @@ class ChannelResponse(ChannelModel):
     """Total number of users in the channel."""
 
 
+class ChannelWebhookForm(BaseModel):
+    """
+    Form for creating or updating a webhook.
+    """
+
+    name: str
+    """Name of the webhook."""
+
+    profile_image_url: Optional[str] = None
+    """URL of the profile image for the webhook."""
+
+
+class WebhookMessageForm(BaseModel):
+    """
+    Form for posting a message via webhook.
+    """
+
+    content: str
+    """Content of the message."""
+
+
 # Router-level models
 
 

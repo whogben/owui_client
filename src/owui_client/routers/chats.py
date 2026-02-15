@@ -13,6 +13,8 @@ from owui_client.models.chats import (
     EventForm,
     CloneForm,
     ChatFolderIdForm,
+    ChatStatsExport,
+    ChatStatsExportList,
 )
 from owui_client.models.tags import TagModel
 
@@ -50,6 +52,48 @@ class ChatsClient(ResourceBase):
             "/v1/chats/stats/usage",
             model=ChatUsageStatsListResponse,
             params=params,
+        )
+
+    async def export_chat_stats(
+        self,
+        updated_at: Optional[int] = None,
+        page: Optional[int] = 1,
+    ) -> ChatStatsExportList:
+        """
+        Export chat statistics.
+
+        Args:
+            updated_at: Filter by updated_at timestamp.
+            page: Page number for pagination.
+
+        Returns:
+            List of exported chat statistics.
+        """
+        params = {}
+        if updated_at is not None:
+            params["updated_at"] = updated_at
+        if page is not None:
+            params["page"] = page
+
+        return await self._request(
+            "GET", "/v1/chats/stats/export", model=ChatStatsExportList, params=params
+        )
+
+    async def export_single_chat_stats(
+        self,
+        chat_id: str,
+    ) -> Optional[ChatStatsExport]:
+        """
+        Export statistics for a single chat.
+
+        Args:
+            chat_id: The ID of the chat.
+
+        Returns:
+            Exported statistics for the chat.
+        """
+        return await self._request(
+            "GET", f"/v1/chats/stats/export/{chat_id}", model=ChatStatsExport
         )
 
     async def get_list(

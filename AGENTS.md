@@ -56,6 +56,9 @@ There is also a .venv at the root of the project: Always use this .venv, never u
     - The version number is defined in `owui_client/pyproject.toml`.
     - It is also available at runtime via `owui_client.__version__` (defined in `owui_client/src/owui_client/__init__.py`).
     - **CRITICAL**: These two versions must ALWAYS be kept in sync. When bumping the version in `pyproject.toml`, you must also update `__init__.py`.
+    - Version major numbers should never be automatically bumped.
+    - Version minor numbers should be bumped on user request and each time we target a new version of the OWUI API, so 1.3.2 becomes 1.4.0 for example, when supporting a new Open WebUI API update.
+    - Version patch numbers should be bumped on user-request after making fixes.
 
 ## Workflow
 

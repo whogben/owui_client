@@ -70,5 +70,5 @@ async def test_model_lifecycle(client):
         await client.models.get_model_by_id(model_id)
         assert False, "Model should have been deleted"
     except HTTPStatusError as e:
-        # Backend returns 401 for not found (weird but confirmed)
-        assert e.response.status_code == 401
+        # Backend returns 404 for not found
+        assert e.response.status_code == 404
