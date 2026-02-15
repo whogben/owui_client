@@ -85,13 +85,13 @@ def wait_for_port(port, timeout=60):
     return False
 
 
-def wait_for_server(port, timeout=120):
+def wait_for_server(port, timeout=300):
     """Wait for the server to be available."""
     url = f"http://localhost:{port}/health"  # Health endpoint is usually faster/lighter
     # Fallback to checking openapi.json if health isn't available/standard
     openapi_url = f"http://localhost:{port}/openapi.json"
 
-    print(f"Waiting for server at localhost:{port}...")
+    print(f"Waiting for server at localhost:{port} (timeout: {timeout} seconds)...")
 
     start_time = time.time()
     while time.time() - start_time < timeout:

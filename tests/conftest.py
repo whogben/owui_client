@@ -29,6 +29,22 @@ except ImportError:
 from owui_client.client import OpenWebUI
 
 
+def pytest_configure(config):
+    """Print a warning about server startup timeout at the beginning of the test session."""
+    print(
+        "\n"
+        "========================================================================\n"
+        "  OWUI Test Suite - Server Startup Notice\n"
+        "------------------------------------------------------------------------\n"
+        "  Tests that require the Open WebUI server may take up to 5 minutes on\n"
+        "  first run while Docker pulls the image, installs dependencies, and\n"
+        "  downloads/loads ML models. This is normal.\n"
+        "\n"
+        "  If no log output changes for 90+ seconds, the server may be stuck.\n"
+        "========================================================================"
+    )
+
+
 @pytest.fixture(scope="session")
 def owui_server_session():
     """
