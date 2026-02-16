@@ -1,11 +1,19 @@
 import pytest
 from owui_client.models.auths import SigninForm
-from owui_client.models.notes import NoteForm, NoteUserResponse, NoteItemResponse, NoteModel
+from owui_client.models.notes import (
+    NoteForm,
+    NoteUserResponse,
+    NoteItemResponse,
+    NoteModel,
+    NoteAccessGrantsForm,
+)
 
 pytestmark = pytest.mark.asyncio
 
+
 async def test_notes_client_initialization(client):
     assert client.notes is not None
+
 
 async def test_notes_lifecycle(client):
     """
@@ -20,9 +28,9 @@ async def test_notes_lifecycle(client):
         title="Test Note",
         data={"content": "This is a test note"},
         meta={"category": "testing"},
-        access_control=None
+        access_control=None,
     )
-    
+
     created_note = await client.notes.create_note(note_form)
     assert created_note is not None
     assert created_note.title == "Test Note"
@@ -49,9 +57,9 @@ async def test_notes_lifecycle(client):
         title="Updated Test Note",
         data={"content": "Updated content"},
         meta={"category": "updated"},
-        access_control=None
+        access_control=None,
     )
-    
+
     updated_note = await client.notes.update_note_by_id(note_id, update_form)
     assert updated_note is not None
     assert updated_note.title == "Updated Test Note"
@@ -78,3 +86,125 @@ async def test_notes_lifecycle(client):
         # Expected error
         assert "404" in str(e) or "Not Found" in str(e)
 
+
+async def test_notes_search(client):
+    """
+    Test searching for notes.
+    """
+    # Create a note to search for
+    note_form = NoteForm(
+        title="Searchable Note",
+        data={"content": "This note is searchable"},
+        meta={"category": "search-test"},
+        access_control=None,
+    )
+
+    created_note = await client.notes.create_note(note_form)
+    assert created_note is not None
+    note_id = created_note.id
+
+    try:
+        # Search without query (should return all visible notes)
+        results = await client.notes.search_notes()
+        assert results is not None
+        # NoteListResponse has 'items' and 'total' attributes
+        assert hasattr(results, "items")
+        assert hasattr(results, "total")
+
+        # Search with query
+        results = await client.notes.search_notes(query="Searchable")
+        assert results is not None
+
+        # Search with view_option
+        results = await client.notes.search_notes(view_option="created")
+        assert results is not None
+
+        # Search with order_by and direction
+        results = await client.notes.search_notes(
+            order_by="updated_at", direction="desc"
+        )
+        assert results is not None
+
+    finally:
+        # Cleanup
+        await client.notes.delete_note_by_id(note_id)
+
+
+async def test_notes_access_grants(client):
+    """
+    Test updating access grants for a note.
+    """
+    # Create a note
+    note_form = NoteForm(
+        title="Access Test Note",
+        data={"content": "Testing access grants"},
+        access_control=None,
+    )
+
+    created_note = await client.notes.create_note(note_form)
+    assert created_note is not None
+    note_id = created_note.id
+
+    try:
+        # Update access grants - grant public read access
+        access_form = NoteAccessGrantsForm(
+            access_grants=[
+                {
+                    "principal_type": "user",
+                    "principal_id": "*",
+                    "permission": "read",
+                }
+            ]
+        )
+
+        updated_note = await client.notes.update_note_access_by_id(note_id, access_form)
+        assert updated_note is not None
+        assert updated_note.id == note_id
+
+        # Verify the note still exists and is accessible
+        fetched_note = await client.notes.get_note_by_id(note_id)
+        assert fetched_note is not None
+
+        # Update access grants - remove public access (empty grants)
+        access_form_empty = NoteAccessGrantsForm(access_grants=[])
+        updated_note = await client.notes.update_note_access_by_id(
+            note_id, access_form_empty
+        )
+        assert updated_note is not None
+
+    finally:
+        # Cleanup
+        await client.notes.delete_note_by_id(note_id)
+
+
+async def test_notes_with_access_grants_on_create(client):
+    """
+    Test creating a note with access grants.
+    """
+    # Create a note with access grants
+    note_form = NoteForm(
+        title="Note With Grants",
+        data={"content": "Created with access grants"},
+        access_grants=[
+            {
+                "principal_type": "user",
+                "principal_id": "*",
+                "permission": "read",
+            }
+        ],
+        access_control=None,
+    )
+
+    created_note = await client.notes.create_note(note_form)
+    assert created_note is not None
+    assert created_note.title == "Note With Grants"
+    note_id = created_note.id
+
+    try:
+        # Verify the note exists
+        fetched_note = await client.notes.get_note_by_id(note_id)
+        assert fetched_note is not None
+        assert fetched_note.title == "Note With Grants"
+    finally:
+        # Cleanup
+        await client.notes.delete_note_by_id(note_id)

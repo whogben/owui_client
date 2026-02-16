@@ -1,6 +1,11 @@
 import pytest
 import time
-from owui_client.models.models import ModelForm, ModelMeta, ModelParams
+from owui_client.models.models import (
+    ModelForm,
+    ModelMeta,
+    ModelParams,
+    ModelAccessGrantsForm,
+)
 from owui_client.models.auths import SigninForm
 
 # Mark all tests in this module as async
@@ -18,12 +23,12 @@ async def test_model_lifecycle(client):
     # 2. Create a model
     model_id = f"test_model_{int(time.time())}"
     model_name = "Test Model"
-    
+
     form_data = ModelForm(
         id=model_id,
         name=model_name,
         meta=ModelMeta(description="A test model"),
-        params=ModelParams()
+        params=ModelParams(),
     )
 
     created_model = await client.models.create_new_model(form_data)
@@ -53,7 +58,7 @@ async def test_model_lifecycle(client):
     assert updated_model.name == new_name
 
     # 6. Toggle active
-    # Default is active=True, so toggle should make it False? 
+    # Default is active=True, so toggle should make it False?
     # Wait, backend toggle logic: "is_active": not is_active
     toggled_model = await client.models.toggle_model_by_id(model_id)
     assert toggled_model is not None
@@ -66,9 +71,49 @@ async def test_model_lifecycle(client):
 
     # 8. Verify deletion
     from httpx import HTTPStatusError
+
     try:
         await client.models.get_model_by_id(model_id)
         assert False, "Model should have been deleted"
     except HTTPStatusError as e:
         # Backend returns 404 for not found
         assert e.response.status_code == 404
+
+
+async def test_update_model_access(client):
+    """
+    Test updating model access grants.
+    """
+    # Create a model
+    model_id = f"test_model_access_{int(time.time())}"
+    form_data = ModelForm(
+        id=model_id,
+        name="Test Model Access",
+        meta=ModelMeta(description="A test model for access grants"),
+        params=ModelParams(),
+    )
+
+    created_model = await client.models.create_new_model(form_data)
+    assert created_model is not None
+    assert created_model.id == model_id
+
+    # Update access grants - grant public read access
+    access_form = ModelAccessGrantsForm(
+        id=model_id,
+        access_grants=[
+            {"principal_type": "user", "principal_id": "*", "permission": "read"}
+        ],
+    )
+
+    updated_model = await client.models.update_model_access(access_form)
+    assert updated_model is not None
+    assert updated_model.id == model_id
+    # Verify access_grants are present
+    assert len(updated_model.access_grants) == 1
+    assert updated_model.access_grants[0].principal_type == "user"
+    assert updated_model.access_grants[0].principal_id == "*"
+    assert updated_model.access_grants[0].permission == "read"
+
+    # Clean up
+    deleted = await client.models.delete_model_by_id(model_id)
+    assert deleted is True

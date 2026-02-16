@@ -1,6 +1,12 @@
 import pytest
-from owui_client.models.channels import CreateChannelForm, ChannelForm
+from owui_client.models.channels import (
+    CreateChannelForm,
+    ChannelForm,
+    ChannelWebhookForm,
+    WebhookMessageForm,
+)
 from owui_client.models.messages import MessageForm
+
 
 @pytest.mark.asyncio
 async def test_channels_crud(client):
@@ -15,9 +21,9 @@ async def test_channels_crud(client):
         name="test-channel",
         description="A test channel",
         is_private=False,
-        type="group" # type is required for creation
+        type="group",  # type is required for creation
     )
-    
+
     channel = await client.channels.create(create_form)
     assert channel is not None
     assert channel.name == "test-channel"
@@ -38,20 +44,17 @@ async def test_channels_crud(client):
     channel_full = await client.channels.get(channel.id)
     assert channel_full is not None
     assert channel_full.id == channel.id
-    
+
     # Update channel
     update_form = ChannelForm(
-        name="test-channel-updated",
-        description="Updated description"
+        name="test-channel-updated", description="Updated description"
     )
     updated_channel = await client.channels.update(channel.id, update_form)
     assert updated_channel.name == "test-channel-updated"
     assert updated_channel.description == "Updated description"
 
     # Post a message
-    message_form = MessageForm(
-        content="Hello world!"
-    )
+    message_form = MessageForm(content="Hello world!")
     message = await client.channels.post_message(channel.id, message_form)
     assert message is not None
     assert message.content == "Hello world!"
@@ -79,7 +82,7 @@ async def test_channels_crud(client):
             target_msg = msg
             break
     assert target_msg is not None
-    
+
     # Check reaction on pinned message
     has_reaction = False
     for r in target_msg.reactions:
@@ -99,3 +102,80 @@ async def test_channels_crud(client):
     # Delete channel
     delete_res = await client.channels.delete(channel.id)
     assert delete_res is True
+
+
+@pytest.mark.asyncio
+async def test_channel_webhooks(client):
+    """Test webhook CRUD operations for channels."""
+    # Enable channels if not enabled
+    admin_config = await client.auths.get_admin_config()
+    if not admin_config.ENABLE_CHANNELS:
+        admin_config.ENABLE_CHANNELS = True
+        await client.auths.update_admin_config(admin_config)
+
+    # Create a channel
+    create_form = CreateChannelForm(
+        name="webhook-test-channel",
+        description="A test channel for webhooks",
+        is_private=False,
+        type="group",
+    )
+    channel = await client.channels.create(create_form)
+    assert channel is not None
+    assert channel.name == "webhook-test-channel"
+
+    try:
+        # Create a webhook
+        webhook_form = ChannelWebhookForm(
+            name="test-webhook",
+            profile_image_url=None,
+        )
+        webhook = await client.channels.create_webhook(channel.id, webhook_form)
+        assert webhook is not None
+        assert webhook.name == "test-webhook"
+        assert webhook.channel_id == channel.id
+        assert webhook.token is not None
+
+        # List webhooks
+        webhooks = await client.channels.get_webhooks(channel.id)
+        assert len(webhooks) == 1
+        assert webhooks[0].id == webhook.id
+
+        # Update webhook
+        update_form = ChannelWebhookForm(
+            name="updated-webhook",
+            profile_image_url="https://example.com/image.png",
+        )
+        updated_webhook = await client.channels.update_webhook(
+            channel.id, webhook.id, update_form
+        )
+        assert updated_webhook.name == "updated-webhook"
+        assert updated_webhook.profile_image_url == "https://example.com/image.png"
+
+        # Post message via webhook (public endpoint)
+        message_form = WebhookMessageForm(content="Hello from webhook!")
+        result = await client.channels.post_webhook_message(
+            webhook.id, webhook.token, message_form
+        )
+        assert result.get("success") is True
+        assert result.get("message_id") is not None
+
+        # Verify message was posted
+        messages = await client.channels.get_messages(channel.id)
+        assert len(messages) >= 1
+        webhook_message = next(
+            (m for m in messages if m.content == "Hello from webhook!"), None
+        )
+        assert webhook_message is not None
+
+        # Delete webhook
+        delete_result = await client.channels.delete_webhook(channel.id, webhook.id)
+        assert delete_result is True
+
+        # Verify webhook is deleted
+        webhooks = await client.channels.get_webhooks(channel.id)
+        assert len(webhooks) == 0
+
+    finally:
+        # Clean up channel
+        await client.channels.delete(channel.id)

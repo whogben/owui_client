@@ -1,5 +1,5 @@
 import pytest
-from owui_client.models.openai import OpenAIConfigForm, ConnectionVerificationForm
+from owui_client.models.openai import OpenAIConfigForm, ConnectionVerificationForm, ResponsesForm
 
 
 @pytest.mark.asyncio
@@ -110,3 +110,28 @@ async def test_speech(client, mock_openai_server):
     # Note: speech returns bytes
     res = await client.openai.speech(payload)
     assert res == b"FAKE_MP3_DATA"
+
+@pytest.mark.asyncio
+async def test_responses(client, mock_openai_server):
+    """Test the OpenAI Responses API endpoint."""
+    # Setup config
+    new_config = OpenAIConfigForm(
+        ENABLE_OPENAI_API=True,
+        OPENAI_API_BASE_URLS=[mock_openai_server],
+        OPENAI_API_KEYS=["sk-mock-key"],
+        OPENAI_API_CONFIGS={"0": {"enable": True}},
+    )
+    await client.openai.update_config(new_config)
+
+    form = ResponsesForm(
+        model="gpt-4o",
+        input="Hello, how are you?",
+    )
+
+    res = await client.openai.responses(form)
+    assert "id" in res
+    assert res["id"] == "resp-123"
+    assert "output" in res
+    assert len(res["output"]) > 0
+    assert res["output"][0]["type"] == "message"
+    assert res["output"][0]["role"] == "assistant"

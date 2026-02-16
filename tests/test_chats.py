@@ -115,3 +115,63 @@ async def test_chats_lifecycle(client):
         assert False, "Should have raised 404"  # or 401 as per backend
     except Exception:
         pass
+
+
+async def test_export_chat_stats(client):
+    """
+    Test exporting chat statistics.
+    """
+    # Create a chat with some history for stats export
+    chat_data = {
+        "title": "Stats Test Chat",
+        "history": {
+            "messages": {
+                "msg_1": {
+                    "id": "msg_1",
+                    "role": "user",
+                    "content": "Hello, how are you?",
+                    "timestamp": 1600000000,
+                    "parentId": None,
+                    "childrenIds": ["msg_2"],
+                    "models": [],
+                },
+                "msg_2": {
+                    "id": "msg_2",
+                    "role": "assistant",
+                    "content": "I'm doing well, thank you!",
+                    "timestamp": 1600000010,
+                    "parentId": "msg_1",
+                    "childrenIds": [],
+                    "models": ["gpt-3.5-turbo"],
+                    "model": "gpt-3.5-turbo",
+                },
+            },
+            "currentId": "msg_2",
+        },
+    }
+    form = ChatForm(chat=chat_data)
+    created_chat = await client.chats.create_new(form)
+    assert created_chat is not None
+    chat_id = created_chat.id
+
+    try:
+        # Export chat stats list
+        stats_list = await client.chats.export_chat_stats(page=1)
+        assert stats_list is not None
+        assert hasattr(stats_list, "items")
+        assert hasattr(stats_list, "total")
+        assert hasattr(stats_list, "page")
+        assert stats_list.type == "chats"
+
+        # Export single chat stats
+        single_stats = await client.chats.export_single_chat_stats(chat_id)
+        assert single_stats is not None
+        assert single_stats.id == chat_id
+        assert hasattr(single_stats, "stats")
+        assert hasattr(single_stats, "chat")
+        assert hasattr(single_stats.stats, "message_count")
+        assert hasattr(single_stats.stats, "models")
+
+    finally:
+        # Cleanup
+        await client.chats.delete(chat_id)

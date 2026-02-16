@@ -2,7 +2,13 @@ import pytest
 import uuid
 from httpx import HTTPStatusError
 from owui_client.models.auths import SigninForm, AddUserForm
-from owui_client.models.groups import GroupForm, GroupUpdateForm, UserIdsForm, GroupExportResponse
+from owui_client.models.groups import (
+    GroupForm,
+    GroupUpdateForm,
+    UserIdsForm,
+    GroupExportResponse,
+    GroupInfoResponse,
+)
 
 pytestmark = pytest.mark.asyncio
 
@@ -57,9 +63,7 @@ async def test_group_members(client):
     user_pass = "password123"
     user_name = "Group User"
     user_res = await client.auths.add_user(
-        AddUserForm(
-            email=user_email, password=user_pass, name=user_name, role="user"
-        )
+        AddUserForm(email=user_email, password=user_pass, name=user_name, role="user")
     )
     user_id = user_res.id
 
@@ -123,6 +127,32 @@ async def test_group_export_and_users_list(client):
     assert isinstance(users_in_group, list)
     assert len(users_in_group) == 1
     assert users_in_group[0].id == user_id
+
+    # Cleanup
+    await client.groups.delete_group_by_id(group_id)
+
+
+async def test_get_group_info_by_id(client):
+    """
+    Test retrieving basic group info by ID (accessible to all verified users).
+    """
+    # Create Group
+    group = await client.groups.create_new_group(
+        GroupForm(name=f"Info Group {uuid.uuid4()}", description="Test info endpoint")
+    )
+    group_id = group.id
+
+    # Get group info using the new endpoint
+    info = await client.groups.get_group_info_by_id(group_id)
+    assert info is not None
+    assert isinstance(info, GroupInfoResponse)
+    assert info.id == group_id
+    assert info.name == group.name
+    assert info.description == group.description
+    # GroupInfoResponse has basic fields but not sensitive ones like data/meta
+    assert hasattr(info, "created_at")
+    assert hasattr(info, "updated_at")
+    assert info.member_count == 0
 
     # Cleanup
     await client.groups.delete_group_by_id(group_id)

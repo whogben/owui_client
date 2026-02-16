@@ -1,9 +1,10 @@
 import pytest
-from owui_client.models.evaluations import UpdateConfigForm
+from owui_client.models.evaluations import UpdateConfigForm, LeaderboardResponse
 from owui_client.models.feedbacks import (
     FeedbackForm,
     RatingData,
     MetaData,
+    ModelHistoryResponse,
 )
 
 pytestmark = pytest.mark.asyncio
@@ -91,3 +92,52 @@ async def test_feedback_lifecycle(client):
     except Exception:
         pass
 
+
+async def test_get_leaderboard(client):
+    """Test the leaderboard endpoint returns a valid response."""
+    leaderboard = await client.evaluations.get_leaderboard()
+    assert leaderboard is not None
+    assert isinstance(leaderboard, LeaderboardResponse)
+    assert hasattr(leaderboard, "entries")
+    assert isinstance(leaderboard.entries, list)
+
+
+async def test_get_leaderboard_with_query(client):
+    """Test the leaderboard endpoint with a query parameter."""
+    leaderboard = await client.evaluations.get_leaderboard(query="coding")
+    assert leaderboard is not None
+    assert isinstance(leaderboard, LeaderboardResponse)
+    assert hasattr(leaderboard, "entries")
+
+
+async def test_get_model_history(client):
+    """Test the model history endpoint."""
+    # Create arena-style feedback for testing history
+    # The leaderboard uses feedbacks with model_id, sibling_model_ids, and rating (1/-1)
+    feedback_form = FeedbackForm(
+        type="rating",
+        data={
+            "model_id": "test-model-history",
+            "sibling_model_ids": ["opponent-model"],
+            "rating": "1",  # Win
+            "tags": ["test"],
+        },
+        meta={"arena": True},
+        snapshot=None,
+    )
+    created = await client.evaluations.create_feedback(feedback_form)
+    assert created is not None
+
+    try:
+        # Get model history
+        history = await client.evaluations.get_model_history(
+            "test-model-history", days=30
+        )
+        assert history is not None
+        assert isinstance(history, ModelHistoryResponse)
+        assert history.model_id == "test-model-history"
+        assert hasattr(history, "history")
+        assert isinstance(history.history, list)
+    finally:
+        # Cleanup
+        await client.evaluations.delete_feedback(created.id)

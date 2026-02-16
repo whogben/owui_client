@@ -4,9 +4,11 @@ from owui_client.models.auths import (
     SigninForm,
     SignupForm,
     UpdatePasswordForm,
+    UpdateTimezoneForm,
     AddUserForm,
     LdapServerConfig,
     LdapConfigForm,
+    TokenExchangeForm,
 )
 from owui_client.models.users import UpdateProfileForm
 import uuid
@@ -202,10 +204,7 @@ async def test_add_user_success(client):
     role = "user"
 
     form_data = AddUserForm(
-        email=new_email,
-        password=new_password,
-        name=new_name,
-        role=role
+        email=new_email, password=new_password, name=new_name, role=role
     )
 
     # 3. Add user
@@ -221,7 +220,7 @@ async def test_add_user_success(client):
 
     # 4. Verify we can sign in as the new user
     # Temporarily switch client key? Or just try signin which will overwrite it.
-    
+
     signin_form = SigninForm(email=new_email, password=new_password)
     signin_response = await client.auths.signin(signin_form)
     assert signin_response.token is not None
@@ -261,7 +260,7 @@ async def test_ldap_server_config(client):
     # 2. Get current LDAP server config
     server_config = await client.auths.get_ldap_server()
     assert server_config is not None
-    
+
     # 3. Update LDAP server config
     original_label = server_config.label
     new_label = "Test LDAP Server"
@@ -277,7 +276,7 @@ async def test_ldap_server_config(client):
         server_config.app_dn_password = "password"
     if not server_config.search_base:
         server_config.search_base = "dc=example,dc=com"
-    
+
     updated_config = await client.auths.update_ldap_server(server_config)
     assert updated_config.label == new_label
 
@@ -301,19 +300,19 @@ async def test_ldap_config(client):
     # 2. Get current LDAP config
     ldap_config = await client.auths.get_ldap_config()
     assert ldap_config is not None
-    
+
     # 3. Toggle ENABLE_LDAP
     new_state = not ldap_config.ENABLE_LDAP
-    
+
     form_data = LdapConfigForm(enable_ldap=new_state)
     updated_config = await client.auths.update_ldap_config(form_data)
-    
+
     assert updated_config.ENABLE_LDAP == new_state
-    
+
     # 4. Verify persistence
     config_check = await client.auths.get_ldap_config()
     assert config_check.ENABLE_LDAP == new_state
-    
+
     # 5. Revert
     await client.auths.update_ldap_config(LdapConfigForm(enable_ldap=not new_state))
 
@@ -350,3 +349,43 @@ async def test_api_key_lifecycle(client):
     with pytest.raises(HTTPStatusError) as excinfo:
         await client.auths.get_api_key()
     assert excinfo.value.response.status_code == 404
+
+
+async def test_update_timezone(client):
+    """
+    Test updating the user's timezone.
+    """
+    # Ensure signed in
+    form = SigninForm(email="admin@example.com", password="password123")
+    await client.auths.signin(form)
+
+    # Update timezone
+    timezone_form = UpdateTimezoneForm(timezone="America/New_York")
+    success = await client.auths.update_timezone(timezone_form)
+    assert success is True
+
+    # Update to a different timezone
+    timezone_form = UpdateTimezoneForm(timezone="Europe/London")
+    success = await client.auths.update_timezone(timezone_form)
+    assert success is True
+
+
+async def test_token_exchange_disabled(client):
+    """
+    Test that token exchange fails when disabled (default state).
+
+    Token exchange requires ENABLE_OAUTH_TOKEN_EXCHANGE=True and a configured
+    OAuth provider. This test verifies the expected failure when disabled.
+    """
+    # Ensure signed in
+    form = SigninForm(email="admin@example.com", password="password123")
+    await client.auths.signin(form)
+
+    # Attempt token exchange - should fail with 403 if disabled
+    token_form = TokenExchangeForm(token="mock-oauth-token")
+    with pytest.raises(HTTPStatusError) as excinfo:
+        await client.auths.token_exchange(
+            "google", token_form, set_client_api_key=False
+        )
+    # Expect 403 if disabled, or 404 if provider not configured
+    assert excinfo.value.response.status_code in [403, 404]
