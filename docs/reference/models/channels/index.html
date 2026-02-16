@@ -432,6 +432,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../access_grants/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    access_grants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../audio/" class="md-nav__link">
         
   
@@ -672,6 +700,17 @@
     <span class="md-ellipsis">
       
         meta
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.channels.ChannelModel.access_grants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        access_grants
       
     </span>
   </a>
@@ -1203,6 +1242,17 @@
     <span class="md-ellipsis">
       
         meta
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.channels.ChannelForm.access_grants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        access_grants
       
     </span>
   </a>
@@ -3471,6 +3521,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#owui_client.models.channels.ChannelModel.access_grants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        access_grants
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#owui_client.models.channels.ChannelModel.access_control" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3995,6 +4056,17 @@
     <span class="md-ellipsis">
       
         meta
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.channels.ChannelForm.access_grants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        access_grants
       
     </span>
   </a>
@@ -4994,6 +5066,30 @@ indicating it accepts any valid JSON object structure.</p>
 <p>Note: No specific keys are enforced by the backend. This field provides flexibility
 for various use cases but requires applications to handle their own validation and structure.</p>
 </details>
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h5 id="owui_client.models.channels.ChannelModel.access_grants" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">access_grants</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">access_grants</span><span class="p">:</span> <span class="n"><span title="list">list</span></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-internal" title="            AccessGrantModel (owui_client.models.access_grants.AccessGrantModel)" href="../access_grants/#owui_client.models.access_grants.AccessGrantModel">AccessGrantModel</a></span><span class="p">]</span> <span class="o">=</span> <span class="n"><span title="pydantic.Field">Field</span></span><span class="p">(</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><span title="pydantic.Field(default_factory)">default_factory</span></span><span class="o">=</span><span class="n"><span title="list">list</span></span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">)</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>List of access grants controlling who can read/write this channel.
+Replaces the legacy access_control field.</p>
+
           
     </div>
 
@@ -6317,6 +6413,32 @@ or integration-specific data.</p>
 - <code>custom_metadata</code> (dict, optional): Application-specific metadata</p>
 <p>All keys are optional and the structure is not validated by the backend.</p>
 </details>
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h5 id="owui_client.models.channels.ChannelForm.access_grants" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">access_grants</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">access_grants</span><span class="p">:</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="list">list</span></span><span class="p">[</span><span class="n"><span title="dict">dict</span></span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>List of access grants for the channel.</p>
+<p>Dict Fields:
+- <code>id</code> (str, optional): Unique identifier for the grant
+- <code>principal_type</code> (str, required): 'user' or 'group'
+- <code>principal_id</code> (str, required): User/group ID, or '*' for public access
+- <code>permission</code> (str, required): 'read' or 'write'</p>
+
           
     </div>
 

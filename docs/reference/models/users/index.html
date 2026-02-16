@@ -432,6 +432,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../access_grants/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    access_grants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../audio/" class="md-nav__link">
         
   
@@ -1634,6 +1662,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#owui_client.models.users.UserModel.scim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        scim
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#owui_client.models.users.UserModel.oauth_sub" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1984,6 +2023,39 @@
     <span class="md-ellipsis">
       
         role
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.users.UserInfoResponse.bio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        bio
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.users.UserInfoResponse.groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        groups
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.users.UserInfoResponse.is_active" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_active
       
     </span>
   </a>
@@ -2543,6 +2615,17 @@
     <span class="md-ellipsis">
       
         tools
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.users.WorkspacePermissions.skills" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        skills
       
     </span>
   </a>
@@ -4672,6 +4755,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#owui_client.models.users.UserModel.scim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        scim
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#owui_client.models.users.UserModel.oauth_sub" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5022,6 +5116,39 @@
     <span class="md-ellipsis">
       
         role
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.users.UserInfoResponse.bio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        bio
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.users.UserInfoResponse.groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        groups
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.users.UserInfoResponse.is_active" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_active
       
     </span>
   </a>
@@ -5581,6 +5708,17 @@
     <span class="md-ellipsis">
       
         tools
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.users.WorkspacePermissions.skills" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        skills
       
     </span>
   </a>
@@ -7544,6 +7682,42 @@ and system metadata.</p>
 
 
 
+<h5 id="owui_client.models.users.UserModel.scim" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">scim</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">scim</span><span class="p">:</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="dict">dict</span></span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>SCIM provider data for external identity management.</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>microsoft</code> (dict, optional): Microsoft SCIM provider data</li>
+<li><code>okta</code> (dict, optional): Okta SCIM provider data</li>
+</ul>
+</details>
+
+<details class="each-provider-dictionary-contains" open>
+  <summary>Each provider dictionary contains</summary>
+  <ul>
+<li><code>external_id</code> (str, required): External identifier from the SCIM provider</li>
+</ul>
+</details>
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
 <h5 id="owui_client.models.users.UserModel.oauth_sub" class="doc doc-heading">
 <code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">oauth_sub</span>
 
@@ -8491,6 +8665,69 @@ and system metadata.</p>
     <div class="doc doc-contents ">
 
         <p>User role.</p>
+
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h5 id="owui_client.models.users.UserInfoResponse.bio" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">bio</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">bio</span><span class="p">:</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>User's biography.</p>
+
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h5 id="owui_client.models.users.UserInfoResponse.groups" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">groups</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">groups</span><span class="p">:</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="list">list</span></span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>List of groups the user belongs to.</p>
+
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h5 id="owui_client.models.users.UserInfoResponse.is_active" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">is_active</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">is_active</span><span class="p">:</span> <span class="n"><span title="bool">bool</span></span> <span class="o">=</span> <span class="kc">False</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Whether the user is currently active (based on recent activity).</p>
 
           
     </div>
@@ -9820,6 +10057,27 @@ and system metadata.</p>
     <div class="doc doc-contents ">
 
         <p>Access to tools.</p>
+
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h5 id="owui_client.models.users.WorkspacePermissions.skills" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">skills</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">skills</span><span class="p">:</span> <span class="n"><span title="bool">bool</span></span> <span class="o">=</span> <span class="kc">False</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Access to skills.</p>
 
           
     </div>
@@ -11522,6 +11780,22 @@ It is used for default permissions configuration and user-specific permission ch
       <a href="../prompts/#owui_client.models.prompts-classes">Classes</a>
   </span>
 
+            <ul class="doc doc-backlink-list">
+      <li class="doc doc-backlink">
+            <span class="doc doc-backlink-crumb">
+      <a href="../prompts/#owui_client.models.prompts.PromptHistoryResponse">PromptHistoryResponse</a>
+  </span>
+
+            <span class="doc doc-backlink-crumb">
+      <a href="../prompts/#owui_client.models.prompts.PromptHistoryResponse-attributes">Attributes</a>
+  </span>
+
+            <span class="doc doc-backlink-crumb last">
+      <a href="../prompts/#owui_client.models.prompts.PromptHistoryResponse.user">user</a>
+  </span>
+
+      </li>
+      <li class="doc doc-backlink">
             <span class="doc doc-backlink-crumb">
       <a href="../prompts/#owui_client.models.prompts.PromptUserResponse">PromptUserResponse</a>
   </span>
@@ -11533,6 +11807,9 @@ It is used for default permissions configuration and user-specific permission ch
             <span class="doc doc-backlink-crumb last">
       <a href="../prompts/#owui_client.models.prompts.PromptUserResponse.user">user</a>
   </span>
+
+      </li>
+  </ul>
 
       </li>
       <li class="doc doc-backlink">
