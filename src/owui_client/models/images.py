@@ -230,3 +230,6 @@ class EditImageForm(BaseModel):
 
     negative_prompt: Optional[str] = None
     """The negative prompt to use for image editing (if supported by the engine)."""
+
+    background: Optional[str] = None
+    """Background setting for image editing (e.g., 'transparent' or 'opaque')."""

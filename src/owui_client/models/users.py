@@ -471,6 +471,12 @@ class SharingPermissions(BaseModel):
     public_tools: bool = True
     """Can share tools publicly (default True)."""
 
+    skills: bool = False
+    """Can share skills."""
+
+    public_skills: bool = False
+    """Can share skills publicly."""
+
     notes: bool = False
     """Can share notes."""
 
