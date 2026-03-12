@@ -18,6 +18,33 @@ DOCKER_IMAGE_BASE = "ghcr.io/open-webui/open-webui"
 LDAP_IMAGE = "osixia/openldap:latest"
 
 
+def get_docker_host_ip():
+    """Get the IP address of the host from docker's perspective."""
+    try:
+        result = subprocess.run(
+            ["ip", "addr", "show", "docker0"],
+            capture_output=True, text=True, check=True
+        )
+        match = re.search(r'inet (\d+\.\d+\.\d+\.\d+)', result.stdout)
+        if match:
+            return match.group(1)
+    except:
+        pass
+    # Fallback: try to get default route interface IP
+    try:
+        result = subprocess.run(
+            ["ip", "route", "get", "1.1.1.1"],
+            capture_output=True, text=True, check=True
+        )
+        match = re.search(r'src (\d+\.\d+\.\d+\.\d+)', result.stdout)
+        if match:
+            return match.group(1)
+    except:
+        pass
+    return "172.17.0.1"  # Default docker bridge IP
+
+
+
 def run_command(cmd, cwd=None, capture_output=False, input=None):
     """Run a shell command."""
     print(f"Running: {' '.join(cmd)}")
@@ -341,7 +368,7 @@ userPassword: password
         docker_cmd = [
             "docker",
             "run",
-            "--add-host=host.docker.internal:host-gateway",
+            "--add-host=host.docker.internal:" + get_docker_host_ip(),
             "-d",
             "-p",
             f"{self.port}:8080",
