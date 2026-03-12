@@ -138,14 +138,20 @@ async def test_prompt_by_id_operations(client):
         assert updated is not None
         assert updated.name == "Updated ID Test"
     finally:
-        # Delete by ID (soft-delete, sets is_active=False)
+        # Delete by ID (hard-delete, permanently removes the prompt)
         deleted = await client.prompts.delete_prompt_by_id(prompt_id)
         assert deleted is True
 
-        # Verify soft-deletion - prompt exists but is inactive
-        post_delete = await client.prompts.get_prompt_by_id(prompt_id)
-        assert post_delete is not None
-        assert post_delete.is_active is False
+        # Verify hard-deletion - prompt no longer exists (404)
+        # After hard delete, the prompt is permanently removed
+        from httpx import HTTPStatusError
+        try:
+            post_delete = await client.prompts.get_prompt_by_id(prompt_id)
+            # If we get here, the prompt still exists (unexpected)
+            assert False, "Expected prompt to be deleted"
+        except HTTPStatusError as e:
+            # Should get 404 Not Found after hard delete
+            assert e.response.status_code == 404
 
 
 async def test_update_prompt_metadata(client):

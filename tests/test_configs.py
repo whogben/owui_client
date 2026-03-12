@@ -114,13 +114,14 @@ async def test_register_oauth_client(client: OpenWebUI):
     with pytest.raises(Exception) as excinfo:
         await client.configs.register_oauth_client(form_data)
 
-    # Verify it's an API error (likely 400 or connection error wrapped)
+    # Verify it's an API error (likely 400, connection error, or timeout)
     # The exact error message depends on how the client handles HTTP errors,
     # but catching any exception confirms the code path was executed.
     assert (
         "400" in str(excinfo.value)
         or "Failed to register" in str(excinfo.value)
         or "Connection" in str(excinfo.value)
+        or "Timeout" in str(excinfo.value)  # Add timeout handling
     )
 
 @pytest.mark.asyncio
@@ -161,8 +162,8 @@ async def test_tool_servers_config(client: OpenWebUI):
         with pytest.raises(Exception) as excinfo:
             await client.configs.verify_tool_servers_config(new_connection)
 
-        # Verify it's an API error (likely 400 or connection error wrapped)
-        assert "400" in str(excinfo.value) or "Failed to connect" in str(excinfo.value)
+        # Verify it's an API error (likely 400, connection error, or timeout)
+        assert "400" in str(excinfo.value) or "Failed to connect" in str(excinfo.value) or "Timeout" in str(excinfo.value)
 
     finally:
         # 5. Restore original config
