@@ -504,6 +504,9 @@ class ChatPermissions(BaseModel):
     file_upload: bool = True
     """Permission to upload files."""
 
+    web_upload: bool = True
+    """Permission to upload content from the web."""
+
     delete: bool = True
     """Permission to delete chats."""
 
@@ -589,6 +592,15 @@ class SettingsPermissions(BaseModel):
     """Access to interface settings."""
 
 
+class AccessGrantsPermissions(BaseModel):
+    """
+    Permissions related to access grants.
+    """
+
+    allow_users: bool = True
+    """Whether to allow users to grant access to others."""
+
+
 class UserPermissions(BaseModel):
     """
     Comprehensive user permissions.
@@ -611,6 +623,9 @@ class UserPermissions(BaseModel):
 
     settings: SettingsPermissions
     """Settings-related permissions."""
+
+    access_grants: AccessGrantsPermissions
+    """Access grants related permissions."""
 
 
 class UserResponse(UserNameResponse):

@@ -323,6 +323,9 @@ class ModelAccessGrantsForm(BaseModel):
     id: str
     """The model ID to update."""
 
+    name: Optional[str] = None
+    """Human-readable name for the model access grant."""
+
     access_grants: list[dict]
     """List of access grants for the model.
 

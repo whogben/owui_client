@@ -283,6 +283,21 @@ class PromptsClient(ResourceBase):
             model=bool,
         )
 
+    async def toggle_prompt_active(self, prompt_id: str) -> Optional[PromptModel]:
+        """Toggle a prompt's active state.
+
+        Args:
+            prompt_id: The ID of the prompt to toggle.
+
+        Returns:
+            Optional[PromptModel]: The updated `PromptModel` with toggled active state.
+        """
+        return await self._request(
+            "POST",
+            f"/v1/prompts/id/{prompt_id}/toggle",
+            model=Optional[PromptModel],
+        )
+
     # History endpoints
 
     async def get_prompt_history(

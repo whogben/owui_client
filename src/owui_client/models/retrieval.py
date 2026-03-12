@@ -84,6 +84,8 @@ class EmbeddingModelUpdateForm(BaseModel):
     """The batch size for embedding generation."""
     ENABLE_ASYNC_EMBEDDING: Optional[bool] = True
     """Whether to enable asynchronous embedding generation."""
+    RAG_EMBEDDING_CONCURRENT_REQUESTS: Optional[int] = 0
+    """The number of concurrent embedding requests."""
 
 
 class WebConfig(BaseModel):
@@ -131,6 +133,8 @@ class WebConfig(BaseModel):
     """API key for Kagi Search."""
     MOJEEK_SEARCH_API_KEY: Optional[str] = None
     """API key for Mojeek Search."""
+    YOUCOM_API_KEY: Optional[str] = None
+    """API key for You.com Search."""
     BOCHA_SEARCH_API_KEY: Optional[str] = None
     """API key for Bocha Search."""
     SERPSTACK_API_KEY: Optional[str] = None
