@@ -189,6 +189,22 @@ class ModelsConfigForm(BaseModel):
     MODEL_ORDER_LIST: Optional[List[str]] = None
     """List of model IDs specifying the display order."""
 
+    DEFAULT_MODEL_METADATA: Optional[dict] = None
+    """Default metadata for models.
+
+    Dict Fields:
+        Additional key-value pairs defining default model metadata. The specific keys
+        depend on the model provider and configuration.
+    """
+
+    DEFAULT_MODEL_PARAMS: Optional[dict] = None
+    """Default parameters for models.
+
+    Dict Fields:
+        Additional key-value pairs defining default model parameters. The specific keys
+        depend on the model provider and configuration (e.g., temperature, max_tokens).
+    """
+
 
 class PromptSuggestion(BaseModel):
     """
@@ -242,3 +258,49 @@ class SetBannersForm(BaseModel):
 
     banners: List[BannerModel]
     """List of banners to display."""
+
+
+class TerminalServerConnection(BaseModel):
+    """
+    Configuration for a single terminal server connection.
+    """
+
+    id: Optional[str] = ""
+    """Unique identifier for the terminal server connection."""
+
+    name: Optional[str] = ""
+    """Display name for the terminal server."""
+
+    enabled: Optional[bool] = True
+    """Whether the terminal server connection is enabled."""
+
+    url: str
+    """Base URL of the terminal server."""
+
+    path: Optional[str] = "/openapi.json"
+    """Path to the OpenAPI spec (default: /openapi.json)."""
+
+    key: Optional[str] = ""
+    """API Key or Token for authentication."""
+
+    auth_type: Optional[str] = "bearer"
+    """Authentication type. Common values: 'bearer', 'none'."""
+
+    config: Optional[Dict[str, Any]] = None
+    """Additional configuration for the connection.
+
+    Dict Fields:
+        - `enable` (bool, optional): Whether the terminal server connection is enabled
+        - Additional keys may be used for provider-specific settings
+    """
+
+    model_config = ConfigDict(extra="allow")
+
+
+class TerminalServersConfigForm(BaseModel):
+    """
+    Configuration for terminal servers.
+    """
+
+    TERMINAL_SERVER_CONNECTIONS: List[TerminalServerConnection]
+    """List of configured terminal server connections."""

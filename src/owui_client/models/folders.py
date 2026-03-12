@@ -126,6 +126,9 @@ class FolderForm(BaseModel):
         - `icon` (str, optional): Emoji icon for the folder (e.g., "📁", "🗂️", "📂"). Used for visual representation in the UI.
     """
 
+    parent_id: Optional[str] = None
+    """ID of the parent folder. Set this to place the new folder inside an existing folder. Use None to create a root-level folder."""
+
     model_config = ConfigDict(extra="allow")
 
 

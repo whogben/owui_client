@@ -8,6 +8,12 @@ This project provides **both** a robust, async Python client for the complete [O
 
 A fully typed, async Python client that mirrors the backend structure of Open WebUI, providing an auto-completable interface for every endpoint.
 
+### Target Open WebUI Version
+
+This client is designed to work with the latest version of Open WebUI. The client is updated to stay in sync with the upstream Open WebUI backend.
+
+For best compatibility, use this client with the latest Open WebUI release.
+
 ### Installation
 
 ```bash
@@ -77,6 +83,6 @@ The field descriptions are extracted from:
 
 This documentation is useful even if you're not using the Python client - it serves as a complete reference for the Open WebUI API, including all valid key/values accepted by dict fields.
 
-## Note
+## Compatibility
 
-This project is maintained independently and may not always reflect the latest changes in Open WebUI. For the official Open WebUI documentation, please visit the [Open WebUI repository](https://github.com/open-webui/open-webui).
+This client is maintained to be compatible with the latest Open WebUI release. Due to the rapid development pace of Open WebUI, there may be brief periods where the client is slightly ahead or behind the latest release. The drift test in the test suite can help identify any discrepancies.

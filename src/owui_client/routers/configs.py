@@ -11,7 +11,9 @@ from owui_client.models.configs import (
     PromptSuggestion,
     SetDefaultSuggestionsForm,
     BannerModel,
-    SetBannersForm
+    SetBannersForm,
+    TerminalServersConfigForm,
+    TerminalServerConnection
 )
 
 class ConfigsClient(ResourceBase):
@@ -269,5 +271,37 @@ class ConfigsClient(ResourceBase):
             "POST",
             "/v1/configs/banners",
             model=List[BannerModel],
+            json=form_data.model_dump(),
+        )
+
+    async def get_terminal_servers(self) -> TerminalServersConfigForm:
+        """
+        Get the current terminal servers configuration.
+
+        Returns:
+            `TerminalServersConfigForm` with current settings.
+        """
+        return await self._request(
+            "GET",
+            "/v1/configs/terminal_servers",
+            model=TerminalServersConfigForm,
+        )
+
+    async def set_terminal_servers(
+        self, form_data: TerminalServersConfigForm
+    ) -> TerminalServersConfigForm:
+        """
+        Set the terminal servers configuration.
+
+        Args:
+            form_data: `TerminalServersConfigForm` with new settings.
+
+        Returns:
+            Updated `TerminalServersConfigForm`.
+        """
+        return await self._request(
+            "POST",
+            "/v1/configs/terminal_servers",
+            model=TerminalServersConfigForm,
             json=form_data.model_dump(),
         )
