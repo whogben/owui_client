@@ -26,7 +26,7 @@ async def test_notes_lifecycle(client):
     # 2. Create a note
     note_form = NoteForm(
         title="Test Note",
-        data={"content": "This is a test note"},
+        data={"content": {"md": "This is a test note"}},
         meta={"category": "testing"},
         access_control=None,
     )
@@ -34,7 +34,7 @@ async def test_notes_lifecycle(client):
     created_note = await client.notes.create_note(note_form)
     assert created_note is not None
     assert created_note.title == "Test Note"
-    assert created_note.data == {"content": "This is a test note"}
+    assert created_note.data == {"content": {"md": "This is a test note"}}
     note_id = created_note.id
 
     # 3. Get notes list (full details)
@@ -55,7 +55,7 @@ async def test_notes_lifecycle(client):
     # Note: The API uses NoteForm for updates, requiring title.
     update_form = NoteForm(
         title="Updated Test Note",
-        data={"content": "Updated content"},
+        data={"content": {"md": "Updated content"}},
         meta={"category": "updated"},
         access_control=None,
     )
@@ -63,7 +63,7 @@ async def test_notes_lifecycle(client):
     updated_note = await client.notes.update_note_by_id(note_id, update_form)
     assert updated_note is not None
     assert updated_note.title == "Updated Test Note"
-    assert updated_note.data["content"] == "Updated content"
+    assert updated_note.data["content"]["md"] == "Updated content"
 
     # Verify update with get
     fetched_updated_note = await client.notes.get_note_by_id(note_id)
@@ -94,7 +94,7 @@ async def test_notes_search(client):
     # Create a note to search for
     note_form = NoteForm(
         title="Searchable Note",
-        data={"content": "This note is searchable"},
+        data={"content": {"md": "This note is searchable"}},
         meta={"category": "search-test"},
         access_control=None,
     )
@@ -137,7 +137,7 @@ async def test_notes_access_grants(client):
     # Create a note
     note_form = NoteForm(
         title="Access Test Note",
-        data={"content": "Testing access grants"},
+        data={"content": {"md": "Testing access grants"}},
         access_control=None,
     )
 
@@ -184,7 +184,7 @@ async def test_notes_with_access_grants_on_create(client):
     # Create a note with access grants
     note_form = NoteForm(
         title="Note With Grants",
-        data={"content": "Created with access grants"},
+        data={"content": {"md": "Created with access grants"}},
         access_grants=[
             {
                 "principal_type": "user",

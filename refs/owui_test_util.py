@@ -7,9 +7,11 @@ import argparse
 import os
 import subprocess
 import sys
+import platform
 import time
 import httpx
 import socket
+import re
 from contextlib import contextmanager
 from typing import Optional
 
@@ -368,7 +370,6 @@ userPassword: password
         docker_cmd = [
             "docker",
             "run",
-            "--add-host=host.docker.internal:" + get_docker_host_ip(),
             "-d",
             "-p",
             f"{self.port}:8080",
@@ -381,6 +382,15 @@ userPassword: password
             "--name",
             self.container_name,
         ]
+
+        # OS-aware host->container reachability:
+        # - Linux: `host.docker.internal` may not exist by default, so we map it using the docker bridge gateway IP.
+        # - macOS (Docker Desktop): `host.docker.internal` is already correctly configured, and overriding it can break
+        #   connectivity to host-based mock servers.
+        if platform.system() != "Darwin":
+            docker_cmd.insert(
+                2, "--add-host=host.docker.internal:" + get_docker_host_ip()
+            )
 
         if self.network_name:
             docker_cmd.extend(["--network", self.network_name])
