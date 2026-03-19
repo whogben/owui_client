@@ -119,6 +119,108 @@ def get_router_endpoints(file_path: Path) -> List[Tuple[str, str]]:
     return endpoints
 
 
+def get_app_endpoints(file_path: Path) -> List[Tuple[str, str]]:
+    """
+    Parses main.py and returns list of (method, path) tuples from @app decorators.
+    Similar to get_router_endpoints but looks for 'app' instead of 'router'.
+    """
+    if not file_path.exists():
+        return []
+
+    with open(file_path, "r", encoding="utf-8") as f:
+        try:
+            tree = ast.parse(f.read())
+        except Exception:
+            return []
+
+    endpoints = []
+
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.AsyncFunctionDef, ast.FunctionDef)):
+            for decorator in node.decorator_list:
+                if isinstance(decorator, ast.Call):
+                    func = decorator.func
+                    if (
+                        isinstance(func, ast.Attribute)
+                        and isinstance(func.value, ast.Name)
+                        and func.value.id == "app"
+                    ):
+                        method = func.attr.upper()
+                        path = "/"
+                        if decorator.args:
+                            path = extract_string(decorator.args[0])
+
+                        endpoints.append((method, path))
+    return endpoints
+
+
+def determine_client_file_for_endpoint(path: str, source_file: str) -> str:
+    """
+    Determines which client router file should implement a given endpoint.
+    
+    For router files, returns the same filename.
+    For main.py endpoints, maps based on path prefix.
+    """
+    if source_file != "main.py":
+        return source_file
+    
+    # Map main.py endpoints to appropriate client files
+    if path.startswith("/api/chat/"):
+        return "chats.py"
+    elif path.startswith("/api/tasks/"):
+        return "tasks.py"
+    elif path.startswith("/api/models/"):
+        return "models.py"
+    elif path.startswith("/api/users/"):
+        return "users.py"
+    elif path.startswith("/api/auths/"):
+        return "auths.py"
+    elif path.startswith("/api/configs/"):
+        return "configs.py"
+    elif path.startswith("/api/files/"):
+        return "files.py"
+    elif path.startswith("/api/folders/"):
+        return "folders.py"
+    elif path.startswith("/api/functions/"):
+        return "functions.py"
+    elif path.startswith("/api/groups/"):
+        return "groups.py"
+    elif path.startswith("/api/images/"):
+        return "images.py"
+    elif path.startswith("/api/knowledge/"):
+        return "knowledge.py"
+    elif path.startswith("/api/memories/"):
+        return "memories.py"
+    elif path.startswith("/api/notes/"):
+        return "notes.py"
+    elif path.startswith("/api/prompts/"):
+        return "prompts.py"
+    elif path.startswith("/api/tags/"):
+        return "tags.py"
+    elif path.startswith("/api/tools/"):
+        return "tools.py"
+    elif path.startswith("/api/ollama/"):
+        return "ollama.py"
+    elif path.startswith("/api/openai/"):
+        return "openai.py"
+    elif path.startswith("/api/audio/"):
+        return "audio.py"
+    elif path.startswith("/api/channels/"):
+        return "channels.py"
+    elif path.startswith("/api/evaluations/"):
+        return "evaluations.py"
+    elif path.startswith("/api/feedbacks/"):
+        return "feedbacks.py"
+    elif path.startswith("/api/retrieval/"):
+        return "retrieval.py"
+    elif path.startswith("/api/access_grants/"):
+        return "access_grants.py"
+    elif path.startswith("/api/oauth_sessions/"):
+        return "oauth_sessions.py"
+    
+    return None
+
+
 def get_client_requests(file_path: Path) -> List[Tuple[str, str]]:
     """
     Parses a client file and returns list of (method, url) called in _request.
@@ -377,76 +479,93 @@ def find_drift(ignore_files: List[str] = None) -> List[DriftIssue]:
                         )
                     )
 
-    # 2. Check Routers
+    # 2. Check Routers AND main.py
     client_routers_dir = CLIENT_BASE / "routers"
+    main_py_file = REF_BASE / "main.py"
 
+    # Collect all reference endpoints (routers + main.py)
+    all_ref_endpoints = []
+
+    # From routers
     for ref_file in ref_routers_dir.glob("*.py"):
         if ref_file.name == "__init__.py":
             continue
         if ref_file.name in ignore_files:
             continue
 
-        client_file = client_routers_dir / ref_file.name
-
         ref_endpoints = get_router_endpoints(ref_file)
-        if not ref_endpoints:
+        for method, path in ref_endpoints:
+            all_ref_endpoints.append((method, path, ref_file.name))
+
+    # From main.py
+    if main_py_file.exists():
+        app_endpoints = get_app_endpoints(main_py_file)
+        for method, path in app_endpoints:
+            all_ref_endpoints.append((method, path, "main.py"))
+
+    # Check each reference endpoint against client
+    for method, path, source_file in all_ref_endpoints:
+        # Determine which client file should implement this
+        client_file_name = determine_client_file_for_endpoint(path, source_file)
+        
+        if not client_file_name:
             continue
 
+        client_file = client_routers_dir / client_file_name
         if not client_file.exists():
-            # Skip completely unimplemented routers
+            # Skip unimplemented routers
             continue
 
         client_requests = get_client_requests(client_file)
         client_content = client_file.read_text(encoding="utf-8")
 
-        for method, path in ref_endpoints:
-            # Normalize Ref Path: /{id}/valves -> / {} / valves
-            norm_ref_path = normalize_path(path)
+        # Normalize Ref Path: /{id}/valves -> / {} / valves
+        norm_ref_path = normalize_path(path)
 
-            found = False
+        found = False
 
-            # 1. Exact/Pattern match in requests
+        # 1. Exact/Pattern match in requests
+        for c_method, c_url in client_requests:
+            if c_method == method:
+                norm_client_url = normalize_path(c_url)
+
+                # Check if client url ends with the normalized ref path
+                if norm_ref_path == "/" or norm_ref_path == "":
+                    # Special case for root
+                    if norm_client_url.endswith(
+                        f"/{client_file.stem}/"
+                    ) or norm_client_url.endswith(f"/{client_file.stem}"):
+                        found = True
+                elif norm_client_url.endswith(norm_ref_path):
+                    found = True
+
+        # 2. Heuristic fallback (search for path string in file)
+        if not found:
+            if heuristic_search(client_content, path):
+                found = True
+
+        # 3. Special case for API_ROUTE (backend uses @router.api_route, client often uses dynamic method in _request)
+        if not found and method == "API_ROUTE":
+            # If we have a client request with dynamic method (empty string) and matching URL, assume it's the one.
             for c_method, c_url in client_requests:
-                if c_method == method:
+                if c_method == "":
                     norm_client_url = normalize_path(c_url)
-
-                    # Check if client url ends with the normalized ref path
                     if norm_ref_path == "/" or norm_ref_path == "":
-                        # Special case for root
                         if norm_client_url.endswith(
-                            f"/{ref_file.stem}/"
-                        ) or norm_client_url.endswith(f"/{ref_file.stem}"):
+                            f"/{client_file.stem}/"
+                        ) or norm_client_url.endswith(f"/{client_file.stem}"):
                             found = True
                     elif norm_client_url.endswith(norm_ref_path):
                         found = True
 
-            # 2. Heuristic fallback (search for path string in file)
-            if not found:
-                if heuristic_search(client_content, path):
-                    found = True
-
-            # 3. Special case for API_ROUTE (backend uses @router.api_route, client often uses dynamic method in _request)
-            if not found and method == "API_ROUTE":
-                # If we have a client request with dynamic method (empty string) and matching URL, assume it's the one.
-                for c_method, c_url in client_requests:
-                    if c_method == "":
-                        norm_client_url = normalize_path(c_url)
-                        if norm_ref_path == "/" or norm_ref_path == "":
-                            if norm_client_url.endswith(
-                                f"/{ref_file.stem}/"
-                            ) or norm_client_url.endswith(f"/{ref_file.stem}"):
-                                found = True
-                        elif norm_client_url.endswith(norm_ref_path):
-                            found = True
-
-            if not found:
-                issues.append(
-                    DriftIssue(
-                        "MISSING_ENDPOINT",
-                        f"Endpoint {method} {path} not called in client",
-                        client_file.name,
-                    )
+        if not found:
+            issues.append(
+                DriftIssue(
+                    "MISSING_ENDPOINT",
+                    f"Endpoint {method} {path} (from {source_file}) not called in client",
+                    client_file.name,
                 )
+            )
 
     return issues
 
