@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Union
 
 
 class ChatModel(BaseModel):
@@ -612,3 +612,237 @@ class ChatStatsExportList(BaseModel):
 
     page: int
     """Current page number."""
+
+
+class ChatCompletionForm(BaseModel):
+    """
+    Request form for chat completion generation.
+
+    This model accepts OpenAI-compatible chat completion parameters along with
+    Open WebUI-specific metadata for chat management, file attachments, tools, and more.
+    Uses `extra="allow"` to pass through any additional OpenAI API parameters.
+    """
+
+    model: str
+    """The model ID to use for generation (e.g., "gpt-4", "claude-3")."""
+
+    messages: list[dict]
+    """List of message objects representing the conversation history.
+
+    Dict Fields:
+        - `role` (str, required): The role of the message sender. Valid values: "system", "user", "assistant", "tool"
+        - `content` (str or list, required): The message content. Can be a string or a list of content blocks (for multimodal)
+        - `name` (str, optional): Name of the participant (for role-based naming)
+        - `tool_calls` (list, optional): List of tool calls made by the assistant
+        - `tool_call_id` (str, optional): ID of the tool call being responded to (for tool role)
+    """
+
+    chat_id: Optional[str] = None
+    """Optional chat ID to associate this completion with an existing chat."""
+
+    id: Optional[str] = None
+    """Optional message ID for the user message being completed."""
+
+    parent_message: Optional[dict] = None
+    """Optional parent message object for threading.
+
+    Dict Fields:
+        - `id` (str, required): The parent message ID
+        - `role` (str, required): The parent message role
+        - `content` (str, required): The parent message content
+        - Additional message metadata fields
+    """
+
+    parent_id: Optional[str] = None
+    """Optional parent message ID for threading."""
+
+    session_id: Optional[str] = None
+    """Optional session ID for async processing. When provided, returns a task_id instead of the completion."""
+
+    filter_ids: Optional[list[str]] = None
+    """Optional list of filter IDs to apply for retrieval-augmented generation."""
+
+    tool_ids: Optional[list[str]] = None
+    """Optional list of tool IDs to make available to the model."""
+
+    tool_servers: Optional[dict] = None
+    """Optional tool server configurations.
+
+    Dict Fields:
+        - Server-specific configuration for MCP (Model Context Protocol) tools
+        - Connection details and authentication for external tool servers
+    """
+
+    files: Optional[list[dict]] = None
+    """Optional list of file attachments for multimodal inputs.
+
+    Dict Fields:
+        - `id` (str, required): File ID
+        - `type` (str, required): File type (e.g., "file", "image")
+        - `name` (str, optional): File name
+        - Additional file metadata
+    """
+
+    features: Optional[dict] = None
+    """Optional feature flags and configurations.
+
+    Dict Fields:
+        - Feature-specific settings for enabling/disabling capabilities
+        - Experimental feature flags
+    """
+
+    variables: Optional[dict] = None
+    """Optional template variables for prompt templating.
+
+    Dict Fields:
+        - Variable name to value mappings
+        - Used for substituting placeholders in system prompts or templates
+    """
+
+    params: Optional[dict] = None
+    """Optional model parameters and generation settings.
+
+    Dict Fields:
+        - `stream_delta_chunk_size` (int, optional): Chunk size for streaming responses
+        - `reasoning_tags` (str, optional): Tags for reasoning output
+        - `function_calling` (str, optional): Function calling mode. Valid values: "native", "default"
+    """
+
+    model_item: Optional[dict] = None
+    """Optional direct model configuration for bypassing model registry.
+
+    Dict Fields:
+        - `direct` (bool, required): Must be True to use direct model configuration
+        - Model-specific configuration fields (base_url, api_key, etc.)
+    """
+
+    background_tasks: Optional[list] = None
+    """Optional background tasks to execute after completion."""
+
+    stream: Optional[bool] = None
+    """Whether to stream the response as SSE events."""
+
+    temperature: Optional[float] = None
+    """Sampling temperature between 0.0 and 2.0."""
+
+    max_tokens: Optional[int] = None
+    """Maximum number of tokens to generate."""
+
+    top_p: Optional[float] = None
+    """Nucleus sampling parameter between 0.0 and 1.0."""
+
+    frequency_penalty: Optional[float] = None
+    """Frequency penalty between -2.0 and 2.0."""
+
+    presence_penalty: Optional[float] = None
+    """Presence penalty between -2.0 and 2.0."""
+
+    stop: Optional[Union[str, list[str]]] = None
+    """Stop sequences where generation should halt."""
+
+    model_config = ConfigDict(extra="allow")
+
+
+class ChatCompletionResponse(BaseModel):
+    """
+    Response model for chat completion.
+
+    The response format varies based on whether the request was processed synchronously
+    or asynchronously (when session_id is provided).
+    """
+
+    status: Optional[bool] = None
+    """Status flag for async responses. True if task was created successfully."""
+
+    task_id: Optional[str] = None
+    """Task ID for async processing. Present when session_id is provided in the request."""
+
+    model_config = ConfigDict(extra="allow")
+
+
+class ChatCompletedForm(BaseModel):
+    """
+    Form for notifying that a chat completion has been generated.
+
+    This endpoint is called after a chat completion is generated to process
+    outlet filters that may modify the response. The form contains the
+    completed message and associated metadata.
+    """
+
+    model: str
+    """The model ID used for generation."""
+
+    messages: list[str]
+    """List of message IDs in the conversation."""
+
+    chat_id: str
+    """The ID of the chat this completion belongs to."""
+
+    session_id: str
+    """The session ID for the chat session."""
+
+    id: Optional[str] = None
+    """The ID of the completed message."""
+
+    filter_ids: Optional[list[str]] = None
+    """Optional list of filter IDs to apply for outlet processing."""
+
+    model_config = ConfigDict(extra="allow")
+
+
+class ChatCompletedResponse(BaseModel):
+    """
+    Response model for chat completed endpoint.
+
+    Returns the modified form data after processing outlet filters.
+    The structure matches the request form but may be modified by filters.
+    """
+
+    model_config = ConfigDict(extra="allow")
+
+
+class ChatActionForm(BaseModel):
+    """
+    Form for executing a chat action.
+
+    This form is used to trigger custom actions (functions) that can process
+    chat messages and return results. Actions are user-defined functions that
+    can perform arbitrary operations on chat data.
+    """
+
+    model: str
+    """The model ID to use for the action."""
+
+    messages: list[str]
+    """List of message IDs in the conversation."""
+
+    chat_id: str
+    """The ID of the chat this action belongs to."""
+
+    id: str
+    """The ID of the message being acted upon."""
+
+    session_id: str
+    """The session ID for the chat session."""
+
+    model_item: Optional[dict] = None
+    """Optional direct model configuration for bypassing model registry.
+
+    Dict Fields:
+        - `direct` (bool, required): Must be True to use direct model configuration
+        - Model-specific configuration fields (base_url, api_key, etc.)
+    """
+
+    model_config = ConfigDict(extra="allow")
+
+
+class ChatActionResponse(BaseModel):
+    """
+    Response model for chat action endpoint.
+
+    The response structure varies based on the action function being executed.
+    Actions can return any data type, so this model uses extra="allow"
+    to accommodate arbitrary response structures.
+    """
+
+    model_config = ConfigDict(extra="allow")

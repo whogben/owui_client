@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 from owui_client.client_base import ResourceBase
 from owui_client.models.chats import (
     ChatModel,
@@ -15,6 +15,12 @@ from owui_client.models.chats import (
     ChatFolderIdForm,
     ChatStatsExport,
     ChatStatsExportList,
+    ChatCompletionForm,
+    ChatCompletionResponse,
+    ChatCompletedForm,
+    ChatCompletedResponse,
+    ChatActionForm,
+    ChatActionResponse,
 )
 from owui_client.models.tags import TagModel
 
@@ -617,4 +623,185 @@ class ChatsClient(ResourceBase):
             True if successful.
         """
         return await self._request("DELETE", f"/v1/chats/{id}/tags/all", model=bool)
+
+    async def chat_completion(
+        self, form_data: Union[ChatCompletionForm, dict]
+    ) -> Union[ChatCompletionResponse, dict]:
+        """
+        Generate a chat completion.
+
+        This endpoint provides OpenAI-compatible chat completion functionality with
+        Open WebUI-specific features like chat management, file attachments, tools,
+        and async processing. The response format depends on whether a session_id
+        is provided in the request.
+
+        Args:
+            form_data: The chat completion request containing messages, model ID,
+                and optional parameters like chat_id, session_id, files, tools, etc.
+                Can be a `ChatCompletionForm` or a dict.
+
+        Returns:
+            If session_id is provided: Returns a dict with `status` and `task_id`
+            for async processing. The task can be queried for completion status.
+
+            If session_id is not provided: Returns the completion response directly,
+            which may be a streaming response or a complete response object depending
+            on the `stream` parameter.
+
+        Notes:
+            - When `session_id` is provided, the request is processed asynchronously
+              and returns immediately with a task_id.
+            - When `chat_id` is provided, the completion is associated with an existing
+              chat and the message is stored in the chat history.
+            - The endpoint supports OpenAI-compatible parameters like temperature,
+              max_tokens, top_p, etc., which are passed through to the model.
+            - File attachments, tools, and retrieval filters can be included for
+              enhanced functionality.
+        """
+        # Convert ChatCompletionForm to dict if needed
+        if isinstance(form_data, ChatCompletionForm):
+            json_data = form_data.model_dump()
+        else:
+            json_data = form_data
+
+        return await self._request(
+            "POST",
+            "/chat/completions",
+            model=ChatCompletionResponse,
+            json=json_data,
+        )
+
+    async def chat_completion_api(
+        self, form_data: Union[ChatCompletionForm, dict]
+    ) -> Union[ChatCompletionResponse, dict]:
+        """
+        Generate a chat completion (direct API endpoint).
+
+        This is the legacy endpoint from main.py that provides chat completion functionality.
+
+        Args:
+            form_data: The chat completion request containing messages, model ID,
+                and optional parameters.
+
+        Returns:
+            Chat completion response.
+        """
+        if isinstance(form_data, ChatCompletionForm):
+            json_data = form_data.model_dump()
+        else:
+            json_data = form_data
+
+        return await self._request(
+            "POST",
+            "/api/chat/completions",
+            model=ChatCompletionResponse,
+            json=json_data,
+        )
+
+    async def chat_completed(
+        self, form_data: Union[ChatCompletedForm, dict]
+    ) -> Union[ChatCompletedResponse, dict]:
+        """
+        Notify that a chat completion has been generated.
+
+        This endpoint is called after a chat completion is generated to process
+        outlet filters that may modify the response. Outlet filters can transform
+        the message content, add metadata, or perform other post-processing operations.
+
+        Args:
+            form_data: The completed chat data containing model ID, message IDs,
+                chat ID, session ID, and optional filter IDs. Can be a `ChatCompletedForm`
+                or a dict.
+
+        Returns:
+            The modified form data after processing outlet filters. The response
+            structure matches the request form but may be modified by filters.
+
+        Notes:
+            - This endpoint processes outlet filters in the order defined by the model
+            - Filters can modify the message content, add metadata, or perform other transformations
+            - The endpoint requires authentication and the user must have access to the chat
+            - If model_item with direct=True is provided, it bypasses the model registry
+        """
+        # Convert ChatCompletedForm to dict if needed
+        if isinstance(form_data, ChatCompletedForm):
+            json_data = form_data.model_dump()
+        else:
+            json_data = form_data
+
+        return await self._request(
+            "POST",
+            "/chat/completed",
+            model=ChatCompletedResponse,
+            json=json_data,
+        )
+
+    async def chat_completed_api(
+        self, form_data: Union[ChatCompletedForm, dict]
+    ) -> Union[ChatCompletedResponse, dict]:
+        """
+        Notify that a chat completion has been generated (direct API endpoint).
+
+        This is the legacy endpoint from main.py for processing outlet filters.
+
+        Args:
+            form_data: The completed chat data.
+
+        Returns:
+            Modified form data after processing outlet filters.
+        """
+        if isinstance(form_data, ChatCompletedForm):
+            json_data = form_data.model_dump()
+        else:
+            json_data = form_data
+
+        return await self._request(
+            "POST",
+            "/api/chat/completed",
+            model=ChatCompletedResponse,
+            json=json_data,
+        )
+
+    async def chat_action(
+        self, action_id: str, form_data: Union[ChatActionForm, dict]
+    ) -> Union[ChatActionResponse, dict]:
+        """
+        Execute a chat action (POST /api/chat/actions/{action_id}).
+
+        This endpoint triggers custom actions (functions) that can process chat messages
+        and return results. Actions are user-defined functions that can perform arbitrary
+        operations on chat data, such as processing messages, generating content,
+        or interacting with external services.
+
+        Args:
+            action_id: The ID of the action function to execute. Can include a sub-action
+                ID separated by a dot (e.g., "action_id.sub_action_id").
+            form_data: The action request containing model ID, message IDs, chat ID,
+                session ID, and optional model configuration. Can be a `ChatActionForm` or a dict.
+
+        Returns:
+            The result of executing the action function. The response structure varies
+            based on the action function being executed. Actions can return any data type,
+            so the response may be a dict, list, string, or other types.
+
+        Notes:
+            - Actions are user-defined functions registered in the Open WebUI system
+            - The action_id can include a sub-action ID separated by a dot for nested actions
+            - If model_item with direct=True is provided, it bypasses the model registry
+            - The action function receives context including the model, user, and event emitters
+            - Actions can emit socket events to update the UI in real-time
+            - Actions can return HTML responses or other rich content for display
+        """
+        # Convert ChatActionForm to dict if needed
+        if isinstance(form_data, ChatActionForm):
+            json_data = form_data.model_dump()
+        else:
+            json_data = form_data
+
+        return await self._request(
+            "POST",
+            f"/chat/actions/{action_id}",
+            model=ChatActionResponse,
+            json=json_data,
+        )
 

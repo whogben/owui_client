@@ -260,6 +260,24 @@ class TasksClient(ResourceBase):
             model=dict,
         )
 
+    async def stop_task_api(self, task_id: str) -> Dict[str, Any]:
+        """
+        Stop a specific background task (direct API endpoint).
+
+        This is the legacy endpoint from main.py.
+
+        Args:
+            task_id (str): The ID of the task to stop.
+
+        Returns:
+            Dict[str, Any]: Status dictionary.
+        """
+        return await self._request(
+            "POST",
+            f"/api/tasks/stop/{task_id}",
+            model=dict,
+        )
+
     async def list_tasks_by_chat(self, chat_id: str) -> Dict[str, List[str]]:
         """
         List background tasks associated with a specific chat.
@@ -273,5 +291,23 @@ class TasksClient(ResourceBase):
         return await self._request(
             "GET",
             f"/tasks/chat/{chat_id}",
+            model=dict,
+        )
+
+    async def list_tasks_by_chat_api(self, chat_id: str) -> Dict[str, List[str]]:
+        """
+        List background tasks associated with a specific chat (direct API endpoint).
+
+        This is the legacy endpoint from main.py.
+
+        Args:
+            chat_id (str): The ID of the chat.
+
+        Returns:
+            Dict[str, List[str]]: Dictionary with 'task_ids' key.
+        """
+        return await self._request(
+            "GET",
+            f"/api/tasks/chat/{chat_id}",
             model=dict,
         )

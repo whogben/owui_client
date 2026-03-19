@@ -71,6 +71,17 @@ class ModelsClient(ResourceBase):
         """
         return await self._request("GET", "/v1/models/base", model=list[ModelResponse])
 
+    async def get_base_models_direct(self) -> list[ModelResponse]:
+        """
+        Get all base models (direct endpoint).
+
+        This is the legacy endpoint from main.py that provides base models.
+
+        Returns:
+            list[ModelResponse]: List of base models.
+        """
+        return await self._request("GET", "/api/models/base", model=list[ModelResponse])
+
     async def get_model_tags(self) -> list[str]:
         """
         Get all unique tags used in models.

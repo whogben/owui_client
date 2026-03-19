@@ -188,3 +188,14 @@ async def test_check_active_chats(client):
     assert isinstance(response.active_chat_ids, list)
     # No active tasks for non-existent chats
     assert len(response.active_chat_ids) == 0
+
+
+@pytest.mark.asyncio
+async def test_list_tasks_by_chat(client):
+    """Test listing background tasks for a specific chat."""
+    # Test with non-existent chat ID - returns empty task_ids list
+    response = await client.tasks.list_tasks_by_chat("non-existent-chat-id")
+    assert isinstance(response, dict)
+    assert "task_ids" in response
+    assert isinstance(response["task_ids"], list)
+    assert len(response["task_ids"]) == 0

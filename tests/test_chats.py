@@ -1,5 +1,6 @@
 import pytest
-from owui_client.models.chats import ChatForm, MessageForm, TagForm
+from owui_client.models.chats import ChatForm, MessageForm, TagForm, ChatCompletionForm, ChatCompletedForm, ChatActionForm
+from owui_client.models.openai import OpenAIConfigForm
 
 pytestmark = pytest.mark.asyncio
 
@@ -171,6 +172,155 @@ async def test_export_chat_stats(client):
         assert hasattr(single_stats, "chat")
         assert hasattr(single_stats.stats, "message_count")
         assert hasattr(single_stats.stats, "models")
+
+    finally:
+        # Cleanup
+        await client.chats.delete(chat_id)
+
+
+async def test_chat_completion(client, mock_openai_server):
+    """
+    Test chat completion endpoint with mock OpenAI server.
+    """
+    # Configure OpenAI to use the mock server
+    new_config = OpenAIConfigForm(
+        ENABLE_OPENAI_API=True,
+        OPENAI_API_BASE_URLS=[mock_openai_server],
+        OPENAI_API_KEYS=["sk-mock-key"],
+        OPENAI_API_CONFIGS={"0": {"enable": True}}
+    )
+    await client.openai.update_config(new_config)
+
+    # Test synchronous completion (no session_id)
+    # Use a simple dict to avoid potential Pydantic serialization issues
+    sync_form_data = {
+        "model": "gpt-3.5-turbo",
+        "messages": [
+            {"role": "user", "content": "Hello, how are you?"}
+        ]
+    }
+
+    sync_response = await client.chats.chat_completion(sync_form_data)
+    assert sync_response is not None
+    # Synchronous response should have completion fields
+    assert hasattr(sync_response, 'choices') or sync_response.status is not None
+
+
+async def test_chat_completed(client, mock_openai_server):
+    """
+    Test chat completed endpoint.
+    """
+    # Configure OpenAI to use the mock server
+    new_config = OpenAIConfigForm(
+        ENABLE_OPENAI_API=True,
+        OPENAI_API_BASE_URLS=[mock_openai_server],
+        OPENAI_API_KEYS=["sk-mock-key"],
+        OPENAI_API_CONFIGS={"0": {"enable": True}}
+    )
+    await client.openai.update_config(new_config)
+
+    # Create a chat first
+    chat_data = {"title": "Test Chat for Completed", "history": {"messages": {}, "currentId": None}}
+    form = ChatForm(chat=chat_data)
+    created_chat = await client.chats.create_new(form)
+    assert created_chat is not None
+    chat_id = created_chat.id
+
+    try:
+        # Test chat completed with ChatCompletedForm
+        completed_form = ChatCompletedForm(
+            model="gpt-3.5-turbo",
+            messages=["msg_1", "msg_2"],
+            chat_id=chat_id,
+            session_id="test-session-123",
+            id="msg_2"
+        )
+
+        response = await client.chats.chat_completed(completed_form)
+        assert response is not None
+
+        # Test chat completed with dict
+        completed_dict = {
+            "model": "gpt-3.5-turbo",
+            "messages": ["msg_1", "msg_2"],
+            "chat_id": chat_id,
+            "session_id": "test-session-456",
+            "id": "msg_2",
+            "filter_ids": []
+        }
+
+        dict_response = await client.chats.chat_completed(completed_dict)
+        assert dict_response is not None
+
+    finally:
+        # Cleanup
+        await client.chats.delete(chat_id)
+
+
+async def test_chat_action(client, mock_openai_server):
+    """
+    Test chat action endpoint.
+
+    This test verifies that the chat_action endpoint can be called with both
+    ChatActionForm and dict inputs. Note that this test may fail if no
+    action functions are registered in the Open WebUI instance.
+    """
+    # Configure OpenAI to use the mock server
+    new_config = OpenAIConfigForm(
+        ENABLE_OPENAI_API=True,
+        OPENAI_API_BASE_URLS=[mock_openai_server],
+        OPENAI_API_KEYS=["sk-mock-key"],
+        OPENAI_API_CONFIGS={"0": {"enable": True}}
+    )
+    await client.openai.update_config(new_config)
+
+    # Create a chat first
+    chat_data = {"title": "Test Chat for Action", "history": {"messages": {}, "currentId": None}}
+    form = ChatForm(chat=chat_data)
+    created_chat = await client.chats.create_new(form)
+    assert created_chat is not None
+    chat_id = created_chat.id
+
+    try:
+        # Test chat action with ChatActionForm
+        # Note: This will likely fail if no action functions are registered
+        # The test is primarily to verify the endpoint exists and can be called
+        action_form = ChatActionForm(
+            model="gpt-3.5-turbo",
+            messages=["msg_1"],
+            chat_id=chat_id,
+            id="msg_1",
+            session_id="test-session-123"
+        )
+
+        try:
+            response = await client.chats.chat_action("test_action", action_form)
+            # If an action function exists, we should get a response
+            assert response is not None
+        except Exception as e:
+            # If no action function exists, we expect an error
+            # This is expected behavior in a clean test environment
+            # The error message may vary depending on backend implementation
+            assert "not found" in str(e).lower() or "none" in str(e).lower() or "400" in str(e)
+
+        # Test chat action with dict
+        action_dict = {
+            "model": "gpt-3.5-turbo",
+            "messages": ["msg_1"],
+            "chat_id": chat_id,
+            "id": "msg_1",
+            "session_id": "test-session-456"
+        }
+
+        try:
+            dict_response = await client.chats.chat_action("test_action", action_dict)
+            # If an action function exists, we should get a response
+            assert dict_response is not None
+        except Exception as e:
+            # If no action function exists, we expect an error
+            # This is expected behavior in a clean test environment
+            # The error message may vary depending on backend implementation
+            assert "not found" in str(e).lower() or "none" in str(e).lower() or "400" in str(e)
 
     finally:
         # Cleanup

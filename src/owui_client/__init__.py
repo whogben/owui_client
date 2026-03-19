@@ -4,6 +4,6 @@ Unofficial Open WebUI API Client
 
 from .client import OpenWebUI
 
-__version__ = "1.6.1"
+__version__ = "1.6.2"
 
 __all__ = ["OpenWebUI", "__version__"]
