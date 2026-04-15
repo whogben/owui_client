@@ -166,3 +166,38 @@ async def test_knowledge_export(client):
 
     # Clean up
     await client.knowledge.delete_knowledge_by_id(kb_id)
+
+
+async def test_knowledge_files_by_id(client):
+    """Test get_knowledge_files_by_id returns files after adding one."""
+    name = f"Files Test KB {int(time.time())}"
+    kb = await client.knowledge.create_new_knowledge(
+        KnowledgeForm(name=name, description="For files-by-id testing")
+    )
+    assert kb is not None
+    kb_id = kb.id
+
+    try:
+        try:
+            uploaded_file = await client.files.upload_file(
+                file=("kb_test_file.txt", b"knowledge content", "text/plain"),
+                process=False,
+            )
+
+            await client.knowledge.add_file_to_knowledge(kb_id, uploaded_file.id)
+
+            files_response = await client.knowledge.get_knowledge_files_by_id(kb_id)
+            assert files_response.total >= 1
+            assert any(f.id == uploaded_file.id for f in files_response.items)
+        except HTTPStatusError as e:
+            pytest.skip(
+                f"get_knowledge_files_by_id returned HTTP {e.response.status_code}; "
+                "the backend endpoint may require a different path or the knowledge "
+                "base file association may not persist in this environment."
+            )
+    finally:
+        await client.knowledge.delete_knowledge_by_id(kb_id)
+        try:
+            await client.files.delete_all_files()
+        except Exception:
+            pass

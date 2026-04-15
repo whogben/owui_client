@@ -126,23 +126,6 @@ class ModelModel(BaseModel):
     Replaces the legacy access_control field.
     """
 
-    access_control: Optional[dict] = None
-    """
-    Access control settings for the model.
-
-    Dict Fields:
-    - `read` (dict, optional): Read access permissions
-      - `group_ids` (list[str], optional): List of group IDs with read access
-      - `user_ids` (list[str], optional): List of user IDs with read access
-    - `write` (dict, optional): Write access permissions
-      - `group_ids` (list[str], optional): List of group IDs with write access
-      - `user_ids` (list[str], optional): List of user IDs with write access
-
-    Special Values:
-    - `None`: Public access, available to all users with the "user" role
-    - `{}`: Private access, restricted exclusively to the owner
-    """
-
     is_active: bool
     """
     Whether the model is currently active.
@@ -235,23 +218,6 @@ class ModelForm(BaseModel):
     - `principal_type` (str, required): 'user' or 'group'
     - `principal_id` (str, required): User/group ID, or '*' for public access
     - `permission` (str, required): 'read' or 'write'
-    """
-
-    access_control: Optional[dict] = None
-    """
-    Access control settings for the model.
-
-    Dict Fields:
-    - `read` (dict, optional): Read access permissions
-      - `group_ids` (list[str], optional): List of group IDs with read access
-      - `user_ids` (list[str], optional): List of user IDs with read access
-    - `write` (dict, optional): Write access permissions
-      - `group_ids` (list[str], optional): List of group IDs with write access
-      - `user_ids` (list[str], optional): List of user IDs with write access
-
-    Special Values:
-    - `None`: Public access, available to all users with the "user" role
-    - `{}`: Private access, restricted exclusively to the owner
     """
 
     is_active: bool = True

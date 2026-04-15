@@ -11,12 +11,14 @@ class PromptHistoryModel(BaseModel):
     prompt_id: str
     parent_id: Optional[str] = None
     snapshot: dict
-    """Snapshot of the prompt's content and settings at this point in time.
+    """Snapshot of the prompt at a point in time.
 
     Dict Fields:
-        - `title` (str, optional): Title of the prompt.
-        - `content` (str, optional): Full content/definition of the prompt.
-        - `meta` (dict, optional): Metadata associated with the prompt, including tags.
+        - `name` (str, optional): Prompt name at the time of snapshot.
+        - `content` (str, optional): Prompt content at the time of snapshot.
+        - `data` (dict, optional): Prompt data at the time of snapshot.
+        - `meta` (dict, optional): Prompt metadata at the time of snapshot.
+        - `tags` (list, optional): Prompt tags at the time of snapshot.
     """
     user_id: str
     commit_message: Optional[str] = None

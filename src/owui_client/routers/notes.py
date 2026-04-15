@@ -7,6 +7,7 @@ from owui_client.models.notes import (
     NoteItemResponse,
     NoteListResponse,
     NoteAccessGrantsForm,
+    NoteResponse,
 )
 
 
@@ -101,7 +102,7 @@ class NotesClient(ResourceBase):
             json=form_data.model_dump(),
         )
 
-    async def get_note_by_id(self, id: str) -> Optional[NoteModel]:
+    async def get_note_by_id(self, id: str) -> Optional[NoteResponse]:
         """
         Get a specific note by its ID.
 
@@ -109,12 +110,12 @@ class NotesClient(ResourceBase):
             id: The unique identifier of the note.
 
         Returns:
-            The requested note, or None if not found or not accessible.
+            The requested note with `write_access` field, or None if not found or not accessible.
         """
         return await self._request(
             "GET",
             f"/v1/notes/{id}",
-            model=Optional[NoteModel],
+            model=Optional[NoteResponse],
         )
 
     async def update_note_by_id(

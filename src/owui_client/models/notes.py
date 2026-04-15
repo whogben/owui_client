@@ -213,6 +213,18 @@ class NoteUpdateForm(BaseModel):
     """
 
 
+class NoteResponse(NoteModel):
+    """
+    Note model with write access information.
+
+    Returned by the GET /{id} endpoint. Includes all fields from `NoteModel`
+    plus a `write_access` boolean indicating whether the current user can modify the note.
+    """
+
+    write_access: bool = False
+    """Whether the current user has write access to this note."""
+
+
 class NoteUserResponse(NoteModel):
     """
     Note model with user information.

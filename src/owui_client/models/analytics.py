@@ -44,6 +44,7 @@ class DailyStatsEntry(BaseModel):
     """Message counts by model for a single time period."""
 
     date: str
+    """Date string in YYYY-MM-DD format."""
     models: dict[str, int]
     """Message counts keyed by model ID.
 

@@ -170,9 +170,6 @@ class UserModel(BaseModel):
     settings: Optional[UserSettings] = None
     """User-specific settings."""
 
-    api_key: Optional[str] = None
-    """User's API key (if generated)."""
-
     oauth: Optional[dict] = None
     """OAuth provider data.
 
@@ -197,9 +194,6 @@ class UserModel(BaseModel):
     Each provider dictionary contains:
         - `external_id` (str, required): External identifier from the SCIM provider
     """
-
-    oauth_sub: Optional[str] = None
-    """OAuth subject identifier."""
 
     last_active_at: int  # timestamp in epoch
     """Timestamp of the last user activity (Unix epoch)."""
@@ -661,6 +655,46 @@ class UserResponse(UserNameResponse):
 
     email: str
     """User email."""
+
+
+class ApiKeyModel(BaseModel):
+    """
+    Represents an API key associated with a user.
+
+    API keys allow programmatic access to the Open WebUI API on behalf
+    of a user. They have optional expiration and track last usage.
+    """
+
+    id: str
+    """Unique identifier for the API key."""
+
+    user_id: str
+    """The ID of the user who owns this API key."""
+
+    key: str
+    """The API key string."""
+
+    data: Optional[dict] = None
+    """Additional metadata associated with the API key.
+
+    Dict Fields:
+        No specific keys are enforced by the backend. This is a free-form
+        metadata dictionary that may contain arbitrary key-value pairs.
+    """
+
+    expires_at: Optional[int] = None
+    """Expiration timestamp in epoch. None means the key does not expire."""
+
+    last_used_at: Optional[int] = None
+    """Timestamp of the last time this API key was used (Unix epoch)."""
+
+    created_at: int  # timestamp in epoch
+    """Timestamp when the API key was created (Unix epoch)."""
+
+    updated_at: int  # timestamp in epoch
+    """Timestamp when the API key was last updated (Unix epoch)."""
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserUpdateForm(BaseModel):

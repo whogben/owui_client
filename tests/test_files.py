@@ -3,6 +3,7 @@ import uuid
 import asyncio
 from httpx import HTTPStatusError
 from owui_client.client import OpenWebUI
+from owui_client.models.files import FileListResponse
 
 
 @pytest.mark.asyncio
@@ -22,8 +23,9 @@ async def test_files_crud(client: OpenWebUI):
     file_id = uploaded_file.id
 
     # 2. List Files
-    files = await client.files.list_files()
-    assert any(f.id == file_id for f in files)
+    files_response = await client.files.list_files()
+    assert isinstance(files_response, FileListResponse)
+    assert any(f.id == file_id for f in files_response.items)
 
     # 3. Get File By ID
     file = await client.files.get_file_by_id(file_id)
@@ -91,4 +93,27 @@ async def test_files_crud(client: OpenWebUI):
     assert delete_all_res["message"] == "All files deleted successfully"
     
     files_empty = await client.files.list_files()
-    assert len(files_empty) == 0
+    assert files_empty.total == 0
+    assert len(files_empty.items) == 0
+
+
+@pytest.mark.asyncio
+async def test_get_file_content_by_name(client: OpenWebUI):
+    """Test downloading file content by explicit filename in the URL path."""
+    filename = f"test_by_name_{uuid.uuid4()}.txt"
+    content = b"Hello by name!"
+
+    uploaded_file = await client.files.upload_file(
+        file=(filename, content, "text/plain"),
+        metadata={"test": "by_name"},
+        process=False,
+    )
+    assert uploaded_file.filename == filename
+    file_id = uploaded_file.id
+
+    try:
+        downloaded = await client.files.get_file_content_by_name(file_id, filename)
+        assert isinstance(downloaded, bytes)
+        assert downloaded == content
+    finally:
+        await client.files.delete_file_by_id(file_id)

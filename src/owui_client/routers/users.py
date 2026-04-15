@@ -310,7 +310,7 @@ class UsersClient(ResourceBase):
 
     async def update_user_by_id(
         self, user_id: str, form_data: UserUpdateForm
-    ) -> UserModel:
+    ) -> Optional[UserModel]:
         """
         Update a user by ID.
 

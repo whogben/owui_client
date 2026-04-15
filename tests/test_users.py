@@ -3,6 +3,7 @@ from owui_client.models.auths import SigninForm, AddUserForm
 from owui_client.models.users import (
     UserGroupIdsListResponse,
     UserInfoListResponse,
+    UserInfoResponse,
     UserIdNameListResponse,
     UserPermissions,
     WorkspacePermissions,
@@ -97,7 +98,7 @@ async def test_search_users(client):
     # 2. Search for admin
     response = await client.users.search_users(query="admin")
 
-    assert isinstance(response, UserIdNameListResponse)
+    assert isinstance(response, UserInfoListResponse)
     assert response.total >= 1
 
     # Admin should be in results
@@ -343,3 +344,20 @@ async def test_user_status_lifecycle(client):
     check_model = await client.users.get_user_status()
     assert check_model.status_emoji == "🚀"
     assert check_model.status_message == "Testing drift fixes"
+
+
+async def test_get_user_info_by_id(client):
+    """Test get_user_info_by_id returns UserInfoResponse with expected fields."""
+    users = await client.users.get_users()
+    admin_user = next(
+        (u for u in users.users if u.email == "admin@example.com"), None
+    )
+    assert admin_user is not None, "Admin user not found"
+
+    info = await client.users.get_user_info_by_id(admin_user.id)
+    assert isinstance(info, UserInfoResponse)
+    assert info.id == admin_user.id
+    assert info.email == "admin@example.com"
+    assert info.role == "admin"
+    assert hasattr(info, "name")
+    assert hasattr(info, "status_emoji")

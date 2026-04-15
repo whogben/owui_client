@@ -48,38 +48,6 @@ class KnowledgeModel(BaseModel):
     Replaces the legacy access_control field.
     """
 
-    access_control: Optional[dict] = None
-    """
-    Access control settings.
-
-    - `None`: Public access, available to all users with the "user" role.
-      Requires "sharing.public_knowledge" permission for non-admin users to set.
-    - `{}`: Private access, restricted exclusively to the owner.
-    - Custom permissions: Specific access control for reading and writing.
-      Can specify group or user-level restrictions.
-      Example:
-      ```python
-      {
-          "read": {
-              "group_ids": ["group_id1", "group_id2"],
-              "user_ids":  ["user_id1", "user_id2"]
-          },
-          "write": {
-              "group_ids": ["group_id1", "group_id2"],
-              "user_ids":  ["user_id1", "user_id2"]
-          }
-      }
-      ```
-
-    Dict Fields:
-        - `read` (dict, optional): Read access permissions
-        - `write` (dict, optional): Write access permissions
-        - `read.group_ids` (list[str], optional): List of group IDs with read access
-        - `read.user_ids` (list[str], optional): List of user IDs with read access
-        - `write.group_ids` (list[str], optional): List of group IDs with write access
-        - `write.user_ids` (list[str], optional): List of user IDs with write access
-    """
-
     created_at: int
     """Timestamp of creation (epoch)."""
 
@@ -118,11 +86,6 @@ class KnowledgeFileModel(BaseModel):
 class KnowledgeUserModel(KnowledgeModel):
     """
     Represents a knowledge base with user information.
-
-    Inherits access_control from `KnowledgeModel`. Access is determined by:
-    - Direct user ownership (user_id matches)
-    - Access control permissions (read/write for groups and users)
-    - Admin users have full access regardless of access_control settings
     """
 
     user: Optional[UserResponse] = None
@@ -144,13 +107,7 @@ class KnowledgeResponse(KnowledgeModel):
 class KnowledgeUserResponse(KnowledgeUserModel):
     """
     Represents a knowledge base response including user information and files.
-
-    Inherits access_control from `KnowledgeModel`. See `KnowledgeModel.access_control`
-    for complete documentation of the access control structure and permissions.
     """
-
-    files: Optional[list[Union[FileMetadataResponse, dict]]] = None
-    """List of files associated with the knowledge base."""
 
 
 class KnowledgeForm(BaseModel):
@@ -174,38 +131,6 @@ class KnowledgeForm(BaseModel):
     - `principal_id` (str, required): User/group ID, or '*' for public access
     - `permission` (str, required): 'read' or 'write'
     """
-
-    access_control: Optional[dict] = None
-    """
-    Access control settings.
-
-    - `None`: Public access, available to all users with the "user" role.
-    - `{}`: Private access, restricted exclusively to the owner.
-    - Custom permissions: Specific access control for reading and writing.
-      Can specify group or user-level restrictions.
-      Example:
-      ```python
-      {
-          "read": {
-              "group_ids": ["group_id1", "group_id2"],
-              "user_ids":  ["user_id1", "user_id2"]
-          },
-          "write": {
-              "group_ids": ["group_id1", "group_id2"],
-              "user_ids":  ["user_id1", "user_id2"]
-          }
-      }
-      ```
-
-    Dict Fields:
-        - `read` (dict, optional): Read access permissions
-        - `write` (dict, optional): Write access permissions
-        - `read.group_ids` (list[str], optional): List of group IDs with read access
-        - `read.user_ids` (list[str], optional): List of user IDs with read access
-        - `write.group_ids` (list[str], optional): List of group IDs with write access
-        - `write.user_ids` (list[str], optional): List of user IDs with write access
-    """
-
 
 class KnowledgeFilesResponse(KnowledgeResponse):
     """

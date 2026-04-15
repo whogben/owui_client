@@ -10,7 +10,9 @@ from owui_client.models.configs import (
     PromptSuggestion,
     SetDefaultSuggestionsForm,
     BannerModel,
-    SetBannersForm
+    SetBannersForm,
+    TerminalServerConnection,
+    TerminalServerPolicyForm,
 )
 
 @pytest.mark.asyncio
@@ -121,7 +123,8 @@ async def test_register_oauth_client(client: OpenWebUI):
         "400" in str(excinfo.value)
         or "Failed to register" in str(excinfo.value)
         or "Connection" in str(excinfo.value)
-        or "Timeout" in str(excinfo.value)  # Add timeout handling
+        or "Timeout" in str(excinfo.value)
+        or "ReadTimeout" in type(excinfo.value).__name__
     )
 
 @pytest.mark.asyncio
@@ -163,7 +166,7 @@ async def test_tool_servers_config(client: OpenWebUI):
             await client.configs.verify_tool_servers_config(new_connection)
 
         # Verify it's an API error (likely 400, connection error, or timeout)
-        assert "400" in str(excinfo.value) or "Failed to connect" in str(excinfo.value) or "Timeout" in str(excinfo.value)
+        assert "400" in str(excinfo.value) or "Failed to connect" in str(excinfo.value) or "Timeout" in str(excinfo.value) or "ReadTimeout" in type(excinfo.value).__name__
 
     finally:
         # 5. Restore original config
@@ -317,3 +320,44 @@ async def test_suggestions_banners_config(client: OpenWebUI):
         await client.configs.set_default_suggestions(
             SetDefaultSuggestionsForm(suggestions=original_suggestions)
         )
+
+@pytest.mark.asyncio
+async def test_get_models_defaults(client: OpenWebUI):
+    """Test get_models_defaults returns DEFAULT_MODEL_METADATA."""
+    result = await client.configs.get_models_defaults()
+    assert isinstance(result, dict)
+    assert "DEFAULT_MODEL_METADATA" in result
+
+@pytest.mark.asyncio
+async def test_verify_terminal_server(client: OpenWebUI):
+    """Test verify_terminal_server with a non-existent URL expects an error."""
+    form_data = TerminalServerConnection(
+        url="http://non-existent-terminal.test",
+    )
+    with pytest.raises(Exception) as excinfo:
+        await client.configs.verify_terminal_server(form_data)
+    assert (
+        "400" in str(excinfo.value)
+        or "Failed" in str(excinfo.value)
+        or "Connection" in str(excinfo.value)
+        or "Timeout" in str(excinfo.value)
+        or "ReadTimeout" in type(excinfo.value).__name__
+    )
+
+@pytest.mark.asyncio
+async def test_put_terminal_server_policy(client: OpenWebUI):
+    """Test put_terminal_server_policy with a non-existent server expects an error."""
+    form_data = TerminalServerPolicyForm(
+        url="http://non-existent-terminal.test",
+        policy_id="test-policy",
+        policy_data={"test": "data"},
+    )
+    with pytest.raises(Exception) as excinfo:
+        await client.configs.put_terminal_server_policy(form_data)
+    assert (
+        "400" in str(excinfo.value)
+        or "Failed" in str(excinfo.value)
+        or "Connection" in str(excinfo.value)
+        or "Timeout" in str(excinfo.value)
+        or "ReadTimeout" in type(excinfo.value).__name__
+    )

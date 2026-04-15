@@ -141,20 +141,6 @@ class FileModel(BaseModel):
     Common usage includes file identification, content type handling, and knowledge base association.
     """
 
-    access_control: Optional[dict] = None
-    """Access control rules for the file.
-
-    Dict Fields:
-        - `read` (dict, optional): Read access permissions
-            - `group_ids` (list[str], optional): List of group IDs that have read access
-            - `user_ids` (list[str], optional): List of user IDs that have read access
-        - `write` (dict, optional): Write access permissions
-            - `group_ids` (list[str], optional): List of group IDs that have write access
-            - `user_ids` (list[str], optional): List of user IDs that have write access
-
-    Controls which users and groups can read or write to the file. If None, access follows default system permissions.
-    """
-
     created_at: Optional[int]
     """Unix timestamp when the file was created."""
 

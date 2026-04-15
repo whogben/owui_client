@@ -4,6 +4,7 @@ import os
 import asyncio
 import threading
 import json
+import httpx
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
@@ -413,3 +414,23 @@ def mock_ollama_server():
     yield base_url
 
     server.shutdown()
+
+
+@pytest.fixture(scope="session")
+def scim_available(owui_server_session):
+    """Check if SCIM is enabled on the test server. Skip all dependent tests if not."""
+    base_url = owui_server_session["base_url"]
+    token = owui_server_session["token"]
+    try:
+        response = httpx.get(
+            f"{base_url}/scim/v2/ServiceProviderConfig",
+            headers={"Authorization": f"Bearer {token}"},
+            timeout=10,
+            follow_redirects=True,
+        )
+        content_type = response.headers.get("content-type", "")
+        if "application/json" in content_type or response.text.strip().startswith("{"):
+            return True
+    except Exception:
+        pass
+    pytest.skip("SCIM not enabled on this server")

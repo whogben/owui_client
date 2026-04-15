@@ -10,15 +10,23 @@ class ChatMessageModel(BaseModel):
     chat_id: str
     user_id: str
     role: str
+    """Message role, typically 'user', 'assistant', or 'system'."""
     parent_id: Optional[str] = None
     content: Optional[Any] = None
+    """Message content. Can be a string, list of content blocks, or None."""
     output: Optional[list] = None
+    """Model output content blocks."""
     model_id: Optional[str] = None
     files: Optional[list] = None
+    """List of file attachments."""
     sources: Optional[list] = None
+    """List of retrieval sources cited in the response."""
     embeds: Optional[list] = None
+    """List of embedded content items."""
     done: bool = True
+    """Whether the model has finished generating."""
     status_history: Optional[list] = None
+    """List of status updates during generation."""
     error: Optional[dict | str] = None
     """Error information if the message generation failed.
 

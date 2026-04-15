@@ -25,6 +25,7 @@ class SCIMError(BaseModel):
 class SCIMMeta(BaseModel):
     """SCIM Resource Metadata."""
     resourceType: str
+    """SCIM resource type (e.g., 'User', 'Group')."""
     created: str
     lastModified: str
     location: Optional[str] = None
@@ -157,13 +158,17 @@ class SCIMListResponse(BaseModel):
     itemsPerPage: int
     startIndex: int
     Resources: List[Any]
+    """List of SCIM resources (`SCIMUser` or `SCIMGroup` depending on endpoint)."""
 
 
 class SCIMPatchOperation(BaseModel):
     """SCIM Patch Operation."""
     op: str
+    """Operation type: 'add', 'replace', or 'remove'."""
     path: Optional[str] = None
+    """Attribute path to modify."""
     value: Optional[Any] = None
+    """New value for the attribute."""
 
 
 class SCIMPatchRequest(BaseModel):

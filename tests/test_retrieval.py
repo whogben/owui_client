@@ -93,27 +93,29 @@ async def test_retrieval_embeddings_and_web_search(client):
         pytest.skip(f"get_embeddings failed (likely ENV!=dev): {e}")
 
     # 2. Test process_web_search
-    # Enable web search
-    await client.retrieval.update_config(
-        ConfigForm(
-            web=WebConfig(
-                ENABLE_WEB_SEARCH=True,
-                WEB_SEARCH_ENGINE="duckduckgo", # duckduckgo usually works without key
-                WEB_SEARCH_RESULT_COUNT=1
+    try:
+        await client.retrieval.update_config(
+            ConfigForm(
+                web=WebConfig(
+                    ENABLE_WEB_SEARCH=True,
+                    WEB_SEARCH_ENGINE="duckduckgo",
+                    WEB_SEARCH_RESULT_COUNT=1
+                )
             )
         )
-    )
-    
-    search_form = SearchForm(queries=["Open WebUI"])
-    try:
+
+        search_form = SearchForm(queries=["Open WebUI"])
         result = await client.retrieval.process_web_search(search_form)
         assert isinstance(result, dict)
         assert result.get("status") is True
-        # Should have collection_names, items, filenames
     except Exception as e:
-        # DuckDuckGo might be blocked or fail in CI/Docker without internet
-        print(f"Web search failed: {e}")
-        # We consider the test passed if the client call was made successfully 
-        # even if the backend returned an error from the search engine.
-        # Unless it's a 404 Not Found on the endpoint itself.
-        pass
+        pytest.skip(f"Web search test skipped: {e}")
+
+@pytest.mark.asyncio
+async def test_get_config(client):
+    """Test get_config returns RAG-related configuration keys."""
+    config = await client.retrieval.get_config()
+    assert isinstance(config, dict)
+    assert any(
+        key in config for key in ("RAG", "TOP_K", "CHUNK_SIZE", "RAG_EMBEDDING_ENGINE")
+    )

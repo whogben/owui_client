@@ -74,23 +74,6 @@ class ToolModel(BaseModel):
     List of access grants controlling who can read/write this tool.
     Replaces the legacy access_control field.
     """
-    access_control: Optional[dict] = None
-    """
-    Access control settings for the tool.
-
-    Dict Fields:
-        - `read` (dict, optional): Read access permissions
-            - `group_ids` (list[str], optional): List of group IDs that have read access
-            - `user_ids` (list[str], optional): List of user IDs that have read access
-        - `write` (dict, optional): Write access permissions
-            - `group_ids` (list[str], optional): List of group IDs that have write access
-            - `user_ids` (list[str], optional): List of user IDs that have write access
-
-    Special values:
-        - `None`: Public access, available to all users with the "user" role
-        - `{}`: Private access, restricted exclusively to the owner
-    """
-
     updated_at: int
     """
     Timestamp of the last update (epoch).
@@ -140,22 +123,6 @@ class ToolResponse(BaseModel):
     List of access grants controlling who can read/write this tool.
     Replaces the legacy access_control field.
     """
-    access_control: Optional[dict] = None
-    """
-    Access control settings for the tool.
-
-    Dict Fields:
-        - `read` (dict, optional): Read access permissions
-            - `group_ids` (list[str], optional): List of group IDs that have read access
-            - `user_ids` (list[str], optional): List of user IDs that have read access
-        - `write` (dict, optional): Write access permissions
-            - `group_ids` (list[str], optional): List of group IDs that have write access
-            - `user_ids` (list[str], optional): List of user IDs that have write access
-
-    Special values:
-        - `None`: Public access, available to all users with the "user" role
-        - `{}`: Private access, restricted exclusively to the owner
-    """
     updated_at: int
     """
     Timestamp of the last update (epoch).
@@ -175,15 +142,8 @@ class ToolUserResponse(ToolResponse):
     """
     Details of the user who owns the tool.
     """
-    has_user_valves: Optional[bool] = None
-    """
-    Indicates if the tool has user-specific valves (settings).
-    """
-
     model_config = ConfigDict(extra="allow")
-    """
-    Allows extra fields like `has_user_valves` which are dynamically added.
-    """
+    """Allows extra fields dynamically."""
 
 
 class ToolAccessResponse(ToolUserResponse):
@@ -223,22 +183,6 @@ class ToolForm(BaseModel):
     - `principal_type` (str, required): 'user' or 'group'
     - `principal_id` (str, required): User/group ID, or '*' for public access
     - `permission` (str, required): 'read' or 'write'
-    """
-    access_control: Optional[dict] = None
-    """
-    Access control settings for the tool.
-
-    Dict Fields:
-        - `read` (dict, optional): Read access permissions
-            - `group_ids` (list[str], optional): List of group IDs that have read access
-            - `user_ids` (list[str], optional): List of user IDs that have read access
-        - `write` (dict, optional): Write access permissions
-            - `group_ids` (list[str], optional): List of group IDs that have write access
-            - `user_ids` (list[str], optional): List of user IDs that have write access
-
-    Special values:
-        - `None`: Public access, available to all users with the "user" role
-        - `{}`: Private access, restricted exclusively to the owner
     """
 
 

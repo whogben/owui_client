@@ -40,7 +40,7 @@ class ConnectionsConfigForm(BaseModel):
     """Whether to allow users to connect to their own OpenAI compatible API endpoints directly."""
 
     ENABLE_BASE_MODELS_CACHE: bool
-    """Whether to cache the base model list. speeeds up access by fetching base models only at startup or on settings save."""
+    """Whether to cache the base model list. Speeds up access by fetching base models only at startup or on settings save."""
 
 
 class OAuthClientRegistrationForm(BaseModel):

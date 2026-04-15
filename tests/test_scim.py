@@ -18,28 +18,28 @@ from owui_client.models.scim import (
 pytestmark = pytest.mark.asyncio
 
 
-async def test_get_service_provider_config(client):
+async def test_get_service_provider_config(client, scim_available):
     """Test retrieving SCIM Service Provider Configuration."""
     result = await client.scim.get_service_provider_config()
     assert result is not None
     assert isinstance(result, dict)
 
 
-async def test_get_resource_types(client):
+async def test_get_resource_types(client, scim_available):
     """Test retrieving SCIM Resource Types."""
     result = await client.scim.get_resource_types()
     assert result is not None
     assert isinstance(result, list)
 
 
-async def test_get_schemas(client):
+async def test_get_schemas(client, scim_available):
     """Test retrieving SCIM Schemas."""
     result = await client.scim.get_schemas()
     assert result is not None
     assert isinstance(result, list)
 
 
-async def test_get_scim_users(client):
+async def test_get_scim_users(client, scim_available):
     """Test listing SCIM users with pagination."""
     result = await client.scim.get_users()
     assert result is not None
@@ -48,7 +48,7 @@ async def test_get_scim_users(client):
     assert isinstance(result.Resources, list)
 
 
-async def test_get_scim_user(client):
+async def test_get_scim_user(client, scim_available):
     """Test retrieving a SCIM user by ID."""
     user_data = SCIMUserCreateRequest(
         userName=f"scim_get_test_{int(time.time())}",
@@ -68,7 +68,7 @@ async def test_get_scim_user(client):
         await client.scim.delete_user(created.id)
 
 
-async def test_create_scim_user(client):
+async def test_create_scim_user(client, scim_available):
     """Test creating a SCIM user."""
     user_data = SCIMUserCreateRequest(
         userName=f"scim_create_{int(time.time())}",
@@ -84,7 +84,7 @@ async def test_create_scim_user(client):
     await client.scim.delete_user(created.id)
 
 
-async def test_update_scim_user(client):
+async def test_update_scim_user(client, scim_available):
     """Test updating a SCIM user (full update)."""
     user_data = SCIMUserCreateRequest(
         userName=f"scim_update_{int(time.time())}",
@@ -109,7 +109,7 @@ async def test_update_scim_user(client):
         await client.scim.delete_user(created.id)
 
 
-async def test_patch_scim_user(client):
+async def test_patch_scim_user(client, scim_available):
     """Test patching a SCIM user (partial update)."""
     user_data = SCIMUserCreateRequest(
         userName=f"scim_patch_{int(time.time())}",
@@ -136,7 +136,7 @@ async def test_patch_scim_user(client):
         await client.scim.delete_user(created.id)
 
 
-async def test_delete_scim_user(client):
+async def test_delete_scim_user(client, scim_available):
     """Test deleting a SCIM user."""
     user_data = SCIMUserCreateRequest(
         userName=f"scim_delete_{int(time.time())}",
@@ -156,7 +156,7 @@ async def test_delete_scim_user(client):
         assert e.response.status_code == 404
 
 
-async def test_get_scim_groups(client):
+async def test_get_scim_groups(client, scim_available):
     """Test listing SCIM groups with pagination."""
     result = await client.scim.get_groups()
     assert result is not None
@@ -165,7 +165,7 @@ async def test_get_scim_groups(client):
     assert isinstance(result.Resources, list)
 
 
-async def test_get_scim_group(client):
+async def test_get_scim_group(client, scim_available):
     """Test retrieving a SCIM group by ID."""
     group_data = SCIMGroupCreateRequest(
         displayName=f"SCIM Get Group {int(time.time())}",
@@ -182,7 +182,7 @@ async def test_get_scim_group(client):
         await client.scim.delete_group(created.id)
 
 
-async def test_create_scim_group(client):
+async def test_create_scim_group(client, scim_available):
     """Test creating a SCIM group."""
     group_data = SCIMGroupCreateRequest(
         displayName=f"SCIM Create Group {int(time.time())}",
@@ -194,7 +194,7 @@ async def test_create_scim_group(client):
     await client.scim.delete_group(created.id)
 
 
-async def test_update_scim_group(client):
+async def test_update_scim_group(client, scim_available):
     """Test updating a SCIM group (full update)."""
     group_data = SCIMGroupCreateRequest(
         displayName=f"SCIM Update Group {int(time.time())}",
@@ -213,7 +213,7 @@ async def test_update_scim_group(client):
         await client.scim.delete_group(created.id)
 
 
-async def test_patch_scim_group(client):
+async def test_patch_scim_group(client, scim_available):
     """Test patching a SCIM group (partial update)."""
     group_data = SCIMGroupCreateRequest(
         displayName=f"SCIM Patch Group {int(time.time())}",
@@ -238,7 +238,7 @@ async def test_patch_scim_group(client):
         await client.scim.delete_group(created.id)
 
 
-async def test_delete_scim_group(client):
+async def test_delete_scim_group(client, scim_available):
     """Test deleting a SCIM group."""
     group_data = SCIMGroupCreateRequest(
         displayName=f"SCIM Delete Group {int(time.time())}",
