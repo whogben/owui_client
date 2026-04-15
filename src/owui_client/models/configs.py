@@ -57,6 +57,9 @@ class OAuthClientRegistrationForm(BaseModel):
     client_name: Optional[str] = None
     """Optional name for the client."""
 
+    client_secret: Optional[str] = None
+    """Client secret for the OAuth registration."""
+
 
 class ToolServerConnection(BaseModel):
     """
@@ -294,7 +297,46 @@ class TerminalServerConnection(BaseModel):
         - Additional keys may be used for provider-specific settings
     """
 
+    server_type: Optional[str] = None
+    """Type of terminal server. Supported values: 'orchestrator', 'terminal'."""
+
+    policy_id: Optional[str] = None
+    """ID of the orchestrator policy assigned to this terminal server."""
+
+    policy: Optional[Dict[str, Any]] = None
+    """Cached policy data fetched from the orchestrator.
+
+    Dict Fields:
+        - Policy key-value pairs as defined by the orchestrator terminal server.
+    """
+
     model_config = ConfigDict(extra="allow")
+
+
+class TerminalServerPolicyForm(BaseModel):
+    """
+    Form for pushing a policy to an orchestrator terminal server.
+    """
+
+    url: str
+    """Base URL of the terminal server."""
+
+    key: Optional[str] = ""
+    """API Key or Token for authentication."""
+
+    auth_type: Optional[str] = "bearer"
+    """Authentication type. Common values: 'bearer', 'none'."""
+
+    policy_id: str
+    """The policy ID to update on the terminal server."""
+
+    policy_data: Dict[str, Any]
+    """The policy data to push to the terminal server.
+
+    Dict Fields:
+        - Policy key-value pairs as defined by the terminal server's policy schema.
+        The exact structure depends on the orchestrator's policy format.
+    """
 
 
 class TerminalServersConfigForm(BaseModel):

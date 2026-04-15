@@ -186,6 +186,13 @@ class ToolUserResponse(ToolResponse):
     """
 
 
+class ToolAccessResponse(ToolUserResponse):
+    """Tool response including user details and write access information."""
+
+    write_access: Optional[bool] = False
+    """Whether the current user has write access to this tool."""
+
+
 class ToolForm(BaseModel):
     """
     Form for creating or updating a tool.

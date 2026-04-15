@@ -41,3 +41,23 @@ class OAuthSessionModel(BaseModel):
     """The timestamp (epoch) when the session was last updated."""
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class OAuthSessionResponse(BaseModel):
+    """
+    Response model for an OAuth session without sensitive token data.
+
+    Used when listing sessions where the full token payload should not be exposed.
+    """
+
+    id: str
+    """The unique identifier for the OAuth session."""
+
+    user_id: str
+    """The ID of the user associated with this session."""
+
+    provider: str
+    """The OAuth provider name (e.g., 'google', 'microsoft')."""
+
+    expires_at: int
+    """The timestamp (epoch) when the session/token expires."""

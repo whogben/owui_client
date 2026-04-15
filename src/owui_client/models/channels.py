@@ -362,6 +362,34 @@ class ChannelMemberModel(BaseModel):
     """Timestamp when the membership record was last updated (in nanoseconds)."""
 
 
+class ChannelFileModel(BaseModel):
+    """
+    Model representing a file associated with a channel.
+
+    Links files to channels, tracking which user added the file and when.
+    """
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: str
+    """Unique identifier for the channel-file association."""
+
+    channel_id: str
+    """ID of the channel the file belongs to."""
+
+    file_id: str
+    """ID of the file."""
+
+    user_id: str
+    """ID of the user who added the file to the channel."""
+
+    created_at: int  # timestamp in epoch (time_ns)
+    """Timestamp when the file was added to the channel (in nanoseconds)."""
+
+    updated_at: int  # timestamp in epoch (time_ns)
+    """Timestamp when the association was last updated (in nanoseconds)."""
+
+
 class ChannelWebhookModel(BaseModel):
     """
     Model representing a webhook associated with a channel.

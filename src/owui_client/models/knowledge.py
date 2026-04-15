@@ -87,6 +87,34 @@ class KnowledgeModel(BaseModel):
     """Timestamp of last update (epoch)."""
 
 
+class KnowledgeFileModel(BaseModel):
+    """
+    Model representing a file associated with a knowledge base.
+
+    Links files to knowledge bases, tracking which user added the file and when.
+    """
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: str
+    """Unique identifier for the knowledge-file association."""
+
+    knowledge_id: str
+    """ID of the knowledge base the file belongs to."""
+
+    file_id: str
+    """ID of the file."""
+
+    user_id: str
+    """ID of the user who added the file to the knowledge base."""
+
+    created_at: int
+    """Timestamp when the file was added (epoch seconds)."""
+
+    updated_at: int
+    """Timestamp when the association was last updated (epoch seconds)."""
+
+
 class KnowledgeUserModel(KnowledgeModel):
     """
     Represents a knowledge base with user information.
@@ -221,6 +249,18 @@ class KnowledgeAccessListResponse(BaseModel):
 
     total: int
     """Total number of items."""
+
+
+class KnowledgeListResponse(BaseModel):
+    """
+    Response model for a paginated list of knowledge bases with user info.
+    """
+
+    items: list[KnowledgeUserModel]
+    """List of knowledge base items with user information."""
+
+    total: int
+    """Total number of knowledge bases matching the query."""
 
 
 class FileUserResponse(FileModelResponse):

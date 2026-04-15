@@ -34,17 +34,6 @@ class KnowledgeClient(ResourceBase):
             params={"page": page},
         )
 
-    async def get_knowledge_list(self) -> List[KnowledgeUserResponse]:
-        """
-        Get knowledge bases list (write access).
-
-        Returns:
-            List[KnowledgeUserResponse]: List of knowledge bases the user has write access to.
-        """
-        return await self._request(
-            "GET", "/v1/knowledge/list", model=KnowledgeUserResponse
-        )
-
     async def search_knowledge_bases(
         self,
         query: Optional[str] = None,
@@ -101,6 +90,48 @@ class KnowledgeClient(ResourceBase):
         return await self._request(
             "GET",
             "/v1/knowledge/search/files",
+            model=KnowledgeFileListResponse,
+            params=params,
+        )
+
+    async def get_knowledge_files_by_id(
+        self,
+        id: str,
+        query: Optional[str] = None,
+        view_option: Optional[str] = None,
+        order_by: Optional[str] = None,
+        direction: Optional[str] = None,
+        page: Optional[int] = 1,
+    ) -> KnowledgeFileListResponse:
+        """
+        Get files for a knowledge base with pagination and filtering.
+
+        Args:
+            id: The ID of the knowledge base.
+            query: Search query string.
+            view_option: View option filter (e.g., 'attached', 'not_attached').
+            order_by: Field to order by.
+            direction: Sort direction ('asc', 'desc').
+            page: Page number (default 1, 30 items per page).
+
+        Returns:
+            `KnowledgeFileListResponse`: List of files in the knowledge base.
+        """
+        params = {}
+        if query:
+            params["query"] = query
+        if view_option:
+            params["view_option"] = view_option
+        if order_by:
+            params["order_by"] = order_by
+        if direction:
+            params["direction"] = direction
+        if page:
+            params["page"] = page
+
+        return await self._request(
+            "GET",
+            f"/v1/knowledge/{id}/files",
             model=KnowledgeFileListResponse,
             params=params,
         )

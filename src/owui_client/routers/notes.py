@@ -15,7 +15,7 @@ class NotesClient(ResourceBase):
     Client for the Notes endpoints.
     """
 
-    async def get_notes(self) -> List[NoteItemResponse]:
+    async def get_notes(self, page: Optional[int] = None) -> List[NoteItemResponse]:
         """
         Get all notes visible to the user.
 
@@ -23,13 +23,21 @@ class NotesClient(ResourceBase):
         If the user is an admin, they can see all notes.
         Otherwise, they can see their own notes and notes shared with them.
 
+        Args:
+            page: Page number (1-based, 60 items per page). If None, returns all notes.
+
         Returns:
             A list of `NoteItemResponse` objects.
         """
+        params = {}
+        if page is not None:
+            params["page"] = page
+
         return await self._request(
             "GET",
             "/v1/notes/",
             model=NoteItemResponse,
+            params=params if params else None,
         )
 
     async def search_notes(

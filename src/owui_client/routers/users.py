@@ -3,6 +3,7 @@ from owui_client.client_base import ResourceBase
 from owui_client.models.users import (
     UserGroupIdsListResponse,
     UserInfoListResponse,
+    UserInfoResponse,
     UserIdNameListResponse,
     UserPermissions,
     UserSettings,
@@ -80,28 +81,42 @@ class UsersClient(ResourceBase):
             model=UserInfoListResponse,
         )
 
-    async def search_users(self, query: Optional[str] = None) -> UserIdNameListResponse:
+    async def search_users(
+        self,
+        query: Optional[str] = None,
+        order_by: Optional[str] = None,
+        direction: Optional[str] = None,
+        page: Optional[int] = None,
+    ) -> UserInfoListResponse:
         """
         Search users by query (name or email).
 
-        Searches for users matching the query string.
-        Returns the first page of results (limit 30).
+        Searches for users matching the query string with pagination.
 
         Args:
             query: Search query string.
+            order_by: Field to order by (e.g., 'name', 'email', 'created_at', 'updated_at', 'role').
+            direction: Sort direction ('asc' or 'desc').
+            page: Page number (1-based, 30 items per page).
 
         Returns:
-            `UserIdNameListResponse`: List of users (ID and name) matching the query.
+            `UserInfoListResponse`: List of users matching the query.
         """
         params = {}
         if query:
             params["query"] = query
+        if order_by:
+            params["order_by"] = order_by
+        if direction:
+            params["direction"] = direction
+        if page is not None:
+            params["page"] = page
 
         return await self._request(
             "GET",
             "/v1/users/search",
-            model=UserIdNameListResponse,
-            params=params,
+            model=UserInfoListResponse,
+            params=params if params else None,
         )
 
     async def get_user_groups(self) -> List[GroupModel]:
@@ -272,6 +287,25 @@ class UsersClient(ResourceBase):
             "GET",
             f"/v1/users/{user_id}",
             model=UserActiveResponse,
+        )
+
+    async def get_user_info_by_id(self, user_id: str) -> UserInfoResponse:
+        """
+        Get user info by ID.
+
+        Returns user info with groups and active status. Accessible by any verified user
+        (not just admins).
+
+        Args:
+            user_id: The ID of the user.
+
+        Returns:
+            `UserInfoResponse`: User info including groups and active status.
+        """
+        return await self._request(
+            "GET",
+            f"/v1/users/{user_id}/info",
+            model=UserInfoResponse,
         )
 
     async def update_user_by_id(

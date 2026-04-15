@@ -389,6 +389,26 @@ class OllamaClient(ResourceBase):
             "POST", self._get_url(path), json=payload
         )
 
+    async def generate_anthropic_messages(self, payload: Dict, url_idx: int = None) -> Any:
+        """Proxy for Ollama's Anthropic-compatible /v1/messages endpoint.
+
+        Forwards an Anthropic Messages API request to the Ollama backend,
+        applying model resolution, access control, and prefix_id handling.
+
+        Args:
+            payload: Anthropic Messages API request payload (dict).
+            url_idx: Optional index of the Ollama server.
+
+        Returns:
+            Anthropic Messages API response.
+        """
+        path = "ollama/v1/messages"
+        if url_idx is not None:
+            path = f"{path}/{url_idx}"
+        return await self._request(
+            "POST", self._get_url(path), json=payload
+        )
+
     async def get_openai_models(self, url_idx: int = None) -> Dict[str, Any]:
         """
         List models using OpenAI-compatible endpoint.

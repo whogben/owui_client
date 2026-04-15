@@ -265,6 +265,61 @@ class ChatResponse(BaseModel):
     """ID of the folder containing this chat, if any."""
 
 
+class ChatFileModel(BaseModel):
+    """
+    Model representing a file associated with a chat.
+
+    Links files to chats, tracking which user added the file and when.
+    """
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: str
+    """Unique identifier for the chat-file association."""
+
+    user_id: str
+    """ID of the user who added the file to the chat."""
+
+    chat_id: str
+    """ID of the chat the file belongs to."""
+
+    message_id: Optional[str] = None
+    """ID of the message the file is attached to, if any."""
+
+    file_id: str
+    """ID of the file."""
+
+    created_at: int
+    """Timestamp when the file was added to the chat (Unix epoch)."""
+
+    updated_at: int
+    """Timestamp when the association was last updated (Unix epoch)."""
+
+
+class SharedChatResponse(BaseModel):
+    """
+    Lightweight response for a shared chat listing.
+
+    Used in shared chat list endpoints to return minimal chat info
+    without the heavy chat JSON blob.
+    """
+
+    id: str
+    """Unique identifier for the chat."""
+
+    title: str
+    """Title of the chat."""
+
+    share_id: Optional[str] = None
+    """ID of the shared version of this chat."""
+
+    updated_at: int
+    """Timestamp when the chat was last updated (Unix epoch)."""
+
+    created_at: int
+    """Timestamp when the chat was created (Unix epoch)."""
+
+
 class ChatListResponse(BaseModel):
     """
     Response model for a list of chats with pagination.

@@ -213,6 +213,32 @@ class UserModel(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class UserStatusModel(UserModel):
+    """
+    User model extended with active status.
+
+    The `is_active` field indicates whether the user has been active
+    recently (within the last 3 minutes based on `last_active_at`).
+    """
+
+    is_active: bool = False
+    """Whether the user is currently active (based on recent activity within the last 3 minutes)."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class UserRoleUpdateForm(BaseModel):
+    """
+    Form for updating a user's role.
+    """
+
+    id: str
+    """The ID of the user whose role is being updated."""
+
+    role: str
+    """The new role to assign. Common values: 'admin', 'user', 'pending'."""
+
+
 class UserGroupIdsModel(UserModel):
     """
     User model with associated group IDs.

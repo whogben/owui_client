@@ -49,6 +49,21 @@ class RetrievalClient(ResourceBase):
         """
         return await self._request("POST", "/v1/retrieval/embedding/update", json=form_data.model_dump())
 
+    async def get_config(self) -> Dict:
+        """
+        Get the full RAG (Retrieval-Augmented Generation) configuration.
+
+        Returns the complete RAG configuration including RAG settings,
+        hybrid search settings, content extraction settings, reranking settings,
+        chunking settings, file upload settings, and web search settings.
+
+        Requires Admin privileges.
+
+        Returns:
+            Dict containing the full RAG configuration.
+        """
+        return await self._request("GET", "/v1/retrieval/config")
+
     async def update_config(self, form_data: ConfigForm) -> Dict:
         """
         Update the retrieval configuration.

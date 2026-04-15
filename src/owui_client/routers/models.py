@@ -3,6 +3,8 @@ from owui_client.client_base import ResourceBase
 from owui_client.models.models import (
     ModelListResponse,
     ModelResponse,
+    ModelAccessListResponse,
+    ModelAccessResponse,
     ModelUserResponse,
     ModelForm,
     ModelModel,
@@ -26,7 +28,7 @@ class ModelsClient(ResourceBase):
         order_by: Optional[str] = None,
         direction: Optional[str] = None,
         page: Optional[int] = 1,
-    ) -> ModelListResponse:
+    ) -> ModelAccessListResponse:
         """
         Get a list of models with optional filtering and pagination.
 
@@ -42,7 +44,7 @@ class ModelsClient(ResourceBase):
             page: Page number (1-based).
 
         Returns:
-            `ModelListResponse`: List of models and total count.
+            `ModelAccessListResponse`: List of models with write_access info and total count.
         """
         params = {}
         if query:
@@ -59,7 +61,7 @@ class ModelsClient(ResourceBase):
             params["page"] = page
 
         return await self._request(
-            "GET", "/v1/models/list", model=ModelListResponse, params=params
+            "GET", "/v1/models/list", model=ModelAccessListResponse, params=params
         )
 
     async def get_base_models(self) -> list[ModelResponse]:
@@ -151,7 +153,7 @@ class ModelsClient(ResourceBase):
             json=form_data.model_dump(),
         )
 
-    async def get_model_by_id(self, id: str) -> Optional[ModelResponse]:
+    async def get_model_by_id(self, id: str) -> Optional[ModelAccessResponse]:
         """
         Get a model by ID.
 
@@ -159,10 +161,10 @@ class ModelsClient(ResourceBase):
             id: The model ID.
 
         Returns:
-            Optional[ModelResponse]: The model details.
+            Optional[ModelAccessResponse]: The model details with write_access info.
         """
         return await self._request(
-            "GET", "/v1/models/model", model=Optional[ModelResponse], params={"id": id}
+            "GET", "/v1/models/model", model=Optional[ModelAccessResponse], params={"id": id}
         )
 
     async def get_model_profile_image(self, id: str) -> bytes:

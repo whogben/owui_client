@@ -56,14 +56,14 @@ class FileModelResponse(BaseModel):
     The content field contains the extracted text from the file after successful processing.
     """
 
-    meta: FileMeta
+    meta: Optional[FileMeta] = None
     """Metadata about the file including original name, size, and content type."""
 
     created_at: int
     """Unix timestamp when the file was created."""
 
-    updated_at: int
-    """Unix timestamp when the file was last updated."""
+    updated_at: Optional[int] = None
+    """Unix timestamp when the file was last updated. Optional for legacy files."""
 
     model_config = ConfigDict(extra="allow")
 
@@ -160,6 +160,75 @@ class FileModel(BaseModel):
 
     updated_at: Optional[int]
     """Unix timestamp when the file was last updated."""
+
+
+class FileForm(BaseModel):
+    """Form for creating a new file."""
+
+    id: str
+    """Unique identifier for the file."""
+
+    hash: Optional[str] = None
+    """Hash of the file content for integrity verification."""
+
+    filename: str
+    """Name of the file."""
+
+    path: str
+    """Physical path or storage reference for the file content."""
+
+    data: dict = {}
+    """Additional data associated with the file.
+
+    Dict Fields:
+        - `status` (str, optional): Processing status - 'pending', 'completed', or 'failed'
+        - `error` (str, optional): Error message if processing failed
+        - `content` (str, optional): Extracted text content from the file
+    """
+
+    meta: dict = {}
+    """File metadata dictionary.
+
+    Dict Fields:
+        - `name` (str, optional): Original name of the file
+        - `content_type` (str, optional): MIME type (e.g., 'application/pdf')
+        - `size` (int, optional): Size of the file in bytes
+    """
+
+
+class FileUpdateForm(BaseModel):
+    """Form for updating an existing file."""
+
+    hash: Optional[str] = None
+    """Hash of the file content for integrity verification."""
+
+    data: Optional[dict] = None
+    """Additional data to merge into the file's existing data.
+
+    Dict Fields:
+        - `status` (str, optional): Processing status - 'pending', 'completed', or 'failed'
+        - `error` (str, optional): Error message if processing failed
+        - `content` (str, optional): Extracted text content from the file
+    """
+
+    meta: Optional[dict] = None
+    """Metadata to merge into the file's existing metadata.
+
+    Dict Fields:
+        - `name` (str, optional): Original name of the file
+        - `content_type` (str, optional): MIME type (e.g., 'application/pdf')
+        - `size` (int, optional): Size of the file in bytes
+    """
+
+
+class FileListResponse(BaseModel):
+    """Paginated list of file responses."""
+
+    items: list[FileModelResponse]
+    """List of file response items."""
+
+    total: int
+    """Total number of files matching the query."""
 
 
 class ContentForm(BaseModel):

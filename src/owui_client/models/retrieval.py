@@ -103,6 +103,8 @@ class WebConfig(BaseModel):
     """The number of web search results to retrieve."""
     WEB_SEARCH_CONCURRENT_REQUESTS: Optional[int] = None
     """The number of concurrent web search requests."""
+    WEB_FETCH_MAX_CONTENT_LENGTH: Optional[int] = None
+    """Maximum content length in bytes for web fetch operations."""
     WEB_LOADER_CONCURRENT_REQUESTS: Optional[int] = None
     """The number of concurrent web loader requests."""
     WEB_SEARCH_DOMAIN_FILTER_LIST: Optional[List[str]] = []

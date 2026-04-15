@@ -4,6 +4,7 @@ from owui_client.models.tools import (
     ToolUserResponse,
     ToolModel,
     ToolResponse,
+    ToolAccessResponse,
     ToolForm,
     LoadUrlForm,
     ToolAccessGrantsForm,
@@ -30,17 +31,17 @@ class ToolsClient(ResourceBase):
             model=List[ToolUserResponse],
         )
 
-    async def get_tool_list(self) -> List[ToolUserResponse]:
+    async def get_tool_list(self) -> List[ToolAccessResponse]:
         """
-        Get list of tools the user has write access to.
+        Get list of tools the user has access to, with write_access info.
 
         Returns:
-            List[ToolUserResponse]: List of tools.
+            List[ToolAccessResponse]: List of tools with write_access boolean.
         """
         return await self._request(
             "GET",
             "/v1/tools/list",
-            model=List[ToolUserResponse],
+            model=List[ToolAccessResponse],
         )
 
     async def load_tool_from_url(
@@ -92,7 +93,7 @@ class ToolsClient(ResourceBase):
             model=Optional[ToolResponse],
         )
 
-    async def get_tool_by_id(self, id: str) -> Optional[ToolModel]:
+    async def get_tool_by_id(self, id: str) -> Optional[ToolAccessResponse]:
         """
         Get a tool by its unique ID.
 
@@ -100,12 +101,12 @@ class ToolsClient(ResourceBase):
             id: The tool ID.
 
         Returns:
-            Optional[ToolModel]: The tool details.
+            Optional[ToolAccessResponse]: The tool details with write_access info.
         """
         return await self._request(
             "GET",
             f"/v1/tools/id/{id}",
-            model=Optional[ToolModel],
+            model=Optional[ToolAccessResponse],
         )
 
     async def update_tool_by_id(

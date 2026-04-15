@@ -335,3 +335,20 @@ class ModelAccessGrantsForm(BaseModel):
         - `principal_id` (str, required): User/group ID, or '*' for public access
         - `permission` (str, required): 'read' or 'write'
     """
+
+
+class ModelAccessResponse(ModelUserResponse):
+    """Model response with write access information."""
+
+    write_access: Optional[bool] = False
+    """Whether the current user has write access to this model."""
+
+
+class ModelAccessListResponse(BaseModel):
+    """Paginated list of models with access information."""
+
+    items: list[ModelAccessResponse] = []
+    """List of models with access information."""
+
+    total: int = 0
+    """Total number of models matching the query."""

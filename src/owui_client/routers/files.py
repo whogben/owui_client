@@ -73,7 +73,11 @@ class FilesClient(ResourceBase):
         )
 
     async def search_files(
-        self, filename: str, content: bool = True
+        self,
+        filename: str,
+        content: bool = True,
+        skip: Optional[int] = None,
+        limit: Optional[int] = None,
     ) -> list[FileModelResponse]:
         """
         Search for files by filename.
@@ -81,15 +85,23 @@ class FilesClient(ResourceBase):
         Args:
             filename: Filename pattern to search for. Supports wildcards such as '*.txt'.
             content: If True, includes the 'content' field in the response.
+            skip: Number of files to skip (for pagination).
+            limit: Maximum number of files to return (1-1000, default 100).
 
         Returns:
             list[FileModelResponse]: A list of matching files.
         """
+        params = {"filename": filename, "content": content}
+        if skip is not None:
+            params["skip"] = skip
+        if limit is not None:
+            params["limit"] = limit
+
         return await self._request(
             "GET",
             "/v1/files/search",
             model=FileModelResponse,
-            params={"filename": filename, "content": content},
+            params=params,
         )
 
     async def delete_all_files(self) -> dict:
@@ -191,6 +203,25 @@ class FilesClient(ResourceBase):
         """
         return await self._request(
             "GET", f"/v1/files/{id}/content", model=bytes, params={"attachment": attachment}
+        )
+
+    async def get_file_content_by_name(self, id: str, file_name: str) -> bytes:
+        """
+        Download a file with an explicit filename in the URL path.
+
+        Unlike `get_file_content_by_id`, this endpoint always sets Content-Disposition
+        to attachment. If no physical file exists, it falls back to streaming the
+        extracted text content as text/plain.
+
+        Args:
+            id: The UUID of the file.
+            file_name: The filename to include in the URL path.
+
+        Returns:
+            bytes: The raw file content.
+        """
+        return await self._request(
+            "GET", f"/v1/files/{id}/content/{file_name}", model=bytes
         )
 
     async def get_html_file_content_by_id(self, id: str) -> bytes:

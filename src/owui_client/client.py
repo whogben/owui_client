@@ -32,6 +32,10 @@ from owui_client.routers.functions import FunctionsClient
 from owui_client.routers.evaluations import EvaluationsClient
 from owui_client.routers.utils import UtilsClient
 from owui_client.routers.root import RootClient
+from owui_client.routers.skills import SkillsClient
+from owui_client.routers.analytics import AnalyticsClient
+from owui_client.routers.scim import ScimClient
+from owui_client.routers.terminals import TerminalsClient
 from owui_client.shortcuts import Shortcuts
 
 
@@ -126,6 +130,18 @@ class OpenWebUI(OWUIClientBase):
 
         self.root = RootClient(self)
         """Client for Root endpoints."""
+
+        self.skills = SkillsClient(self)
+        """Client for Skills endpoints."""
+
+        self.analytics = AnalyticsClient(self)
+        """Client for Analytics endpoints."""
+
+        self.scim = ScimClient(self)
+        """Client for SCIM 2.0 endpoints."""
+
+        self.terminals = TerminalsClient(self)
+        """Client for Terminals endpoints."""
 
         self.shortcuts = Shortcuts(self)
         """Helper for shortcut methods."""

@@ -284,3 +284,38 @@ class GroupUpdateForm(GroupForm):
     """
 
     pass
+
+
+class GroupMemberModel(BaseModel):
+    """
+    Model representing a user's membership in a group.
+
+    Tracks which users belong to which groups and when they were added.
+    """
+
+    id: str
+    """Unique identifier for the membership record."""
+
+    group_id: str
+    """ID of the group."""
+
+    user_id: str
+    """ID of the user."""
+
+    created_at: Optional[int] = None
+    """Timestamp when the membership was created (epoch seconds)."""
+
+    updated_at: Optional[int] = None
+    """Timestamp when the membership was last updated (epoch seconds)."""
+
+
+class GroupListResponse(BaseModel):
+    """
+    Response model for a paginated list of groups.
+    """
+
+    items: list[GroupResponse] = []
+    """List of group response items."""
+
+    total: int = 0
+    """Total number of groups matching the query."""
