@@ -18,6 +18,10 @@ if str(src) not in sys.path:
 with mkdocs_gen_files.open("index.md", "w") as fd:
     fd.write(Path(root, "README.md").read_text())
 
+# Publish root CHANGELOG.md as a top-level docs page (single source of truth)
+with mkdocs_gen_files.open("changelog.md", "w") as fd:
+    fd.write((root / "CHANGELOG.md").read_text())
+
 for path in sorted(src.rglob("*.py")):
     module_path = path.relative_to(src).with_suffix("")
     doc_path = path.relative_to(src).with_suffix(".md")
