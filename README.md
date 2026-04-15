@@ -10,9 +10,14 @@ A fully typed, async Python client that mirrors the backend structure of Open We
 
 ### Target Open WebUI Version
 
-This client is designed to work with the latest version of Open WebUI. The client is updated to stay in sync with the upstream Open WebUI backend.
+This package currently targets Open WebUI `0.8.10` (derived from package version `8.10.0`).
 
-For best compatibility, use this client with the latest Open WebUI release.
+Version mapping policy:
+- `client.major` -> `openwebui.minor`
+- `client.minor` -> `openwebui.patch`
+- `client.patch` -> client-only fixes while targeting the same Open WebUI version
+
+Example: `8.10.0` means this package targets Open WebUI `0.8.10`.
 
 ### Installation
 
@@ -83,6 +88,10 @@ The field descriptions are extracted from:
 
 This documentation is useful even if you're not using the Python client - it serves as a complete reference for the Open WebUI API, including all valid key/values accepted by dict fields.
 
+## Changelog
+
+Release notes: [Changelog on the documentation site](https://whogben.github.io/owui_client/changelog/) or [`CHANGELOG.md`](https://github.com/whogben/owui_client/blob/main/CHANGELOG.md) in the repository.
+
 ## Compatibility
 
-This client is maintained to be compatible with the latest Open WebUI release. Due to the rapid development pace of Open WebUI, there may be brief periods where the client is slightly ahead or behind the latest release. The drift test in the test suite can help identify any discrepancies.
+This client is maintained for the explicitly targeted Open WebUI version shown above. Use the package version mapping to select the client release that matches your Open WebUI deployment.

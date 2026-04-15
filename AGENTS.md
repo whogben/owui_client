@@ -56,11 +56,67 @@ There is also a .venv at the root of the project: Always use this .venv, never u
     - The version number is defined in `owui_client/pyproject.toml`.
     - It is also available at runtime via `owui_client.__version__` (defined in `owui_client/src/owui_client/__init__.py`).
     - **CRITICAL**: These two versions must ALWAYS be kept in sync. When bumping the version in `pyproject.toml`, you must also update `__init__.py`.
-    - Version major numbers should never be automatically bumped.
-    - Version minor numbers should be bumped on user request and each time we target a new version of the OWUI API, so 1.3.2 becomes 1.4.0 for example, when supporting a new Open WebUI API update.
-    - Version patch numbers should be bumped on user-request after making fixes.
+    - Versioning is compatibility-driven and follows the Open WebUI version we built/tested against:
+        - `client.major` tracks `openwebui.minor`
+        - `client.minor` tracks `openwebui.patch`
+        - `client.patch` tracks client-only fixes/improvements made while targeting that same Open WebUI version
+    - Example mapping:
+        - Open WebUI `0.8.12` => client baseline `8.12.0`
+        - A subsequent client fix while still targeting Open WebUI `0.8.12` => `8.12.1`
+    - Do not auto-bump major/minor independently of the targeted Open WebUI version. Major/minor should change only when the targeted Open WebUI minor/patch changes.
+    - When changing package version and/or target Open WebUI version, update `README.md` so the `Target Open WebUI Version` section explicitly states the currently targeted Open WebUI version and matching client version example.
+    - When changing package version for a release, add a dated `## [version] - YYYY-MM-DD` section to `CHANGELOG.md` (see **Changelog** below).
 
-## Workflow
+### Changelog
+
+- **Source of truth**: `CHANGELOG.md` at the repository root, in the spirit of [Keep a Changelog](https://keepachangelog.com/) (`[Unreleased]` plus one `## [version] - date` section per release).
+- **Categories**: Use **Added**, **Changed**, **Fixed**, **Removed**, and **Deprecated** when they apply; skip empty sections.
+- **Docs site**: The published changelog page is generated at MkDocs build time from `CHANGELOG.md` (`scripts/gen_ref_pages.py`); do not edit a separate copy for the site.
+- **PyPI**: The `Changelog` URL in `pyproject.toml` points at the docs page; keep that in sync if the docs base URL ever changes.
+- **GitHub Releases**: Optional but nice: when tagging a release, paste the same section into the GitHub release notes.
+
+## Workflows
+
+### Orchestrator Instructions
+
+If you are the orchestrator/top-level agent (and only if you are the orchestrator/top-level agent):
+
+1.  **Single Focus Subagents**:
+    - Task each sub-agent with one focus only, so they will not mix context between tasks/goals.
+    - When in doubt, task more sub-agents rather than fewer:
+      It is better all sub-agents succeed easily, than some get overwhelmed.
+    - Example: Instead of tasking a sub-agent to "run all tests and fix all problems",
+      task a sub-agent to "run all tests and report issues",
+      then look at the results, and task a sub-agent with "fix issue x",
+      then another sub agent with "fix related issues y and z",
+      then another sub agent with "run all tests"
+2.  **Cleanup Pass after Buildouts / Major Debugging:**
+    - If debugging gets extensive, task a sub-agent with a cleanup and polish pass to:
+        - Remove unused branches / code that is no longer needed
+        - Cleanup any temporary prints or comments from debugging
+3.  **Review Pass at End**
+    - After cleanup and tests are good, initiate review mode, using a review sub-agent to
+      examine all changes since our last commit and surface any issues.
+    - If issues are surfaced:
+        - task sub-agents with investigating, issue by issue, to
+            - confirm the issue's presence
+            - study if the issue warrants solving (or if its a non issue because of how code flows in practice, etc)
+        - Decide what issues to solve, and task sub-agents with solving them
+        - Repeat this review step from beginning with a fresh review sub-agent.
+
+### Updating for Latest Open WebUI
+
+When the task is to update the client to support the latest Open WebUI version:
+1.  Determine the latest current version of Open WebUI, and update our `package.toml` according to the pattern.
+2.  Operate in this alphebtized loop, each time through:
+    A. Task a sub-agent to run tests and report issues
+        - If tests are failing, continue the alphabetized loop
+        - If tests are all passing, move on to the next numbered step
+    B. Select the next single issue (or closely related set of issues) to be resolved
+    C. Task a sub-agent to resolve the issue
+3.  Be flexible - sub agent can fail, you may need to task sub-agents to do research, and then gather additional context to task sub-agents that succeed.
+
+### Adding Endpoints
 
 When adding support for a new set of endpoints (e.g., "Chats"):
 1.  Locate the router in `owui_client/refs/.../routers/chats.py`.
@@ -73,7 +129,7 @@ When adding support for a new set of endpoints (e.g., "Chats"):
 
 ## Documentation
 
-The original Open WebUI source code is undocumented, so it is neccesary to be a detective and research how and where a given endpoint and it's models are used, to determine what documentation to add to this client. It is critical to ground your understanding in the original source code, as there are many dict fields with undocumented key/value expectations, as well as fields that can be used in multiple ways.
+The original Open WebUI API is incompletely documented, so it is neccesary to be a detective and research how and where a given endpoint and it's models are used, to determine what documentation to add to this client. It is critical to ground your understanding in the original source code, as there are many dict fields with undocumented key/value expectations, as well as fields that can be used in multiple ways.
 
 Documentation is built using mkdocs using the configuration at `owui_client/mkdocs.yml`.
 

@@ -28,6 +28,7 @@ except ImportError:
     OpenWebUITestServer = None
 
 from owui_client.client import OpenWebUI
+from versioning import derive_target_owui_version, read_client_version_from_pyproject
 
 
 def pytest_configure(config):
@@ -55,8 +56,11 @@ def owui_server_session():
     if not OpenWebUITestServer:
         pytest.skip("OpenWebUITestServer not available")
 
-    # Configure your test server options here
-    server = OpenWebUITestServer(branch="main", admin_api_key="sk-test_master_key")
+    # Drive tested Docker image version from package version mapping:
+    # client X.Y.Z -> Open WebUI 0.X.Y
+    client_version = read_client_version_from_pyproject()
+    owui_version = derive_target_owui_version(client_version)
+    server = OpenWebUITestServer(version=owui_version, admin_api_key="sk-test_master_key")
 
     print("\n[pytest] Starting OWUI Docker container...")
     try:
