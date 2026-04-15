@@ -198,6 +198,32 @@ class MockOpenAIHandler(BaseHTTPRequestHandler):
                 "done": True,
             }
             self.wfile.write(json.dumps(response).encode("utf-8"))
+        elif self.path == "/v1/messages":
+            content_length = int(self.headers["Content-Length"])
+            post_data = self.rfile.read(content_length)
+            body = json.loads(post_data)
+
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            response = {
+                "id": "msg_123",
+                "type": "message",
+                "role": "assistant",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": "This is a mock Anthropic response."
+                    }
+                ],
+                "model": body.get("model", "claude-3-opus-20240229"),
+                "stop_reason": "end_turn",
+                "usage": {
+                    "input_tokens": 10,
+                    "output_tokens": 15
+                }
+            }
+            self.wfile.write(json.dumps(response).encode("utf-8"))
         else:
             self.send_response(404)
             self.end_headers()
@@ -391,6 +417,24 @@ class MockOllamaHandler(BaseHTTPRequestHandler):
             response = {"embedding": [0.1, 0.2, 0.3]}
             self.wfile.write(json.dumps(response).encode("utf-8"))
 
+        elif self.path.startswith("/v1/messages"):
+            content_length = int(self.headers["Content-Length"])
+            post_data = self.rfile.read(content_length)
+            body = json.loads(post_data)
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            response = {
+                "id": "msg_mock_123",
+                "type": "message",
+                "role": "assistant",
+                "content": [{"type": "text", "text": "Mock Anthropic response."}],
+                "model": body.get("model", "test-model"),
+                "stop_reason": "end_turn",
+                "usage": {"input_tokens": 10, "output_tokens": 15},
+            }
+            self.wfile.write(json.dumps(response).encode("utf-8"))
+
         else:
             self.send_response(200)
             self.end_headers()
@@ -420,17 +464,18 @@ def mock_ollama_server():
 def scim_available(owui_server_session):
     """Check if SCIM is enabled on the test server. Skip all dependent tests if not."""
     base_url = owui_server_session["base_url"]
-    token = owui_server_session["token"]
+    # SCIM uses a separate bearer token (SCIM_TOKEN env var), not the normal API token
+    scim_token = "test-scim-token"
     try:
         response = httpx.get(
-            f"{base_url}/scim/v2/ServiceProviderConfig",
-            headers={"Authorization": f"Bearer {token}"},
+            f"{base_url}/v1/scim/v2/ServiceProviderConfig",
+            headers={"Authorization": f"Bearer {scim_token}"},
             timeout=10,
             follow_redirects=True,
         )
         content_type = response.headers.get("content-type", "")
         if "application/json" in content_type or response.text.strip().startswith("{"):
-            return True
+            return scim_token
     except Exception:
         pass
     pytest.skip("SCIM not enabled on this server")

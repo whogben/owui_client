@@ -181,7 +181,6 @@ async def test_knowledge_files_by_id(client):
         try:
             uploaded_file = await client.files.upload_file(
                 file=("kb_test_file.txt", b"knowledge content", "text/plain"),
-                process=False,
             )
 
             await client.knowledge.add_file_to_knowledge(kb_id, uploaded_file.id)

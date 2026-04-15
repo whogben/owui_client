@@ -121,10 +121,15 @@ class ScimClient(ResourceBase):
 
         Args:
             user_id: The user ID.
+
+        Returns:
+            True if deletion succeeded.
+
+        Raises:
+            httpx.HTTPStatusError: If the deletion fails.
         """
-        return await self._request(
-            "DELETE", f"/v1/scim/v2/Users/{user_id}", model=bool
-        )
+        await self._request("DELETE", f"/v1/scim/v2/Users/{user_id}")
+        return True
 
     async def get_groups(
         self,
@@ -206,7 +211,12 @@ class ScimClient(ResourceBase):
 
         Args:
             group_id: The group ID.
+
+        Returns:
+            True if deletion succeeded.
+
+        Raises:
+            httpx.HTTPStatusError: If the deletion fails.
         """
-        return await self._request(
-            "DELETE", f"/v1/scim/v2/Groups/{group_id}", model=bool
-        )
+        await self._request("DELETE", f"/v1/scim/v2/Groups/{group_id}")
+        return True

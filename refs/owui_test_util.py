@@ -379,6 +379,10 @@ userPassword: password
             "ENABLE_API_KEYS=true",
             "-e",
             "USER_PERMISSIONS_FEATURES_API_KEYS=true",
+            "-e",
+            "ENABLE_SCIM=true",
+            "-e",
+            "SCIM_TOKEN=test-scim-token",
             "--name",
             self.container_name,
         ]
