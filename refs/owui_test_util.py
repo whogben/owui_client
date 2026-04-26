@@ -82,7 +82,12 @@ def checkout_repo(target_dir, branch="main", version=None):
 
     if version:
         print(f"Checking out version {version}...")
-        run_command(["git", "checkout", version], cwd=target_dir)
+        try:
+            run_command(["git", "checkout", version], cwd=target_dir)
+        except subprocess.CalledProcessError:
+            # Try with 'v' prefix if direct version fails (e.g., tags are v0.9.2)
+            print(f"Version {version} not found, trying v{version}...")
+            run_command(["git", "checkout", f"v{version}"], cwd=target_dir)
     else:
         print(f"Checking out branch {branch}...")
         run_command(["git", "checkout", branch], cwd=target_dir)
@@ -367,6 +372,13 @@ userPassword: password
 
         run_command(["docker", "pull", image])
 
+        # Remove any existing container with the same name to avoid conflicts
+        try:
+            run_command(["docker", "rm", "-f", self.container_name])
+        except subprocess.CalledProcessError:
+            # Container doesn't exist or already removed, ignore
+            pass
+
         docker_cmd = [
             "docker",
             "run",
@@ -379,6 +391,8 @@ userPassword: password
             "ENABLE_API_KEYS=true",
             "-e",
             "USER_PERMISSIONS_FEATURES_API_KEYS=true",
+            "-e",
+            "ENABLE_OPENAI_API_PASSTHROUGH=true",
             "--name",
             self.container_name,
         ]
