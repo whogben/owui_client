@@ -1,4 +1,5 @@
 import pytest
+from httpx import HTTPStatusError
 from owui_client.models.tasks import (
     TaskConfigForm,
     ActiveChatsForm,
@@ -199,3 +200,12 @@ async def test_list_tasks_by_chat(client):
     assert "task_ids" in response
     assert isinstance(response["task_ids"], list)
     assert len(response["task_ids"]) == 0
+
+
+@pytest.mark.asyncio
+async def test_stop_tasks_by_chat_api(client):
+    """Test stopping background tasks for a specific chat via the direct API endpoint."""
+    # Test with non-existent chat ID - backend returns 404
+    with pytest.raises(HTTPStatusError) as excinfo:
+        await client.tasks.stop_tasks_by_chat_api("non-existent-chat-id")
+    assert excinfo.value.response.status_code == 404

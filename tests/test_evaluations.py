@@ -110,6 +110,29 @@ async def test_get_leaderboard_with_query(client):
     assert hasattr(leaderboard, "entries")
 
 
+async def test_get_feedback_model_ids(client):
+    feedback_form = FeedbackForm(
+        type="rating",
+        data={
+            "model_id": "test-model-ids",
+            "sibling_model_ids": ["opponent-model"],
+            "rating": "1",
+            "tags": ["test"],
+        },
+        meta={"arena": True},
+        snapshot=None,
+    )
+    created = await client.evaluations.create_feedback(feedback_form)
+    assert created is not None
+
+    try:
+        model_ids = await client.evaluations.get_feedback_model_ids()
+        assert isinstance(model_ids, list)
+        assert "test-model-ids" in model_ids
+    finally:
+        await client.evaluations.delete_feedback(created.id)
+
+
 async def test_get_model_history(client):
     """Test the model history endpoint."""
     # Create arena-style feedback for testing history

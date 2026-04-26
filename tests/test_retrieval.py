@@ -11,6 +11,25 @@ from owui_client.models.retrieval import (
 )
 from owui_client.models.files import FileModel
 
+
+def test_web_config_fetch_max_content_length():
+    cfg = WebConfig(WEB_FETCH_MAX_CONTENT_LENGTH=4096)
+    assert cfg.WEB_FETCH_MAX_CONTENT_LENGTH == 4096
+
+
+def test_config_form_paddleocr_fields():
+    cfg = ConfigForm(
+        PADDLEOCR_VL_BASE_URL="http://paddleocr:8080",
+        PADDLEOCR_VL_TOKEN="secret-token",
+    )
+    assert cfg.PADDLEOCR_VL_BASE_URL == "http://paddleocr:8080"
+    assert cfg.PADDLEOCR_VL_TOKEN == "secret-token"
+
+
+def test_config_form_reranking_batch_size():
+    cfg = ConfigForm(RAG_RERANKING_BATCH_SIZE=16)
+    assert cfg.RAG_RERANKING_BATCH_SIZE == 16
+
 @pytest.mark.asyncio
 async def test_retrieval_status(client):
     status = await client.retrieval.get_status()

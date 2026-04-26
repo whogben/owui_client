@@ -5,6 +5,8 @@ from owui_client.models.configs import (
     OAuthClientRegistrationForm,
     ToolServersConfigForm,
     ToolServerConnection,
+    TerminalServerConnection,
+    TerminalServerPolicyForm,
     CodeInterpreterConfigForm,
     ModelsConfigForm,
     PromptSuggestion,
@@ -317,3 +319,47 @@ async def test_suggestions_banners_config(client: OpenWebUI):
         await client.configs.set_default_suggestions(
             SetDefaultSuggestionsForm(suggestions=original_suggestions)
         )
+
+@pytest.mark.asyncio
+async def test_get_models_defaults(client: OpenWebUI):
+    result = await client.configs.get_models_defaults()
+    assert isinstance(result, dict)
+    assert "DEFAULT_MODEL_METADATA" in result
+
+@pytest.mark.asyncio
+async def test_verify_terminal_server(client: OpenWebUI):
+    form_data = TerminalServerConnection(
+        url="http://non-existent-terminal.test",
+        auth_type="bearer",
+        key="dummy-key",
+    )
+
+    with pytest.raises(Exception) as excinfo:
+        await client.configs.verify_terminal_server(form_data)
+
+    assert (
+        "400" in str(excinfo.value)
+        or "Failed to connect" in str(excinfo.value)
+        or "Connection" in str(excinfo.value)
+        or "Timeout" in str(excinfo.value)
+    )
+
+@pytest.mark.asyncio
+async def test_set_terminal_server_policy(client: OpenWebUI):
+    form_data = TerminalServerPolicyForm(
+        url="http://non-existent-terminal.test",
+        auth_type="bearer",
+        key="dummy-key",
+        policy_id="test-policy",
+        policy_data={"rules": []},
+    )
+
+    with pytest.raises(Exception) as excinfo:
+        await client.configs.set_terminal_server_policy(form_data)
+
+    assert (
+        "400" in str(excinfo.value)
+        or "Failed to save policy" in str(excinfo.value)
+        or "Connection" in str(excinfo.value)
+        or "Timeout" in str(excinfo.value)
+    )

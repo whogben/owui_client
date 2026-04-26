@@ -152,8 +152,9 @@ async def test_user_permissions_lifecycle(client):
     default_perms = await client.users.get_default_user_permissions()
     assert isinstance(default_perms, UserPermissions)
 
-    # 4. Update default permissions
-    # Toggle a permission
+    assert hasattr(default_perms.features, "automations")
+    assert isinstance(default_perms.features.automations, bool)
+
     original_web_search = default_perms.features.web_search
     default_perms.features.web_search = not original_web_search
 
@@ -161,11 +162,9 @@ async def test_user_permissions_lifecycle(client):
     assert isinstance(updated_perms, UserPermissions)
     assert updated_perms.features.web_search == (not original_web_search)
 
-    # 5. Verify persistence
     check_perms = await client.users.get_default_user_permissions()
     assert check_perms.features.web_search == (not original_web_search)
 
-    # 6. Revert
     default_perms.features.web_search = original_web_search
     await client.users.update_default_user_permissions(default_perms)
 

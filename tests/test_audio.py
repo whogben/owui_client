@@ -3,6 +3,26 @@ import wave
 from pathlib import Path
 from owui_client.models.audio import AudioConfigUpdateForm, TTSConfigForm, STTConfigForm
 
+
+def test_tts_config_form_mistral_fields():
+    config = TTSConfigForm(
+        OPENAI_API_BASE_URL="https://api.openai.com",
+        OPENAI_API_KEY="sk-test",
+        API_KEY="sk-test",
+        ENGINE="mistral",
+        MODEL="voxtral-mini-tts-2603",
+        VOICE="default",
+        SPLIT_ON="punctuation",
+        AZURE_SPEECH_REGION="eastus",
+        AZURE_SPEECH_BASE_URL="",
+        AZURE_SPEECH_OUTPUT_FORMAT="audio-16khz-128kbitrate-mono-mp3",
+        MISTRAL_API_KEY="sk-mistral-test",
+        MISTRAL_API_BASE_URL="https://api.mistral.ai/v1"
+    )
+    assert config.MISTRAL_API_KEY == "sk-mistral-test"
+    assert config.MISTRAL_API_BASE_URL == "https://api.mistral.ai/v1"
+
+
 @pytest.mark.asyncio
 async def test_audio_endpoints(client, mock_openai_server):
     # 1. Get Models
@@ -27,7 +47,9 @@ async def test_audio_endpoints(client, mock_openai_server):
         SPLIT_ON="punctuation",
         AZURE_SPEECH_REGION="eastus",
         AZURE_SPEECH_BASE_URL="",
-        AZURE_SPEECH_OUTPUT_FORMAT="audio-16khz-128kbitrate-mono-mp3"
+        AZURE_SPEECH_OUTPUT_FORMAT="audio-16khz-128kbitrate-mono-mp3",
+        MISTRAL_API_KEY="",
+        MISTRAL_API_BASE_URL=""
     )
     
     stt_config = STTConfigForm(

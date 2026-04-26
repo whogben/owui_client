@@ -55,7 +55,10 @@ async def test_ollama_models(client, mock_ollama_server):
     await client.ollama.update_config(new_config)
 
     # 1. Get Models
-    models = await client.ollama.get_models()
+    # Use url_idx=0 to bypass the backend's cached model list,
+    # which may contain stale empty results from before the mock
+    # server was configured.
+    models = await client.ollama.get_models(url_idx=0)
     assert "models" in models
     assert len(models["models"]) > 0
     
@@ -82,3 +85,44 @@ async def test_ollama_openai_compatible_endpoints(client, mock_ollama_server):
     assert "data" in models
     assert "object" in models
     assert models["object"] == "list"
+
+@pytest.mark.asyncio
+async def test_ollama_anthropic_messages(client, mock_ollama_server):
+    new_config = OllamaConfigForm(
+        ENABLE_OLLAMA_API=True,
+        OLLAMA_BASE_URLS=[mock_ollama_server],
+        OLLAMA_API_CONFIGS={}
+    )
+    await client.ollama.update_config(new_config)
+
+    payload = {
+        "model": "llama2:latest",
+        "messages": [{"role": "user", "content": "Hello"}],
+        "max_tokens": 100,
+    }
+    # Use url_idx=0 to bypass the backend's OLLAMA_MODELS cache
+    # which may reject models that are not in its stale cached list.
+    response = await client.ollama.generate_anthropic_messages(payload, url_idx=0)
+    assert response["type"] == "message"
+    assert response["role"] == "assistant"
+    assert "content" in response
+
+@pytest.mark.asyncio
+async def test_ollama_responses(client, mock_ollama_server):
+    new_config = OllamaConfigForm(
+        ENABLE_OLLAMA_API=True,
+        OLLAMA_BASE_URLS=[mock_ollama_server],
+        OLLAMA_API_CONFIGS={}
+    )
+    await client.ollama.update_config(new_config)
+
+    payload = {
+        "model": "llama2:latest",
+        "input": "Hello",
+    }
+    # Use url_idx=0 to bypass the backend's OLLAMA_MODELS cache
+    # which may reject models that are not in its stale cached list.
+    response = await client.ollama.generate_responses(payload, url_idx=0)
+    assert response["object"] == "response"
+    assert "output" in response
+    assert response["done"] is True

@@ -47,40 +47,37 @@ class Pipe:
     ids = [f.id for f in functions]
     assert function_id in ids
 
-    # 5. Update function
+    function_list = await client.functions.get_function_list()
+    assert len(function_list) > 0
+    list_ids = [f.id for f in function_list]
+    assert function_id in list_ids
+    assert hasattr(function_list[0], "user")
+
     new_name = "Updated Test Function"
     form_data.name = new_name
     updated_function = await client.functions.update_function_by_id(function_id, form_data)
     assert updated_function is not None
     assert updated_function.name == new_name
 
-    # 6. Toggle active
     toggled_function = await client.functions.toggle_function_by_id(function_id)
     assert toggled_function is not None
-    # Initial state is False, so it should become True
     assert toggled_function.is_active is True
 
-    # 7. Toggle global
     toggled_global = await client.functions.toggle_global_by_id(function_id)
     assert toggled_global is not None
-    # Initial state is False, so it should become True
     assert toggled_global.is_global is True
 
-    # 8. Export functions
     exported = await client.functions.export_functions()
     assert len(exported) > 0
     exported_ids = [f.id for f in exported]
     assert function_id in exported_ids
 
-    # 9. Delete function
     deleted = await client.functions.delete_function_by_id(function_id)
     assert deleted is True
 
-    # 10. Verify deletion
     from httpx import HTTPStatusError
     try:
         await client.functions.get_function_by_id(function_id)
         assert False, "Function should have been deleted"
     except HTTPStatusError as e:
-        # Backend returns 401 for not found
         assert e.response.status_code == 401
