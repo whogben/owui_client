@@ -1,7 +1,7 @@
 from typing import Dict, Any, Optional, List
 from owui_client.client_base import ResourceBase
 from owui_client.models.configs import (
-    ImportConfigForm, 
+    ImportConfigForm,
     ConnectionsConfigForm,
     OAuthClientRegistrationForm,
     ToolServersConfigForm,
@@ -13,7 +13,8 @@ from owui_client.models.configs import (
     BannerModel,
     SetBannersForm,
     TerminalServersConfigForm,
-    TerminalServerConnection
+    TerminalServerConnection,
+    TerminalServerPolicyForm
 )
 
 class ConfigsClient(ResourceBase):
@@ -195,6 +196,21 @@ class ConfigsClient(ResourceBase):
             json=form_data.model_dump(),
         )
 
+    async def get_models_defaults(self) -> Dict[str, Any]:
+        """Get default model metadata.
+
+        Returns a subset of model configuration containing only the
+        default metadata for models.
+
+        Returns:
+            Dictionary with `DEFAULT_MODEL_METADATA` key.
+        """
+        return await self._request(
+            "GET",
+            "/v1/configs/models/defaults",
+            model=dict,
+        )
+
     async def get_models_config(self) -> ModelsConfigForm:
         """
         Get the current models configuration.
@@ -303,5 +319,51 @@ class ConfigsClient(ResourceBase):
             "POST",
             "/v1/configs/terminal_servers",
             model=TerminalServersConfigForm,
+            json=form_data.model_dump(),
+        )
+
+    async def verify_terminal_server(
+        self, form_data: TerminalServerConnection
+    ) -> Dict[str, Any]:
+        """Verify a terminal server connection.
+
+        Tries to detect the server type by probing the orchestrator policies
+        endpoint first, then falling back to the plain terminal config endpoint.
+
+        Args:
+            form_data: `TerminalServerConnection` details to verify.
+
+        Returns:
+            Dictionary with `status` (bool) and `type` ("orchestrator" or "terminal").
+
+        Raises:
+            APIError: When the terminal server URL is missing or the connection fails.
+        """
+        return await self._request(
+            "POST",
+            "/v1/configs/terminal_servers/verify",
+            model=dict,
+            json=form_data.model_dump(),
+        )
+
+    async def set_terminal_server_policy(
+        self, form_data: TerminalServerPolicyForm
+    ) -> Dict[str, Any]:
+        """Proxy a policy PUT to an orchestrator terminal server.
+
+        Args:
+            form_data: `TerminalServerPolicyForm` containing the target URL,
+                authentication details, policy ID, and policy data.
+
+        Returns:
+            The JSON response from the orchestrator server.
+
+        Raises:
+            APIError: When the server URL is missing or the PUT request fails.
+        """
+        return await self._request(
+            "POST",
+            "/v1/configs/terminal_servers/policy",
+            model=dict,
             json=form_data.model_dump(),
         )

@@ -111,6 +111,9 @@ def get_router_endpoints(file_path: Path) -> List[Tuple[str, str]]:
                         and func.value.id == "router"
                     ):
                         method = func.attr.upper()
+                        # Skip WebSocket endpoints - HTTP client cannot implement them
+                        if method == "WEBSOCKET":
+                            continue
                         path = "/"
                         if decorator.args:
                             path = extract_string(decorator.args[0])
@@ -157,13 +160,13 @@ def get_app_endpoints(file_path: Path) -> List[Tuple[str, str]]:
 def determine_client_file_for_endpoint(path: str, source_file: str) -> str:
     """
     Determines which client router file should implement a given endpoint.
-    
+
     For router files, returns the same filename.
     For main.py endpoints, maps based on path prefix.
     """
     if source_file != "main.py":
         return source_file
-    
+
     # Map main.py endpoints to appropriate client files
     if path.startswith("/api/chat/"):
         return "chats.py"
@@ -217,7 +220,7 @@ def determine_client_file_for_endpoint(path: str, source_file: str) -> str:
         return "access_grants.py"
     elif path.startswith("/api/oauth_sessions/"):
         return "oauth_sessions.py"
-    
+
     return None
 
 
@@ -507,7 +510,7 @@ def find_drift(ignore_files: List[str] = None) -> List[DriftIssue]:
     for method, path, source_file in all_ref_endpoints:
         # Determine which client file should implement this
         client_file_name = determine_client_file_for_endpoint(path, source_file)
-        
+
         if not client_file_name:
             continue
 
@@ -522,6 +525,12 @@ def find_drift(ignore_files: List[str] = None) -> List[DriftIssue]:
         # Normalize Ref Path: /{id}/valves -> / {} / valves
         norm_ref_path = normalize_path(path)
 
+        # For main.py endpoints, strip /api prefix since client base URL already includes it
+        if source_file == "main.py" and norm_ref_path.startswith("/api"):
+            norm_ref_path = norm_ref_path[len("/api") :]
+            if not norm_ref_path:
+                norm_ref_path = "/"
+
         found = False
 
         # 1. Exact/Pattern match in requests
@@ -531,11 +540,17 @@ def find_drift(ignore_files: List[str] = None) -> List[DriftIssue]:
 
                 # Check if client url ends with the normalized ref path
                 if norm_ref_path == "/" or norm_ref_path == "":
-                    # Special case for root
-                    if norm_client_url.endswith(
-                        f"/{client_file.stem}/"
-                    ) or norm_client_url.endswith(f"/{client_file.stem}"):
-                        found = True
+                    # Special case for root - check both singular and plural stem
+                    stem_variants = [
+                        client_file.stem,
+                        client_file.stem + "s",
+                    ]
+                    for stem in stem_variants:
+                        if norm_client_url.endswith(
+                            f"/{stem}/"
+                        ) or norm_client_url.endswith(f"/{stem}"):
+                            found = True
+                            break
                 elif norm_client_url.endswith(norm_ref_path):
                     found = True
 
@@ -551,10 +566,16 @@ def find_drift(ignore_files: List[str] = None) -> List[DriftIssue]:
                 if c_method == "":
                     norm_client_url = normalize_path(c_url)
                     if norm_ref_path == "/" or norm_ref_path == "":
-                        if norm_client_url.endswith(
-                            f"/{client_file.stem}/"
-                        ) or norm_client_url.endswith(f"/{client_file.stem}"):
-                            found = True
+                        stem_variants = [
+                            client_file.stem,
+                            client_file.stem + "s",
+                        ]
+                        for stem in stem_variants:
+                            if norm_client_url.endswith(
+                                f"/{stem}/"
+                            ) or norm_client_url.endswith(f"/{stem}"):
+                                found = True
+                                break
                     elif norm_client_url.endswith(norm_ref_path):
                         found = True
 

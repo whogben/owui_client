@@ -177,6 +177,52 @@ async def test_notes_access_grants(client):
         await client.notes.delete_note_by_id(note_id)
 
 
+async def test_notes_pinned(client):
+    """
+    Test getting pinned notes and pinning/unpinning a note.
+    """
+    # Create a note
+    note_form = NoteForm(
+        title="Pin Test Note",
+        data={"content": {"md": "Testing pin functionality"}},
+        access_control=None,
+    )
+
+    created_note = await client.notes.create_note(note_form)
+    assert created_note is not None
+    note_id = created_note.id
+
+    try:
+        # Initially, get_pinned_notes should not include the note
+        pinned_notes = await client.notes.get_pinned_notes()
+        assert isinstance(pinned_notes, list)
+        assert not any(n.id == note_id for n in pinned_notes)
+
+        # Pin the note
+        pinned_note = await client.notes.pin_note_by_id(note_id)
+        assert pinned_note is not None
+        assert pinned_note.id == note_id
+        assert pinned_note.is_pinned is True
+
+        # Verify it appears in pinned notes
+        pinned_notes = await client.notes.get_pinned_notes()
+        assert any(n.id == note_id for n in pinned_notes)
+
+        # Unpin the note
+        unpinned_note = await client.notes.pin_note_by_id(note_id)
+        assert unpinned_note is not None
+        assert unpinned_note.id == note_id
+        assert unpinned_note.is_pinned is False
+
+        # Verify it no longer appears in pinned notes
+        pinned_notes = await client.notes.get_pinned_notes()
+        assert not any(n.id == note_id for n in pinned_notes)
+
+    finally:
+        # Cleanup
+        await client.notes.delete_note_by_id(note_id)
+
+
 async def test_notes_with_access_grants_on_create(client):
     """
     Test creating a note with access grants.

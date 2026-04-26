@@ -394,6 +394,56 @@ class MockOllamaHandler(BaseHTTPRequestHandler):
             response = {"embedding": [0.1, 0.2, 0.3]}
             self.wfile.write(json.dumps(response).encode("utf-8"))
 
+        elif self.path == "/v1/messages":
+            content_length = int(self.headers["Content-Length"])
+            post_data = self.rfile.read(content_length)
+            body = json.loads(post_data)
+
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            response = {
+                "id": "msg-123",
+                "type": "message",
+                "role": "assistant",
+                "model": body.get("model", "claude-3"),
+                "content": [
+                    {"type": "text", "text": "This is a mock Anthropic message response."}
+                ],
+                "stop_reason": "end_turn",
+                "usage": {"input_tokens": 10, "output_tokens": 12},
+            }
+            self.wfile.write(json.dumps(response).encode("utf-8"))
+
+        elif self.path == "/v1/responses":
+            content_length = int(self.headers["Content-Length"])
+            post_data = self.rfile.read(content_length)
+            body = json.loads(post_data)
+
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            response = {
+                "id": "resp-123",
+                "object": "response",
+                "created_at": 1677652288,
+                "model": body.get("model", "gpt-4o"),
+                "output": [
+                    {
+                        "type": "message",
+                        "role": "assistant",
+                        "content": [
+                            {
+                                "type": "output_text",
+                                "text": "This is a mock response from the Ollama Responses API.",
+                            }
+                        ],
+                    }
+                ],
+                "done": True,
+            }
+            self.wfile.write(json.dumps(response).encode("utf-8"))
+
         else:
             self.send_response(200)
             self.end_headers()

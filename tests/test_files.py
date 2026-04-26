@@ -23,7 +23,7 @@ async def test_files_crud(client: OpenWebUI):
 
     # 2. List Files
     files = await client.files.list_files()
-    assert any(f.id == file_id for f in files)
+    assert any(f.id == file_id for f in files.items)
 
     # 3. Get File By ID
     file = await client.files.get_file_by_id(file_id)
@@ -91,4 +91,4 @@ async def test_files_crud(client: OpenWebUI):
     assert delete_all_res["message"] == "All files deleted successfully"
     
     files_empty = await client.files.list_files()
-    assert len(files_empty) == 0
+    assert len(files_empty.items) == 0

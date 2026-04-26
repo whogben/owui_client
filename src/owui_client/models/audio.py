@@ -48,6 +48,12 @@ class TTSConfigForm(BaseModel):
     AZURE_SPEECH_OUTPUT_FORMAT: str
     """Azure Speech output format."""
 
+    MISTRAL_API_KEY: str
+    """Mistral API Key for TTS."""
+
+    MISTRAL_API_BASE_URL: str
+    """Mistral API Base URL for TTS."""
+
 
 class STTConfigForm(BaseModel):
     """

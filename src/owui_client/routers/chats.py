@@ -13,6 +13,7 @@ from owui_client.models.chats import (
     EventForm,
     CloneForm,
     ChatFolderIdForm,
+    ChatAccessGrantsForm,
     ChatStatsExport,
     ChatStatsExportList,
     ChatCompletionForm,
@@ -23,6 +24,7 @@ from owui_client.models.chats import (
     ChatActionResponse,
 )
 from owui_client.models.tags import TagModel
+from owui_client.models.access_grants import AccessGrantResponse
 
 
 class ChatsClient(ResourceBase):
@@ -552,6 +554,41 @@ class ChatsClient(ResourceBase):
             True if successful.
         """
         return await self._request("DELETE", f"/v1/chats/{id}/share", model=bool)
+
+    async def update_shared_access(
+        self, id: str, form_data: ChatAccessGrantsForm
+    ) -> Optional[ChatResponse]:
+        """Update access grants for a shared chat.
+
+        Sets the access control list for a shared chat, determining which users
+        and groups can read or write to it.
+
+        Args:
+            id: The chat ID.
+            form_data: The access grants to set.
+
+        Returns:
+            The updated chat object.
+        """
+        return await self._request(
+            "POST",
+            f"/v1/chats/shared/{id}/access/update",
+            model=ChatResponse,
+            json=form_data.model_dump(),
+        )
+
+    async def get_shared_access(self, id: str) -> List[AccessGrantResponse]:
+        """Get access grants for a shared chat.
+
+        Args:
+            id: The chat ID.
+
+        Returns:
+            List of access grants for the shared chat.
+        """
+        return await self._request(
+            "GET", f"/v1/chats/shared/{id}/access", model=AccessGrantResponse
+        )
 
     async def update_folder(
         self, id: str, form_data: ChatFolderIdForm

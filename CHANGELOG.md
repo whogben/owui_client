@@ -7,6 +7,24 @@ Package version numbers follow the Open WebUI mapping described in the README (t
 
 ## [Unreleased]
 
+## [9.2.0] - 2026-04-26
+
+### Changed
+
+- Updated target Open WebUI version from 0.8.10 to 0.9.2.
+- Bumped package version to 9.2.0 following the Open-WebUI-aligned versioning scheme.
+
+### Added
+
+- Compatibility with Open WebUI v0.9.2 API changes across all routers.
+- New router support for analytics, automations, and calendar endpoints (v0.9.2).
+- New config fields: CUSTOM_API_KEY_HEADER, ENABLE_RESPONSES_API_STATEFUL, OPENID_END_SESSION_ENDPOINT, PaddleOCR-vl, and Firecrawl v2 settings.
+- New OAuth session disconnect endpoint.
+- New /ready readiness probe endpoint.
+- Responses API support in OpenAI and Ollama routers.
+- Anthropic Messages API proxy support.
+- Notes access grants endpoint.
+
 ## [8.10.0] - 2026-04-15
 
 ### Changed

@@ -68,6 +68,18 @@ class FileModelResponse(BaseModel):
     model_config = ConfigDict(extra="allow")
 
 
+class FileListResponse(BaseModel):
+    """
+    Paginated response model for listing files.
+    """
+
+    items: list[FileModelResponse]
+    """List of files on the current page."""
+
+    total: int
+    """Total number of files available."""
+
+
 class FileMetadataResponse(BaseModel):
     """
     Simplified response model focusing on file metadata.

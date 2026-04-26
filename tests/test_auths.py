@@ -389,3 +389,17 @@ async def test_token_exchange_disabled(client):
         )
     # Expect 403 if disabled, or 404 if provider not configured
     assert excinfo.value.response.status_code in [403, 404]
+
+
+async def test_delete_oauth_session_not_found(client):
+    """
+    Test deleting an OAuth session when no session exists for the provider.
+
+    Since no OAuth session is configured in the test environment,
+    this should return a 404 Not Found.
+    """
+    # Previous test (test_token_exchange_disabled) leaves client signed in as admin.
+    # Avoid another signin to prevent hitting the rate limit.
+    with pytest.raises(HTTPStatusError) as excinfo:
+        await client.auths.delete_oauth_session("google")
+    assert excinfo.value.response.status_code == 404

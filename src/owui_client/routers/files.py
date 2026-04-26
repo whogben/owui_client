@@ -1,7 +1,7 @@
 import json
 from typing import Optional, Union
 from owui_client.client_base import ResourceBase
-from owui_client.models.files import FileModel, FileModelResponse, ContentForm
+from owui_client.models.files import FileModel, FileModelResponse, FileListResponse, ContentForm
 
 
 """
@@ -57,7 +57,7 @@ class FilesClient(ResourceBase):
             params=params,
         )
 
-    async def list_files(self, content: bool = True) -> list[FileModelResponse]:
+    async def list_files(self, content: bool = True) -> FileListResponse:
         """
         List all files accessible to the current user.
 
@@ -66,10 +66,10 @@ class FilesClient(ResourceBase):
                      If False, the content field is stripped to reduce payload size.
 
         Returns:
-            list[FileModelResponse]: A list of file objects.
+            `FileListResponse`: Paginated list of file objects.
         """
         return await self._request(
-            "GET", "/v1/files/", model=FileModelResponse, params={"content": content}
+            "GET", "/v1/files/", model=FileListResponse, params={"content": content}
         )
 
     async def search_files(
