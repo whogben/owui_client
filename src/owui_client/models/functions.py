@@ -1,6 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel, ConfigDict, HttpUrl
-from owui_client.models.users import UserModel
+from owui_client.models.users import UserResponse
 
 
 class FunctionMeta(BaseModel):
@@ -155,17 +155,6 @@ class FunctionWithValvesModel(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-class FunctionUserResponse(FunctionModel):
-    """
-    Response model for a function including user details.
-    """
-
-    user: Optional[UserModel] = None
-    """
-    Details of the user who owns the function.
-    """
-
-
 class FunctionResponse(BaseModel):
     """
     Response model for function details.
@@ -208,12 +197,23 @@ class FunctionResponse(BaseModel):
 
     updated_at: int
     """
-    Timestamp of the last update (epoch time).
+    Timestamp of last update (epoch time).
     """
 
     created_at: int
     """
     Timestamp of creation (epoch time).
+    """
+
+
+class FunctionUserResponse(FunctionResponse):
+    """
+    Response model for a function including user details.
+    """
+
+    user: Optional[UserResponse] = None
+    """
+    Details of the user who owns the function.
     """
 
 

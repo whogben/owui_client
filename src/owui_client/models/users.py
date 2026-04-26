@@ -582,6 +582,9 @@ class FeaturesPermissions(BaseModel):
     memories: bool = True
     """Access to memories."""
 
+    automations: bool = False
+    """Access to automations."""
+
 
 class SettingsPermissions(BaseModel):
     """

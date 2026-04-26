@@ -410,3 +410,16 @@ class UploadBlobForm(BaseModel):
     """
     The name of the file being uploaded.
     """
+
+
+class ResponsesForm(BaseModel):
+    """
+    Form for generating responses via the OpenAI-compatible Responses API.
+    """
+
+    model: str
+    """
+    The model to use for generating responses.
+    """
+
+    model_config = ConfigDict(extra="allow")

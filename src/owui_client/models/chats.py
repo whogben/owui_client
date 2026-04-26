@@ -86,6 +86,19 @@ class ChatModel(BaseModel):
     folder_id: Optional[str] = None
     """ID of the folder containing this chat, if any."""
 
+    tasks: Optional[list] = None
+    """List of tasks associated with this chat.
+
+    Tasks represent background operations or automation runs linked to the chat.
+    Each item is a task object describing its type, status, and result.
+    """
+
+    summary: Optional[str] = None
+    """Summary or digest of the chat conversation."""
+
+    last_read_at: Optional[int] = None
+    """Timestamp when the chat was last read by the user (Unix epoch)."""
+
 
 class ChatForm(BaseModel):
     """
@@ -264,6 +277,16 @@ class ChatResponse(BaseModel):
     folder_id: Optional[str] = None
     """ID of the folder containing this chat, if any."""
 
+    tasks: Optional[list] = None
+    """List of tasks associated with this chat.
+
+    Tasks represent background operations or automation runs linked to the chat.
+    Each item is a task object describing its type, status, and result.
+    """
+
+    summary: Optional[str] = None
+    """Summary or digest of the chat conversation."""
+
 
 class ChatListResponse(BaseModel):
     """
@@ -370,6 +393,9 @@ class ChatTitleIdResponse(BaseModel):
     created_at: int
     """Timestamp when the chat was created (Unix epoch)."""
 
+    last_read_at: Optional[int] = None
+    """Timestamp when the chat was last read by the user (Unix epoch)."""
+
 
 # Models from router
 class TagForm(BaseModel):
@@ -463,6 +489,19 @@ class ChatFolderIdForm(BaseModel):
 
     folder_id: Optional[str] = None
     """The ID of the target folder, or None to remove from folder."""
+
+
+class ChatAccessGrantsForm(BaseModel):
+    """Form for updating access grants on a shared chat."""
+
+    access_grants: list[dict]
+    """List of access grants to apply to the shared chat.
+
+    Dict Fields:
+        - `principal_type` (str, required): Type of principal. Valid values: "user", "group"
+        - `principal_id` (str, required): ID of the user or group, or "*" for wildcard/public access
+        - `permission` (str, optional): Permission level. Valid values: "read", "write". Defaults to "read"
+    """
 
 
 class MessageStats(BaseModel):

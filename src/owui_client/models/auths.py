@@ -236,8 +236,20 @@ class AdminConfig(BaseModel):
     FOLDER_MAX_FILE_COUNT: Optional[int | str] = None
     """Maximum number of files allowed in a folder."""
 
+    AUTOMATION_MAX_COUNT: Optional[int | str] = None
+    """Maximum number of automations allowed per user."""
+
+    AUTOMATION_MIN_INTERVAL: Optional[int | str] = None
+    """Minimum interval between automation executions, in seconds."""
+
+    ENABLE_AUTOMATIONS: bool
+    """Whether automations are enabled."""
+
     ENABLE_CHANNELS: bool
     """Whether channels are enabled."""
+
+    ENABLE_CALENDAR: bool
+    """Whether the calendar feature is enabled."""
 
     ENABLE_MEMORIES: bool
     """Whether memories are enabled."""
