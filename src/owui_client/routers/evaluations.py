@@ -167,6 +167,19 @@ class EvaluationsClient(ResourceBase):
             model=bool,
         )
 
+    async def get_feedback_model_ids(self) -> list[str]:
+        """
+        Get all distinct model IDs that have feedback entries (admin only).
+
+        Returns:
+            list[str]: A list of distinct model IDs.
+        """
+        return await self._request(
+            "GET",
+            "/v1/evaluations/feedbacks/models",
+            model=list[str],
+        )
+
     async def get_feedbacks_list(
         self,
         order_by: Optional[str] = None,

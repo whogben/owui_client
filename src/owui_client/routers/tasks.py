@@ -311,3 +311,21 @@ class TasksClient(ResourceBase):
             f"/api/tasks/chat/{chat_id}",
             model=dict,
         )
+
+    async def stop_tasks_by_chat_api(self, chat_id: str) -> Dict[str, Any]:
+        """
+        Stop all background tasks associated with a specific chat (direct API endpoint).
+
+        This is the legacy endpoint from main.py. It stops all tasks linked to the given chat ID.
+
+        Args:
+            chat_id (str): The ID of the chat whose tasks should be stopped.
+
+        Returns:
+            Dict[str, Any]: Result of the stop operation.
+        """
+        return await self._request(
+            "POST",
+            f"/tasks/chat/{chat_id}/stop",
+            model=dict,
+        )

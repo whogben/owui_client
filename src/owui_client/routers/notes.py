@@ -32,6 +32,23 @@ class NotesClient(ResourceBase):
             model=NoteItemResponse,
         )
 
+    async def get_pinned_notes(self) -> List[NoteItemResponse]:
+        """
+        Get pinned notes visible to the user.
+
+        This endpoint returns a list of notes that the user has pinned.
+        If the user is an admin, they can see all pinned notes.
+        Otherwise, they can see their own pinned notes and pinned notes shared with them.
+
+        Returns:
+            A list of `NoteItemResponse` objects.
+        """
+        return await self._request(
+            "GET",
+            "/v1/notes/pinned",
+            model=NoteItemResponse,
+        )
+
     async def search_notes(
         self,
         query: Optional[str] = None,
@@ -152,6 +169,25 @@ class NotesClient(ResourceBase):
             f"/v1/notes/{id}/access/update",
             model=Optional[NoteModel],
             json=form_data.model_dump(),
+        )
+
+    async def pin_note_by_id(self, id: str) -> Optional[NoteModel]:
+        """
+        Toggle the pinned state of a note.
+
+        If the note is currently pinned, it will be unpinned.
+        If it is not pinned, it will be pinned.
+
+        Args:
+            id: The unique identifier of the note to pin/unpin.
+
+        Returns:
+            The updated note, or None if the operation failed.
+        """
+        return await self._request(
+            "POST",
+            f"/v1/notes/{id}/pin",
+            model=Optional[NoteModel],
         )
 
     async def delete_note_by_id(self, id: str) -> bool:

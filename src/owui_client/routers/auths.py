@@ -433,3 +433,25 @@ class AuthsClient(ResourceBase):
             self._client.api_key = response.token
 
         return response
+
+    async def delete_oauth_session(self, provider: str) -> bool:
+        """Disconnect the current user's OAuth session for a specific provider.
+
+        Removes the OAuth session associated with the given provider for the
+        currently authenticated user. The provider string matches the 'provider'
+        field in the oauth_session table (e.g. 'mcp:server-id' for MCP connections).
+
+        Args:
+            provider: The OAuth provider identifier.
+
+        Returns:
+            bool: True if the session was successfully disconnected.
+
+        Raises:
+            HTTPError: 404 if no OAuth session exists for this provider.
+        """
+        return await self._request(
+            "DELETE",
+            f"/v1/auths/oauth/sessions/{provider}",
+            model=bool,
+        )
