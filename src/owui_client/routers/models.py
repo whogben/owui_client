@@ -254,3 +254,28 @@ class ModelsClient(ResourceBase):
             model=Optional[ModelModel],
             json=form_data.model_dump(),
         )
+
+    async def unload_model(self, model: str) -> dict:
+        """
+        Unload a model from its provider.
+
+        Resolves the provider that owns the model and calls its native unload
+        mechanism. Supports Ollama (keep_alive=0) and llama.cpp (/models/unload).
+        Requires admin privileges.
+
+        Args:
+            model: The model ID to unload.
+
+        Returns:
+            dict: Provider-specific response. Ollama returns `{"status": True}`.
+
+        Raises:
+            HTTPException: 400 if provider doesn't support unloading, 404 if
+                model not found, 500 on provider errors.
+        """
+        return await self._request(
+            "POST",
+            "/api/models/unload",
+            model=dict,
+            json={"model": model},
+        )

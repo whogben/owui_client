@@ -234,7 +234,7 @@ class AuthsClient(ResourceBase):
             `SignoutResponse`: Signout status
         """
         response = await self._request(
-            "GET",
+            "POST",
             "/v1/auths/signout",
             model=SignoutResponse,
         )
@@ -433,3 +433,26 @@ class AuthsClient(ResourceBase):
             self._client.api_key = response.token
 
         return response
+
+    async def delete_oauth_session(self, provider: str) -> bool:
+        """
+        Delete OAuth sessions for the current user by provider.
+
+        Disconnects all OAuth sessions matching the given provider for the
+        authenticated user. The provider string matches the 'provider' field
+        in the oauth_session table (e.g. 'mcp:server-id' for MCP connections).
+
+        Args:
+            provider: The OAuth provider path (e.g., "google", "github", "mcp:server-id")
+
+        Returns:
+            True if sessions were deleted
+
+        Raises:
+            HTTPError: 404 if no OAuth session found for this provider
+        """
+        return await self._request(
+            "DELETE",
+            f"/v1/auths/oauth/sessions/{provider}",
+            model=bool,
+        )

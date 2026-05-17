@@ -89,6 +89,18 @@ class EvaluationsClient(ResourceBase):
             json=form_data.model_dump(),
         )
 
+    async def get_feedback_model_ids(self) -> List[str]:
+        """
+        Get distinct model IDs that have feedback entries (admin only).
+
+        Returns:
+            List[str]: A list of unique model IDs that have associated feedback.
+        """
+        return await self._request(
+            "GET",
+            "/v1/evaluations/feedbacks/models",
+        )
+
     async def get_all_feedbacks(self) -> List[FeedbackResponse]:
         """
         Get all feedbacks (admin only).

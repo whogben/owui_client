@@ -48,6 +48,12 @@ class TTSConfigForm(BaseModel):
     AZURE_SPEECH_OUTPUT_FORMAT: str
     """Azure Speech output format."""
 
+    MISTRAL_API_KEY: str = ""
+    """Mistral API Key for TTS."""
+
+    MISTRAL_API_BASE_URL: str = "https://api.mistral.ai/v1"
+    """Mistral API Base URL for TTS."""
+
 
 class STTConfigForm(BaseModel):
     """
@@ -68,6 +74,9 @@ class STTConfigForm(BaseModel):
 
     SUPPORTED_CONTENT_TYPES: List[str] = []
     """List of supported content types (MIME types) for uploads."""
+
+    ALLOWED_EXTENSIONS: List[str] = []
+    """List of allowed file extensions for audio uploads (e.g. 'mp3', 'wav', 'webm')."""
 
     WHISPER_MODEL: str
     """Local Whisper model name (e.g. 'base', 'small')."""
@@ -90,13 +99,13 @@ class STTConfigForm(BaseModel):
     AZURE_MAX_SPEAKERS: str
     """Maximum number of speakers for Azure diarization."""
 
-    MISTRAL_API_KEY: str
+    MISTRAL_API_KEY: str = ""
     """Mistral API Key."""
 
-    MISTRAL_API_BASE_URL: str
+    MISTRAL_API_BASE_URL: str = "https://api.mistral.ai/v1"
     """Mistral API Base URL."""
 
-    MISTRAL_USE_CHAT_COMPLETIONS: bool
+    MISTRAL_USE_CHAT_COMPLETIONS: bool = False
     """Whether to use Mistral Chat Completions API (for audio input) instead of Transcription API."""
 
 

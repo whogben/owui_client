@@ -70,5 +70,8 @@ class TaskConfigForm(BaseModel):
     TOOLS_FUNCTION_CALLING_PROMPT_TEMPLATE: str
     """The prompt template used for tool/function calling."""
 
+    ENABLE_VOICE_MODE_PROMPT: bool = True
+    """Whether to enable the voice mode system prompt injection during chat."""
+
     VOICE_MODE_PROMPT_TEMPLATE: Optional[str]
     """The prompt template used for voice mode interactions."""

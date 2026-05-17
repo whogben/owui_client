@@ -46,6 +46,9 @@ class NoteModel(BaseModel):
         When updating notes, the backend merges new meta data with existing meta data.
     """
 
+    is_pinned: Optional[bool] = False
+    """Whether the note is pinned by the current user. Per-user property, not stored on the note itself."""
+
     access_grants: list[AccessGrantModel] = Field(default_factory=list)
     """
     List of access grants controlling who can read/write this note.
@@ -247,6 +250,9 @@ class NoteItemResponse(BaseModel):
         - `versions[].timestamp` (int, optional): Version timestamp in epoch
         - `versions[].user_id` (str, optional): User ID who created the version
     """
+
+    is_pinned: Optional[bool] = False
+    """Whether the note is pinned by the current user. Per-user property, not stored on the note itself."""
 
     updated_at: int
     """Timestamp when the note was last updated (in epoch)."""

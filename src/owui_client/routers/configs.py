@@ -1,7 +1,7 @@
 from typing import Dict, Any, Optional, List
 from owui_client.client_base import ResourceBase
 from owui_client.models.configs import (
-    ImportConfigForm, 
+    ImportConfigForm,
     ConnectionsConfigForm,
     OAuthClientRegistrationForm,
     ToolServersConfigForm,
@@ -13,7 +13,8 @@ from owui_client.models.configs import (
     BannerModel,
     SetBannersForm,
     TerminalServersConfigForm,
-    TerminalServerConnection
+    TerminalServerConnection,
+    TerminalServerPolicyForm,
 )
 
 class ConfigsClient(ResourceBase):
@@ -304,4 +305,62 @@ class ConfigsClient(ResourceBase):
             "/v1/configs/terminal_servers",
             model=TerminalServersConfigForm,
             json=form_data.model_dump(),
+        )
+
+    async def verify_terminal_server(
+        self, form_data: TerminalServerConnection
+    ) -> Dict[str, Any]:
+        """Verify a terminal server connection by detecting its type.
+
+        Tries the orchestrator policies endpoint first, then falls back to the
+        plain terminal config endpoint. Returns the detected server type.
+
+        Args:
+            form_data: `TerminalServerConnection` with at least `url` set.
+
+        Returns:
+            Dictionary with `status` (bool) and `type` ('orchestrator' or 'terminal').
+        """
+        return await self._request(
+            "POST",
+            "/v1/configs/terminal_servers/verify",
+            model=dict,
+            json=form_data.model_dump(),
+        )
+
+    async def put_terminal_server_policy(
+        self, form_data: TerminalServerPolicyForm
+    ) -> Dict[str, Any]:
+        """Push a policy to an orchestrator terminal server.
+
+        Proxies a PUT request to the orchestrator's /api/v1/policies/{policy_id}
+        endpoint.
+
+        Args:
+            form_data: `TerminalServerPolicyForm` with the orchestrator URL,
+                credentials, policy ID, and policy data.
+
+        Returns:
+            The policy object returned by the orchestrator.
+        """
+        return await self._request(
+            "POST",
+            "/v1/configs/terminal_servers/policy",
+            model=dict,
+            json=form_data.model_dump(),
+        )
+
+    async def get_models_defaults(self) -> Dict[str, Any]:
+        """Get the default model metadata.
+
+        Returns only the DEFAULT_MODEL_METADATA setting, unlike `get_models_config`
+        which returns the full models configuration. Available to all verified users.
+
+        Returns:
+            Dictionary with `DEFAULT_MODEL_METADATA` key.
+        """
+        return await self._request(
+            "GET",
+            "/v1/configs/models/defaults",
+            model=dict,
         )

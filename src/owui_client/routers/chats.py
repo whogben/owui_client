@@ -1,4 +1,8 @@
+import logging
+from uuid import uuid4
 from typing import List, Optional, Union
+
+logger = logging.getLogger(__name__)
 from owui_client.client_base import ResourceBase
 from owui_client.models.chats import (
     ChatModel,
@@ -13,6 +17,7 @@ from owui_client.models.chats import (
     EventForm,
     CloneForm,
     ChatFolderIdForm,
+    ChatAccessGrantsForm,
     ChatStatsExport,
     ChatStatsExportList,
     ChatCompletionForm,
@@ -553,6 +558,48 @@ class ChatsClient(ResourceBase):
         """
         return await self._request("DELETE", f"/v1/chats/{id}/share", model=bool)
 
+    async def update_shared_chat_access(
+        self, id: str, form_data: ChatAccessGrantsForm
+    ) -> Optional[ChatResponse]:
+        """Update access grants for a shared chat.
+
+        Sets the list of access grants controlling who can view or edit a
+        shared chat. The server filters the requested grants against the
+        calling user's permissions (e.g. `sharing.public_chats`).
+
+        Args:
+            id: The chat ID.
+            form_data: Access grants to apply. Each entry specifies a
+                principal type/id and permission level.
+
+        Returns:
+            The chat as a `ChatResponse`, or None if not found.
+        """
+        return await self._request(
+            "POST",
+            f"/v1/chats/shared/{id}/access/update",
+            model=ChatResponse,
+            json=form_data.model_dump(),
+        )
+
+    async def get_shared_chat_access(self, id: str) -> list[dict]:
+        """Get access grants for a shared chat.
+
+        Returns the current list of access grant entries for a shared chat.
+        Each entry contains `id`, `principal_type`, `principal_id`, and
+        `permission`.
+
+        Args:
+            id: The chat ID.
+
+        Returns:
+            List of access grant dicts.
+        """
+        return await self._request(
+            "GET",
+            f"/v1/chats/shared/{id}/access",
+        )
+
     async def update_folder(
         self, id: str, form_data: ChatFolderIdForm
     ) -> Optional[ChatResponse]:
@@ -660,9 +707,16 @@ class ChatsClient(ResourceBase):
         """
         # Convert ChatCompletionForm to dict if needed
         if isinstance(form_data, ChatCompletionForm):
-            json_data = form_data.model_dump()
+            json_data = form_data.model_dump(exclude_none=True)
         else:
-            json_data = form_data
+            json_data = {k: v for k, v in form_data.items() if v is not None}
+
+        # Backend get_event_emitter crashes when chat_id is None in metadata.
+        # Provide a local: prefixed ID so the backend treats this as a temp chat.
+        if 'chat_id' not in json_data:
+            chat_id = f'local:api-{uuid4()}'
+            json_data['chat_id'] = chat_id
+            logger.debug("No chat_id provided, generating synthetic chat_id: %s", chat_id)
 
         return await self._request(
             "POST",

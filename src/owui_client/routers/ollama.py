@@ -389,6 +389,50 @@ class OllamaClient(ResourceBase):
             "POST", self._get_url(path), json=payload
         )
 
+    async def generate_anthropic_messages(self, payload: Dict, url_idx: int = None) -> Dict[str, Any]:
+        """
+        Generate messages using Ollama's Anthropic-compatible /v1/messages endpoint.
+
+        Proxies the request to the Ollama backend, applying model resolution,
+        access control, and prefix_id handling. See
+        https://docs.ollama.com/api/anthropic-compatibility
+
+        Args:
+            payload: Anthropic Messages API request payload. Must include `model`.
+            url_idx: Optional index of the Ollama server.
+
+        Returns:
+            Anthropic-compatible messages response.
+        """
+        path = "ollama/v1/messages"
+        if url_idx is not None:
+            path = f"{path}/{url_idx}"
+        return await self._request(
+            "POST", self._get_url(path), json=payload
+        )
+
+    async def generate_responses(self, payload: Dict, url_idx: int = None) -> Dict[str, Any]:
+        """
+        Generate responses using Ollama's OpenAI-compatible /v1/responses endpoint.
+
+        Proxies the request to the Ollama backend, applying model resolution,
+        access control, and prefix_id handling. See
+        https://ollama.com/blog/responses-api
+
+        Args:
+            payload: OpenAI Responses API request payload. Must include `model`.
+            url_idx: Optional index of the Ollama server.
+
+        Returns:
+            OpenAI-compatible responses response.
+        """
+        path = "ollama/v1/responses"
+        if url_idx is not None:
+            path = f"{path}/{url_idx}"
+        return await self._request(
+            "POST", self._get_url(path), json=payload
+        )
+
     async def get_openai_models(self, url_idx: int = None) -> Dict[str, Any]:
         """
         List models using OpenAI-compatible endpoint.

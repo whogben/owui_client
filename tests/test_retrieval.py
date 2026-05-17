@@ -15,7 +15,7 @@ from owui_client.models.files import FileModel
 async def test_retrieval_status(client):
     status = await client.retrieval.get_status()
     assert status["status"] is True
-    assert "RAG_EMBEDDING_ENGINE" in status
+    assert "CHUNK_SIZE" in status
 
 @pytest.mark.asyncio
 async def test_retrieval_with_mock_openai(client, mock_openai_server):

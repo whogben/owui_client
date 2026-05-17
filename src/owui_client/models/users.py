@@ -483,6 +483,12 @@ class SharingPermissions(BaseModel):
     public_notes: bool = True
     """Can share notes publicly (default True)."""
 
+    public_chats: bool = False
+    """Can share chats publicly."""
+
+    public_calendars: bool = False
+    """Can share calendars publicly."""
+
 
 class ChatPermissions(BaseModel):
     """
@@ -581,6 +587,12 @@ class FeaturesPermissions(BaseModel):
 
     memories: bool = True
     """Access to memories."""
+
+    automations: bool = False
+    """Access to automations."""
+
+    calendar: bool = True
+    """Access to calendar."""
 
 
 class SettingsPermissions(BaseModel):

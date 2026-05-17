@@ -1,3 +1,5 @@
+import asyncio
+
 import pytest
 from owui_client.models.chats import ChatForm, MessageForm, TagForm, ChatCompletionForm, ChatCompletedForm, ChatActionForm
 from owui_client.models.openai import OpenAIConfigForm
@@ -5,7 +7,6 @@ from owui_client.models.openai import OpenAIConfigForm
 pytestmark = pytest.mark.asyncio
 
 
-@pytest.mark.xfail(reason="Upstream bug: router passes db= but model doesn't accept it")
 async def test_chats_lifecycle(client):
     """
     Test create, get, update, delete lifecycle for chats.
@@ -191,6 +192,12 @@ async def test_chat_completion(client, mock_openai_server):
     )
     await client.openai.update_config(new_config)
 
+    # Force model cache refresh so the mock server's models are picked up.
+    # Without this, a previous test's stale MODELS cache causes "Model not found".
+    # The openai.get_all_models() @cached TTL is 1s; sleep to ensure it expires.
+    await asyncio.sleep(1)
+    await client._request("GET", "/models", params={"refresh": True})
+
     # Test synchronous completion (no session_id)
     # Use a simple dict to avoid potential Pydantic serialization issues
     sync_form_data = {
@@ -218,6 +225,10 @@ async def test_chat_completed(client, mock_openai_server):
         OPENAI_API_CONFIGS={"0": {"enable": True}}
     )
     await client.openai.update_config(new_config)
+
+    # Force model cache refresh so the mock server's models are picked up.
+    await asyncio.sleep(1)
+    await client._request("GET", "/models", params={"refresh": True})
 
     # Create a chat first
     chat_data = {"title": "Test Chat for Completed", "history": {"messages": {}, "currentId": None}}

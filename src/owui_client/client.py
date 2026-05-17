@@ -26,11 +26,16 @@ from owui_client.routers.chats import ChatsClient
 from owui_client.routers.models import ModelsClient
 from owui_client.routers.knowledge import KnowledgeClient
 from owui_client.routers.tools import ToolsClient
+from owui_client.routers.skills import SkillsClient
 from owui_client.routers.memories import MemoriesClient
+from owui_client.routers.analytics import AnalyticsClient
+from owui_client.routers.automations import AutomationsClient
+from owui_client.routers.calendar import CalendarClient
 from owui_client.routers.folders import FoldersClient
 from owui_client.routers.functions import FunctionsClient
 from owui_client.routers.evaluations import EvaluationsClient
 from owui_client.routers.utils import UtilsClient
+from owui_client.routers.terminals import TerminalsClient
 from owui_client.routers.root import RootClient
 from owui_client.shortcuts import Shortcuts
 
@@ -109,8 +114,20 @@ class OpenWebUI(OWUIClientBase):
         self.tools = ToolsClient(self)
         """Client for Tools endpoints."""
 
+        self.skills = SkillsClient(self)
+        """Client for Skills endpoints."""
+
         self.memories = MemoriesClient(self)
         """Client for Memories endpoints."""
+
+        self.analytics = AnalyticsClient(self)
+        """Client for Analytics endpoints."""
+
+        self.automations = AutomationsClient(self)
+        """Client for Automations endpoints."""
+
+        self.calendar = CalendarClient(self)
+        """Client for Calendar endpoints."""
 
         self.folders = FoldersClient(self)
         """Client for Folders endpoints."""
@@ -120,6 +137,9 @@ class OpenWebUI(OWUIClientBase):
 
         self.evaluations = EvaluationsClient(self)
         """Client for Evaluations endpoints."""
+
+        self.terminals = TerminalsClient(self)
+        """Client for Terminals endpoints."""
 
         self.utils = UtilsClient(self)
         """Client for Utils endpoints."""

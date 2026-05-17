@@ -61,6 +61,26 @@ def owui_server_session():
     owui_version = derive_target_owui_version(client_version)
     server = OpenWebUITestServer(version=owui_version, admin_api_key="sk-test_master_key")
 
+    # Patch run_command to inject ENABLE_OPENAI_API_PASSTHROUGH into the
+    # OWUI container's docker run command.  The env var defaults to False in
+    # Open WebUI >= 0.9.5 which blocks the /openai/{path} proxy route used by
+    # client.openai.embeddings().
+    import refs.owui_test_util as _test_util
+
+    _original_run_command = _test_util.run_command
+
+    def _patched_run_command(cmd, cwd=None, capture_output=False, input=None):
+        if isinstance(cmd, list) and "ENABLE_API_KEYS=true" in cmd:
+            # Insert before the image name (last element)
+            cmd = cmd[:-1] + [
+                "-e", "ENABLE_OPENAI_API_PASSTHROUGH=true",
+                "-e", "RAG_EMBEDDING_MODEL_AUTO_UPDATE=false",
+                cmd[-1],
+            ]
+        return _original_run_command(cmd, cwd=cwd, capture_output=capture_output, input=input)
+
+    _test_util.run_command = _patched_run_command
+
     print("\n[pytest] Starting OWUI Docker container...")
     try:
         # start() is blocking in the util, which is fine for session fixture setup
@@ -74,6 +94,7 @@ def owui_server_session():
             "port": port,
         }
     finally:
+        _test_util.run_command = _original_run_command
         print("\n[pytest] Stopping OWUI Docker container...")
         server.stop()
 

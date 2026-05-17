@@ -162,6 +162,18 @@ class FileModel(BaseModel):
     """Unix timestamp when the file was last updated."""
 
 
+class FileListResponse(BaseModel):
+    """
+    Paginated response for listing files.
+    """
+
+    items: list[FileModelResponse]
+    """List of file objects in the current page."""
+
+    total: int
+    """Total number of files matching the query."""
+
+
 class ContentForm(BaseModel):
     """
     Form for updating file content text.

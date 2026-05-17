@@ -86,6 +86,15 @@ class ChatModel(BaseModel):
     folder_id: Optional[str] = None
     """ID of the folder containing this chat, if any."""
 
+    tasks: Optional[list] = None
+    """List of task dicts associated with this chat. Used by builtin tools for task tracking."""
+
+    summary: Optional[str] = None
+    """Text summary of the chat conversation."""
+
+    last_read_at: Optional[int] = None
+    """Timestamp when the user last read the chat (Unix epoch)."""
+
 
 class ChatForm(BaseModel):
     """
@@ -264,6 +273,12 @@ class ChatResponse(BaseModel):
     folder_id: Optional[str] = None
     """ID of the folder containing this chat, if any."""
 
+    tasks: Optional[list] = None
+    """List of task dicts associated with this chat. Used by builtin tools for task tracking."""
+
+    summary: Optional[str] = None
+    """Text summary of the chat conversation."""
+
 
 class ChatListResponse(BaseModel):
     """
@@ -370,6 +385,9 @@ class ChatTitleIdResponse(BaseModel):
     created_at: int
     """Timestamp when the chat was created (Unix epoch)."""
 
+    last_read_at: Optional[int] = None
+    """Timestamp when the user last read the chat (Unix epoch)."""
+
 
 # Models from router
 class TagForm(BaseModel):
@@ -463,6 +481,24 @@ class ChatFolderIdForm(BaseModel):
 
     folder_id: Optional[str] = None
     """The ID of the target folder, or None to remove from folder."""
+
+
+class ChatAccessGrantsForm(BaseModel):
+    """
+    Form for updating access grants on a shared chat.
+
+    Each access grant entry defines a principal (user or group) and the
+    permission level granted for the shared chat resource.
+    """
+
+    access_grants: list[dict]
+    """List of access grant entries to set on the shared chat.
+
+    Dict Fields:
+        - `principal_type` (str, required): Type of principal. Valid values: "user", "group"
+        - `principal_id` (str, required): ID of the user or group. Use "*" for public access.
+        - `permission` (str, required): Permission level. Valid values: "read", "write"
+    """
 
 
 class MessageStats(BaseModel):

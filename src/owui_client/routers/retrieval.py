@@ -21,12 +21,12 @@ class RetrievalClient(ResourceBase):
 
     async def get_status(self) -> Dict:
         """
-        Get the status of the retrieval system.
+        Get the current retrieval configuration and status.
 
         Returns:
-            Dict containing the status and configuration details.
+            Dict containing retrieval status and configuration fields.
         """
-        return await self._request("GET", "/v1/retrieval/")
+        return await self._request("GET", "/v1/retrieval/config")
 
     async def get_embedding_config(self) -> Dict:
         """
@@ -164,7 +164,8 @@ class RetrievalClient(ResourceBase):
         Returns:
             bool: True if successful.
         """
-        return await self._request("POST", "/v1/retrieval/reset/db")
+        await self._request("POST", "/v1/retrieval/reset/db")
+        return True
 
     async def reset_uploads(self) -> bool:
         """
@@ -173,7 +174,8 @@ class RetrievalClient(ResourceBase):
         Returns:
             bool: True if successful.
         """
-        return await self._request("POST", "/v1/retrieval/reset/uploads")
+        await self._request("POST", "/v1/retrieval/reset/uploads")
+        return True
 
     async def process_files_batch(self, form_data: BatchProcessFilesForm) -> BatchProcessFilesResponse:
         """

@@ -311,3 +311,24 @@ class TasksClient(ResourceBase):
             f"/api/tasks/chat/{chat_id}",
             model=dict,
         )
+
+    async def stop_tasks_by_chat_api(self, chat_id: str) -> Dict[str, Any]:
+        """
+        Stop all background tasks associated with a specific chat.
+
+        This endpoint is defined in main.py (not routers/tasks.py). It validates
+        that the user owns the chat (or is admin) before stopping tasks.
+
+        Args:
+            chat_id (str): The ID of the chat whose tasks should be stopped.
+
+        Returns:
+            Dict[str, Any]: Status dictionary with keys:
+                - `status` (bool): Whether the operation succeeded.
+                - `message` (str): Description of the result.
+        """
+        return await self._request(
+            "POST",
+            f"/api/tasks/chat/{chat_id}/stop",
+            model=dict,
+        )

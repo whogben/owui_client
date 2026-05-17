@@ -107,6 +107,8 @@ class WebConfig(BaseModel):
     """The number of concurrent web loader requests."""
     WEB_SEARCH_DOMAIN_FILTER_LIST: Optional[List[str]] = []
     """List of domains to filter from web search results."""
+    WEB_FETCH_MAX_CONTENT_LENGTH: Optional[int] = None
+    """Maximum content length in characters for web fetch results. Content exceeding this is truncated."""
     BYPASS_WEB_SEARCH_EMBEDDING_AND_RETRIEVAL: Optional[bool] = None
     """Whether to bypass embedding and retrieval for web search results."""
     BYPASS_WEB_SEARCH_WEB_LOADER: Optional[bool] = None
@@ -129,6 +131,8 @@ class WebConfig(BaseModel):
     """Engine ID for Google Programmable Search Engine."""
     BRAVE_SEARCH_API_KEY: Optional[str] = None
     """API key for Brave Search."""
+    BRAVE_SEARCH_CONTEXT_TOKENS: Optional[int] = None
+    """Maximum number of context tokens returned by Brave Search. Defaults to 8192."""
     KAGI_SEARCH_API_KEY: Optional[str] = None
     """API key for Kagi Search."""
     MOJEEK_SEARCH_API_KEY: Optional[str] = None
@@ -316,6 +320,10 @@ class ConfigForm(BaseModel):
     """Base URL for Mistral OCR API."""
     MISTRAL_OCR_API_KEY: Optional[str] = None
     """API key for Mistral OCR."""
+    PADDLEOCR_VL_BASE_URL: Optional[str] = None
+    """Base URL for PaddleOCR VL service. Defaults to 'http://localhost:8080'."""
+    PADDLEOCR_VL_TOKEN: Optional[str] = None
+    """Authentication token for PaddleOCR VL service."""
 
     # MinerU settings
     MINERU_API_MODE: Optional[str] = None
@@ -345,6 +353,8 @@ class ConfigForm(BaseModel):
     """Model for RAG reranking."""
     RAG_RERANKING_ENGINE: Optional[str] = None
     """Engine for RAG reranking."""
+    RAG_RERANKING_BATCH_SIZE: Optional[int] = None
+    """Batch size for reranking operations. Defaults to 32."""
     RAG_EXTERNAL_RERANKER_URL: Optional[str] = None
     """URL for external reranker."""
     RAG_EXTERNAL_RERANKER_API_KEY: Optional[str] = None

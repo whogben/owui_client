@@ -32,6 +32,22 @@ class NotesClient(ResourceBase):
             model=NoteItemResponse,
         )
 
+    async def get_pinned_notes(self) -> List[NoteItemResponse]:
+        """
+        Get all notes pinned by the current user.
+
+        Returns notes the user has pinned, ordered by pin creation time (newest first).
+        The `is_pinned` field is always True for results from this endpoint.
+
+        Returns:
+            A list of `NoteItemResponse` objects, all with `is_pinned` set to True.
+        """
+        return await self._request(
+            "GET",
+            "/v1/notes/pinned",
+            model=NoteItemResponse,
+        )
+
     async def search_notes(
         self,
         query: Optional[str] = None,
@@ -152,6 +168,26 @@ class NotesClient(ResourceBase):
             f"/v1/notes/{id}/access/update",
             model=Optional[NoteModel],
             json=form_data.model_dump(),
+        )
+
+    async def pin_note_by_id(self, id: str) -> Optional[NoteModel]:
+        """
+        Toggle pin status on a note for the current user.
+
+        If the note is already pinned, it will be unpinned. If not pinned, it will
+        be pinned. Pinning is per-user -- each user has their own set of pinned notes.
+        Requires at least read access to the note.
+
+        Args:
+            id: The unique identifier of the note to pin/unpin.
+
+        Returns:
+            The note with updated `is_pinned` status, or None if the note was not found.
+        """
+        return await self._request(
+            "POST",
+            f"/v1/notes/{id}/pin",
+            model=Optional[NoteModel],
         )
 
     async def delete_note_by_id(self, id: str) -> bool:
