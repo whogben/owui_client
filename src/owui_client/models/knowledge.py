@@ -1,3 +1,5 @@
+"""Knowledge base models, directory structures, and file management forms."""
+
 from typing import Optional, Union
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -232,6 +234,162 @@ class FileUserResponse(FileModelResponse):
     """The user who owns the file."""
 
 
+class KnowledgeDirectoryModel(BaseModel):
+    """
+    Represents a directory within a knowledge base.
+    """
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: str
+    """The unique identifier of the directory."""
+
+    knowledge_id: str
+    """The ID of the knowledge base this directory belongs to."""
+
+    parent_id: Optional[str] = None
+    """The ID of the parent directory, or None if this is a root directory."""
+
+    name: str
+    """The name of the directory."""
+
+    user_id: str
+    """The ID of the user who created the directory."""
+
+    created_at: int
+    """Timestamp of creation (epoch)."""
+
+    updated_at: int
+    """Timestamp of last update (epoch)."""
+
+
+class KnowledgeDirectoryCreateForm(BaseModel):
+    """
+    Form for creating a new directory in a knowledge base.
+    """
+
+    name: str
+    """The name of the new directory."""
+
+    parent_id: Optional[str] = None
+    """The ID of the parent directory. None for a root-level directory."""
+
+
+class KnowledgeDirectoryUpdateForm(BaseModel):
+    """
+    Form for updating a directory in a knowledge base.
+    """
+
+    name: Optional[str] = None
+    """New name for the directory. None to leave unchanged."""
+
+    parent_id: Optional[str] = '__unset__'
+    """New parent directory ID. Defaults to ``'__unset__'`` (leave unchanged). Set to ``None`` to move to root, or to a directory ID to relocate."""
+
+
+class KnowledgeFileMoveForm(BaseModel):
+    """
+    Form for moving a file to a different directory within a knowledge base.
+    """
+
+    file_id: str
+    """The ID of the file to move."""
+
+    directory_id: Optional[str] = None
+    """The target directory ID, or None to move to the root of the knowledge base."""
+
+
+class FileManifestEntry(BaseModel):
+    """
+    Represents a file entry in a local manifest for sync diff comparison.
+    """
+
+    filename: str
+    """The base filename (e.g., 'readme.md')."""
+
+    path: str
+    """The relative directory path (e.g., 'docs/api'), or '' for root."""
+
+    checksum: str
+    """SHA-256 checksum of the raw file bytes."""
+
+    size: int
+    """The file size in bytes."""
+
+
+class SyncDiffForm(BaseModel):
+    """
+    Form for computing a sync diff against a knowledge base.
+    """
+
+    manifest: list[FileManifestEntry]
+    """List of file manifest entries representing the local state."""
+
+
+class SyncDiffResponse(BaseModel):
+    """
+    Response containing the diff between a local manifest and a knowledge base.
+    """
+
+    added: list[dict]
+    """
+    Files that exist locally but not in the knowledge base.
+
+    Dict Fields:
+        - `filename` (str, required): The base filename of the new file
+        - `path` (str, required): The relative directory path, or '' for root
+    """
+
+    modified: list[dict]
+    """
+    Files that exist in both but differ (checksum mismatch).
+
+    Dict Fields:
+        - `filename` (str, required): The base filename
+        - `path` (str, required): The relative directory path, or '' for root
+        - `stale_file_id` (str, required): The file ID of the existing version to replace
+    """
+
+    deleted: list[dict]
+    """
+    Files that exist in the knowledge base but not in the local manifest.
+
+    Dict Fields:
+        - `file_id` (str, required): The ID of the file to remove
+        - `filename` (str, required): The base filename
+    """
+
+    mkdir: list[str]
+    """Directory paths that need to be created in the knowledge base."""
+
+    rmdir: list[str]
+    """Directory IDs that should be removed from the knowledge base."""
+
+    unmodified_count: int
+    """Number of files that are unchanged."""
+
+    directory_map: dict[str, str]
+    """
+    Mapping of existing directory paths to their IDs in the knowledge base.
+
+    Dict Fields:
+        - Key (str): Directory path relative to the knowledge base root
+        - Value (str): The directory's unique ID in the database
+    """
+
+
+class SyncCleanupForm(BaseModel):
+    """
+    Form for cleaning up stale files and directories after a sync.
+    """
+
+    file_ids: list[str]
+    """List of file IDs to delete from the knowledge base."""
+
+    dir_ids: list[str] = []
+    """List of directory IDs to remove from the knowledge base."""
+
+
 class KnowledgeFileListResponse(BaseModel):
     """
     Response model for a list of knowledge base files.
@@ -240,8 +398,14 @@ class KnowledgeFileListResponse(BaseModel):
     items: list[FileUserResponse]
     """List of file items."""
 
+    directories: list[KnowledgeDirectoryModel] = []
+    """List of directories at the current level in the knowledge base."""
+
+    breadcrumbs: list[KnowledgeDirectoryModel] = []
+    """Ordered list of ancestor directories from root to the current directory (for navigation)."""
+
     total: int
-    """Total number of items."""
+    """Total number of items."""""
 
 
 class KnowledgeFileIdForm(BaseModel):
@@ -251,6 +415,9 @@ class KnowledgeFileIdForm(BaseModel):
 
     file_id: str
     """The ID of the file to add or remove."""
+
+    directory_id: Optional[str] = None
+    """The directory to place the file in. None for root level."""""
 
 
 class KnowledgeAccessGrantsForm(BaseModel):

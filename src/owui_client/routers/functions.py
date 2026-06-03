@@ -94,7 +94,7 @@ class FunctionsClient(ResourceBase):
         return await self._request(
             "POST",
             "/v1/functions/sync",
-            json=form.model_dump(),
+            json=form.model_dump(exclude_none=True),
             model=list[FunctionWithValvesModel],
         )
 
@@ -113,7 +113,7 @@ class FunctionsClient(ResourceBase):
         return await self._request(
             "POST",
             "/v1/functions/create",
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
             model=Optional[FunctionResponse],
         )
 
@@ -181,7 +181,7 @@ class FunctionsClient(ResourceBase):
         return await self._request(
             "POST",
             f"/v1/functions/id/{id}/update",
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
             model=Optional[FunctionModel],
         )
 

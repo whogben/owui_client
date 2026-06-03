@@ -108,7 +108,7 @@ class ModelsClient(ResourceBase):
             "POST",
             "/v1/models/create",
             model=Optional[ModelModel],
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def export_models(self) -> list[ModelModel]:
@@ -131,7 +131,7 @@ class ModelsClient(ResourceBase):
             bool: True if import was successful.
         """
         return await self._request(
-            "POST", "/v1/models/import", model=bool, json=form_data.model_dump()
+            "POST", "/v1/models/import", model=bool, json=form_data.model_dump(exclude_none=True)
         )
 
     async def sync_models(self, form_data: SyncModelsForm) -> list[ModelModel]:
@@ -148,7 +148,7 @@ class ModelsClient(ResourceBase):
             "POST",
             "/v1/models/sync",
             model=list[ModelModel],
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def get_model_by_id(self, id: str) -> Optional[ModelResponse]:
@@ -210,7 +210,7 @@ class ModelsClient(ResourceBase):
             "POST",
             "/v1/models/model/update",
             model=Optional[ModelModel],
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def delete_model_by_id(self, id: str) -> bool:

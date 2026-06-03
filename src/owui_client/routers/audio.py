@@ -30,7 +30,7 @@ class AudioClient(ResourceBase):
         Returns:
             dict: The updated configuration.
         """
-        return await self._request("POST", "/v1/audio/config/update", json=form_data.model_dump())
+        return await self._request("POST", "/v1/audio/config/update", json=form_data.model_dump(exclude_none=True))
 
     async def transcribe(self, file_path: str | Path, language: Optional[str] = None) -> dict:
         """

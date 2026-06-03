@@ -1,5 +1,8 @@
+"""Group models, membership, and access preview types."""
+
 from typing import Optional
 from pydantic import BaseModel, ConfigDict
+from owui_client.models.users import ResourcePreviewList, ResourcePreviewItem
 
 
 class GroupModel(BaseModel):
@@ -284,3 +287,45 @@ class GroupUpdateForm(GroupForm):
     """
 
     pass
+
+
+class GroupPreviewGroup(BaseModel):
+    """
+    Group reference embedded in the group preview response.
+    """
+
+    id: str
+    """Unique identifier of the group."""
+
+    name: str
+    """Display name of the group."""
+
+
+class GroupPreview(BaseModel):
+    """
+    Response model for the group preview endpoint.
+
+    Shows what resources a specific group can access (preview audit).
+    Returned by `GET /v1/groups/id/{id}/preview` (admin-only).
+    """
+
+    group: GroupPreviewGroup
+    """The group being previewed."""
+
+    models: ResourcePreviewList
+    """Models accessible to the group (active models only) with total count."""
+
+    knowledge: ResourcePreviewList
+    """Knowledge bases accessible to the group with total count."""
+
+    tools: ResourcePreviewList
+    """Tools accessible to the group with total count."""
+
+    permissions: Optional[dict] = None
+    """Permissions settings of the group, mirroring the `GroupModel.permissions` structure.
+
+    Dict Fields:
+        See `GroupModel.permissions` for the full documented structure (workspace,
+        sharing, chat, features sections with their boolean sub-permissions). May
+        be an empty dict if the group has no explicit permissions set.
+    """

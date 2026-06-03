@@ -291,6 +291,6 @@ class CalendarClient(ResourceBase):
         return await self._request(
             "POST",
             f"/v1/calendars/events/{event_id}/rsvp",
-            json=form.model_dump(mode="json"),
+            json=form.model_dump(mode="json", exclude_none=True),
             model=dict,
         )

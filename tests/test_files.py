@@ -89,6 +89,34 @@ async def test_files_crud(client: OpenWebUI):
     )
     delete_all_res = await client.files.delete_all_files()
     assert delete_all_res["message"] == "All files deleted successfully"
-    
+
     files_empty = await client.files.list_files()
     assert len(files_empty) == 0
+
+
+@pytest.mark.asyncio
+async def test_rename_file_by_id(client: OpenWebUI):
+    """Test renaming an uploaded file."""
+    # Upload a file to rename
+    original_name = f"original_{uuid.uuid4().hex[:8]}.txt"
+    uploaded = await client.files.upload_file(
+        file=(original_name, b"rename me", "text/plain"),
+        process=False,
+    )
+    assert uploaded.filename == original_name
+    file_id = uploaded.id
+
+    try:
+        # Rename the file
+        new_name = f"renamed_{uuid.uuid4().hex[:8]}.txt"
+        renamed = await client.files.rename_file_by_id(file_id, new_name)
+        assert renamed is not None
+        assert renamed.filename == new_name
+        assert renamed.id == file_id
+
+        # Verify the rename persisted
+        fetched = await client.files.get_file_by_id(file_id)
+        assert fetched.filename == new_name
+    finally:
+        # Clean up
+        await client.files.delete_file_by_id(file_id)

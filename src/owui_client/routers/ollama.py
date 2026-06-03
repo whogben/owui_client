@@ -82,7 +82,7 @@ class OllamaClient(ResourceBase):
             Response data from the verification endpoint (usually version info).
         """
         return await self._request(
-            "POST", self._get_url("ollama/verify"), json=form.model_dump()
+            "POST", self._get_url("ollama/verify"), json=form.model_dump(exclude_none=True)
         )
 
     async def get_config(self) -> Dict[str, Any]:
@@ -105,7 +105,7 @@ class OllamaClient(ResourceBase):
             Updated configuration dictionary.
         """
         return await self._request(
-            "POST", self._get_url("ollama/config/update"), json=form.model_dump()
+            "POST", self._get_url("ollama/config/update"), json=form.model_dump(exclude_none=True)
         )
 
     async def get_models(self, url_idx: int = None) -> Dict[str, Any]:
@@ -467,7 +467,7 @@ class OllamaClient(ResourceBase):
             path = f"{path}/{url_idx}"
         # This endpoint returns a streaming response
         return await self._request(
-            "POST", self._get_url(path), json=form.model_dump()
+            "POST", self._get_url(path), json=form.model_dump(exclude_none=True)
         )
 
     async def upload_model(self, file_path: Union[str, Path], url_idx: int = None) -> str:

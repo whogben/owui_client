@@ -96,7 +96,7 @@ class PromptsClient(ResourceBase):
         return await self._request(
             "POST",
             "/v1/prompts/create",
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
             model=Optional[PromptModel],
         )
 
@@ -183,7 +183,7 @@ class PromptsClient(ResourceBase):
         return await self._request(
             "POST",
             f"/v1/prompts/id/{prompt_id}/update",
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
             model=Optional[PromptModel],
         )
 
@@ -204,7 +204,7 @@ class PromptsClient(ResourceBase):
         return await self._request(
             "POST",
             f"/v1/prompts/id/{prompt_id}/update/meta",
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
             model=Optional[PromptModel],
         )
 
@@ -225,7 +225,7 @@ class PromptsClient(ResourceBase):
         return await self._request(
             "POST",
             f"/v1/prompts/id/{prompt_id}/update/version",
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
             model=Optional[PromptModel],
         )
 
@@ -246,7 +246,7 @@ class PromptsClient(ResourceBase):
         return await self._request(
             "POST",
             f"/v1/prompts/id/{prompt_id}/access/update",
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
             model=Optional[PromptModel],
         )
 

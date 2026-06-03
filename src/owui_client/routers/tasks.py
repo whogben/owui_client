@@ -28,7 +28,7 @@ class TasksClient(ResourceBase):
             "POST",
             "/v1/tasks/active/chats",
             model=ActiveChatsResponse,
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def get_config(self) -> Dict[str, Any]:
@@ -60,7 +60,7 @@ class TasksClient(ResourceBase):
             "POST",
             "/v1/tasks/config/update",
             model=dict,
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def generate_title(self, form_data: Dict[str, Any]) -> Dict[str, Any]:

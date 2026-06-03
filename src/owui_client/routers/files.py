@@ -1,7 +1,7 @@
 import json
 from typing import Optional, Union
 from owui_client.client_base import ResourceBase
-from owui_client.models.files import FileModel, FileModelResponse, FileListResponse, ContentForm
+from owui_client.models.files import FileModel, FileModelResponse, FileListResponse, ContentForm, FileRenameForm
 
 
 """
@@ -213,4 +213,25 @@ class FilesClient(ResourceBase):
             bytes: The file content.
         """
         return await self._request("GET", f"/v1/files/{id}/content/html", model=bytes)
+
+    async def rename_file_by_id(self, id: str, filename: str) -> Optional[FileModel]:
+        """
+        Rename a file.
+
+        Updates the filename of an existing file. The caller must be the file owner,
+        an admin, or have write access to the file's containing knowledge base.
+
+        Args:
+            id: The UUID of the file to rename.
+            filename: The new filename to assign to the file.
+
+        Returns:
+            Optional[FileModel]: The updated file details, or None if the rename failed.
+        """
+        return await self._request(
+            "POST",
+            f"/v1/files/{id}/rename",
+            model=Optional[FileModel],
+            json=FileRenameForm(filename=filename).model_dump(),
+        )
 

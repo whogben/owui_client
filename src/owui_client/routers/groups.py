@@ -1,3 +1,5 @@
+"""Client for group management and admin group endpoints."""
+
 from typing import Optional
 from owui_client.client_base import ResourceBase
 from owui_client.models.groups import (
@@ -6,6 +8,7 @@ from owui_client.models.groups import (
     GroupExportResponse,
     GroupForm,
     GroupUpdateForm,
+    GroupPreview,
     UserIdsForm,
 )
 from owui_client.models.users import UserInfoResponse
@@ -60,7 +63,7 @@ class GroupsClient(ResourceBase):
             "POST",
             "/v1/groups/create",
             model=GroupResponse,
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def get_group_by_id(self, id: str) -> Optional[GroupResponse]:
@@ -162,7 +165,7 @@ class GroupsClient(ResourceBase):
             "POST",
             f"/v1/groups/id/{id}/update",
             model=GroupResponse,
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def add_user_to_group(
@@ -185,7 +188,7 @@ class GroupsClient(ResourceBase):
             "POST",
             f"/v1/groups/id/{id}/users/add",
             model=GroupResponse,
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def remove_users_from_group(
@@ -208,7 +211,7 @@ class GroupsClient(ResourceBase):
             "POST",
             f"/v1/groups/id/{id}/users/remove",
             model=GroupResponse,
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def delete_group_by_id(self, id: str) -> bool:
@@ -228,4 +231,27 @@ class GroupsClient(ResourceBase):
             "DELETE",
             f"/v1/groups/id/{id}/delete",
             model=bool,
+        )
+
+    async def get_group_preview_by_id(self, id: str) -> Optional[GroupPreview]:
+        """
+        Get a preview of the resources a group can access.
+
+        Returns a summary showing which models, knowledge bases, and tools the
+        specified group can access. Useful for administrators to audit a group's
+        effective permissions before applying changes.
+
+        This is an admin-only endpoint.
+
+        Args:
+            id: The unique identifier of the group to preview.
+
+        Returns:
+            Optional[GroupPreview]: The group preview payload including the group,
+            its permissions, and the accessible models/knowledge/tools with totals.
+        """
+        return await self._request(
+            "GET",
+            f"/v1/groups/id/{id}/preview",
+            model=Optional[GroupPreview],
         )

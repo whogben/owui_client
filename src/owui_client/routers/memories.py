@@ -40,7 +40,7 @@ class MemoriesClient(ResourceBase):
             "POST",
             "/v1/memories/add",
             model=Optional[MemoryModel],
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def query_memory(self, form_data: QueryMemoryForm) -> Any:
@@ -56,7 +56,7 @@ class MemoriesClient(ResourceBase):
         return await self._request(
             "POST",
             "/v1/memories/query",
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def reset_memory_from_vector_db(self) -> bool:
@@ -108,7 +108,7 @@ class MemoriesClient(ResourceBase):
             "POST",
             f"/v1/memories/{memory_id}/update",
             model=Optional[MemoryModel],
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def delete_memory_by_id(self, memory_id: str) -> bool:

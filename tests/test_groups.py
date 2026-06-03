@@ -156,3 +156,37 @@ async def test_get_group_info_by_id(client):
 
     # Cleanup
     await client.groups.delete_group_by_id(group_id)
+
+
+async def test_get_group_preview_by_id(client):
+    """
+    Test the admin-only group preview endpoint.
+
+    Creates a temporary group, requests a preview of its effective resource
+    access, and cleans up.
+    """
+    from owui_client.models.groups import GroupForm
+
+    # Create a new group for preview testing
+    group = await client.groups.create_new_group(
+        GroupForm(
+            name=f"Preview Group {uuid.uuid4()}",
+            description="Test preview endpoint",
+        )
+    )
+    group_id = group.id
+
+    try:
+        # Request a preview of this group's effective resource access
+        preview = await client.groups.get_group_preview_by_id(group_id)
+        assert preview is not None
+        # GroupPreview top-level fields
+        assert hasattr(preview, "group")
+        assert preview.group is not None
+        assert hasattr(preview, "models")
+        assert hasattr(preview, "knowledge")
+        assert hasattr(preview, "tools")
+        # The preview group block should match the group_id we requested
+        assert preview.group.id == group_id
+    finally:
+        await client.groups.delete_group_by_id(group_id)

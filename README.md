@@ -10,14 +10,14 @@ A fully typed, async Python client that mirrors the backend structure of Open We
 
 ### Target Open WebUI Version
 
-This package currently targets Open WebUI `0.9.5` (derived from package version `9.5.0`).
+This package currently targets Open WebUI `0.9.6` (derived from package version `9.6.0`).
 
 Version mapping policy:
 - `client.major` -> `openwebui.minor`
 - `client.minor` -> `openwebui.patch`
 - `client.patch` -> client-only fixes while targeting the same Open WebUI version
 
-Example: `9.5.0` means this package targets Open WebUI `0.9.5`.
+Example: `9.6.0` means this package targets Open WebUI `0.9.6`.
 
 ### Installation
 

@@ -95,7 +95,7 @@ class SkillsClient(ResourceBase):
         return await self._request(
             "POST",
             "/v1/skills/create",
-            json=form_data.model_dump(mode="json"),
+            json=form_data.model_dump(mode="json", exclude_none=True),
             model=Optional[SkillResponse],
         )
 
@@ -135,7 +135,7 @@ class SkillsClient(ResourceBase):
         return await self._request(
             "POST",
             f"/v1/skills/id/{id}/update",
-            json=form_data.model_dump(mode="json"),
+            json=form_data.model_dump(mode="json", exclude_none=True),
             model=Optional[SkillModel],
         )
 
@@ -158,7 +158,7 @@ class SkillsClient(ResourceBase):
         return await self._request(
             "POST",
             f"/v1/skills/id/{id}/access/update",
-            json=form_data.model_dump(mode="json"),
+            json=form_data.model_dump(mode="json", exclude_none=True),
             model=Optional[SkillModel],
         )
 

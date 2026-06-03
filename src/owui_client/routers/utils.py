@@ -32,7 +32,7 @@ class UtilsClient(ResourceBase):
         Returns:
             A dictionary containing the formatted code under the "code" key.
         """
-        return await self._request("POST", "/v1/utils/code/format", json=form_data.model_dump())
+        return await self._request("POST", "/v1/utils/code/format", json=form_data.model_dump(exclude_none=True))
 
     async def execute_code(self, form_data: CodeForm) -> Dict:
         """
@@ -49,7 +49,7 @@ class UtilsClient(ResourceBase):
         Raises:
             HTTPException: If the code execution engine is not supported or configured.
         """
-        return await self._request("POST", "/v1/utils/code/execute", json=form_data.model_dump())
+        return await self._request("POST", "/v1/utils/code/execute", json=form_data.model_dump(exclude_none=True))
 
     async def get_html_from_markdown(self, form_data: MarkdownForm) -> Dict[str, str]:
         """
@@ -61,7 +61,7 @@ class UtilsClient(ResourceBase):
         Returns:
             A dictionary containing the generated HTML under the "html" key.
         """
-        return await self._request("POST", "/v1/utils/markdown", json=form_data.model_dump())
+        return await self._request("POST", "/v1/utils/markdown", json=form_data.model_dump(exclude_none=True))
 
     async def download_chat_as_pdf(self, form_data: ChatTitleMessagesForm) -> bytes:
         """
@@ -73,7 +73,7 @@ class UtilsClient(ResourceBase):
         Returns:
             The PDF file content as bytes.
         """
-        return await self._request("POST", "/v1/utils/pdf", model=bytes, json=form_data.model_dump())
+        return await self._request("POST", "/v1/utils/pdf", model=bytes, json=form_data.model_dump(exclude_none=True))
 
     async def download_db(self) -> bytes:
         """

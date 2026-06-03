@@ -191,7 +191,7 @@ class ChatsClient(ResourceBase):
             The created chat object.
         """
         return await self._request(
-            "POST", "/v1/chats/new", model=ChatResponse, json=form_data.model_dump()
+            "POST", "/v1/chats/new", model=ChatResponse, json=form_data.model_dump(exclude_none=True)
         )
 
     async def import_chats(self, form_data: ChatsImportForm) -> List[ChatResponse]:
@@ -205,7 +205,7 @@ class ChatsClient(ResourceBase):
             List of successfully imported chat objects.
         """
         return await self._request(
-            "POST", "/v1/chats/import", model=ChatResponse, json=form_data.model_dump()
+            "POST", "/v1/chats/import", model=ChatResponse, json=form_data.model_dump(exclude_none=True)
         )
 
     async def search(
@@ -385,7 +385,7 @@ class ChatsClient(ResourceBase):
             List of chats matching the tag.
         """
         return await self._request(
-            "POST", "/v1/chats/tags", model=ChatTitleIdResponse, json=form_data.model_dump()
+            "POST", "/v1/chats/tags", model=ChatTitleIdResponse, json=form_data.model_dump(exclude_none=True)
         )
 
     async def get(self, id: str) -> Optional[ChatResponse]:
@@ -412,7 +412,7 @@ class ChatsClient(ResourceBase):
             The updated chat object.
         """
         return await self._request(
-            "POST", f"/v1/chats/{id}", model=ChatResponse, json=form_data.model_dump()
+            "POST", f"/v1/chats/{id}", model=ChatResponse, json=form_data.model_dump(exclude_none=True)
         )
 
     async def update_message(
@@ -433,7 +433,7 @@ class ChatsClient(ResourceBase):
             "POST",
             f"/v1/chats/{id}/messages/{message_id}",
             model=ChatResponse,
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def send_message_event(
@@ -454,7 +454,7 @@ class ChatsClient(ResourceBase):
             "POST",
             f"/v1/chats/{id}/messages/{message_id}/event",
             model=bool,
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def delete(self, id: str) -> bool:
@@ -505,7 +505,7 @@ class ChatsClient(ResourceBase):
             The new chat object.
         """
         return await self._request(
-            "POST", f"/v1/chats/{id}/clone", model=ChatResponse, json=form_data.model_dump()
+            "POST", f"/v1/chats/{id}/clone", model=ChatResponse, json=form_data.model_dump(exclude_none=True)
         )
 
     async def clone_shared(self, id: str) -> Optional[ChatResponse]:
@@ -579,7 +579,7 @@ class ChatsClient(ResourceBase):
             "POST",
             f"/v1/chats/shared/{id}/access/update",
             model=ChatResponse,
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def get_shared_chat_access(self, id: str) -> list[dict]:
@@ -614,7 +614,7 @@ class ChatsClient(ResourceBase):
             The updated chat object.
         """
         return await self._request(
-            "POST", f"/v1/chats/{id}/folder", model=ChatResponse, json=form_data.model_dump()
+            "POST", f"/v1/chats/{id}/folder", model=ChatResponse, json=form_data.model_dump(exclude_none=True)
         )
 
     async def get_tags(self, id: str) -> List[TagModel]:
@@ -641,7 +641,7 @@ class ChatsClient(ResourceBase):
             Updated list of tags for the chat.
         """
         return await self._request(
-            "POST", f"/v1/chats/{id}/tags", model=TagModel, json=form_data.model_dump()
+            "POST", f"/v1/chats/{id}/tags", model=TagModel, json=form_data.model_dump(exclude_none=True)
         )
 
     async def delete_tag(self, id: str, form_data: TagForm) -> List[TagModel]:
@@ -656,7 +656,7 @@ class ChatsClient(ResourceBase):
             Updated list of tags for the chat.
         """
         return await self._request(
-            "DELETE", f"/v1/chats/{id}/tags", model=TagModel, json=form_data.model_dump()
+            "DELETE", f"/v1/chats/{id}/tags", model=TagModel, json=form_data.model_dump(exclude_none=True)
         )
 
     async def delete_all_tags(self, id: str) -> Optional[bool]:
@@ -741,7 +741,7 @@ class ChatsClient(ResourceBase):
             Chat completion response.
         """
         if isinstance(form_data, ChatCompletionForm):
-            json_data = form_data.model_dump()
+            json_data = form_data.model_dump(exclude_none=True)
         else:
             json_data = form_data
 
@@ -779,7 +779,7 @@ class ChatsClient(ResourceBase):
         """
         # Convert ChatCompletedForm to dict if needed
         if isinstance(form_data, ChatCompletedForm):
-            json_data = form_data.model_dump()
+            json_data = form_data.model_dump(exclude_none=True)
         else:
             json_data = form_data
 
@@ -805,7 +805,7 @@ class ChatsClient(ResourceBase):
             Modified form data after processing outlet filters.
         """
         if isinstance(form_data, ChatCompletedForm):
-            json_data = form_data.model_dump()
+            json_data = form_data.model_dump(exclude_none=True)
         else:
             json_data = form_data
 
@@ -848,7 +848,7 @@ class ChatsClient(ResourceBase):
         """
         # Convert ChatActionForm to dict if needed
         if isinstance(form_data, ChatActionForm):
-            json_data = form_data.model_dump()
+            json_data = form_data.model_dump(exclude_none=True)
         else:
             json_data = form_data
 

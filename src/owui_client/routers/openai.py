@@ -54,7 +54,7 @@ class OpenAIClient(ResourceBase):
             dict: The updated configuration object.
         """
         return await self._request(
-            "POST", self._get_url("openai/config/update"), json=form_data.model_dump()
+            "POST", self._get_url("openai/config/update"), json=form_data.model_dump(exclude_none=True)
         )
 
     async def get_models(self, url_idx: Optional[int] = None) -> dict:
@@ -84,7 +84,7 @@ class OpenAIClient(ResourceBase):
             dict: The response from the provider (typically the models list) if successful.
         """
         return await self._request(
-            "POST", self._get_url("openai/verify"), json=form_data.model_dump()
+            "POST", self._get_url("openai/verify"), json=form_data.model_dump(exclude_none=True)
         )
 
     async def speech(self, payload: dict) -> bytes:

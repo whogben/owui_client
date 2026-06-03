@@ -106,7 +106,7 @@ class NotesClient(ResourceBase):
             "POST",
             "/v1/notes/create",
             model=Optional[NoteModel],
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def get_note_by_id(self, id: str) -> Optional[NoteModel]:
@@ -142,7 +142,7 @@ class NotesClient(ResourceBase):
             "POST",
             f"/v1/notes/{id}/update",
             model=Optional[NoteModel],
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def update_note_access_by_id(
@@ -167,7 +167,7 @@ class NotesClient(ResourceBase):
             "POST",
             f"/v1/notes/{id}/access/update",
             model=Optional[NoteModel],
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def pin_note_by_id(self, id: str) -> Optional[NoteModel]:

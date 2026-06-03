@@ -2429,6 +2429,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#owui_client.models.retrieval.WebConfig.LINKUP_API_KEY" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LINKUP_API_KEY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.retrieval.WebConfig.LINKUP_SEARCH_PARAMS" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LINKUP_SEARCH_PARAMS
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2908,6 +2930,17 @@
     <span class="md-ellipsis">
       
         MINERU_PARAMS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.retrieval.ConfigForm.MINERU_FILE_EXTENSIONS" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MINERU_FILE_EXTENSIONS
       
     </span>
   </a>
@@ -6185,6 +6218,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#owui_client.models.retrieval.WebConfig.LINKUP_API_KEY" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LINKUP_API_KEY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.retrieval.WebConfig.LINKUP_SEARCH_PARAMS" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LINKUP_SEARCH_PARAMS
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -6664,6 +6719,17 @@
     <span class="md-ellipsis">
       
         MINERU_PARAMS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.retrieval.ConfigForm.MINERU_FILE_EXTENSIONS" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MINERU_FILE_EXTENSIONS
       
     </span>
   </a>
@@ -7521,6 +7587,8 @@
 
 <a id="owui_client.models.retrieval"></a>
     <div class="doc doc-contents first">
+
+        <p>Retrieval, RAG configuration, and web search models.</p>
 
           
 
@@ -9967,6 +10035,61 @@
 
 </div>
 
+<div class="doc doc-object doc-attribute">
+
+
+
+<h5 id="owui_client.models.retrieval.WebConfig.LINKUP_API_KEY" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">LINKUP_API_KEY</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">LINKUP_API_KEY</span><span class="p">:</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>API key for Linkup Search.</p>
+
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h5 id="owui_client.models.retrieval.WebConfig.LINKUP_SEARCH_PARAMS" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">LINKUP_SEARCH_PARAMS</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">LINKUP_SEARCH_PARAMS</span><span class="p">:</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="typing.Dict">Dict</span></span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Parameters for Linkup search.</p>
+
+
+<details class="dict-fields" open>
+  <summary>Dict Fields</summary>
+  <ul>
+<li><code>url</code> (str, optional): Override endpoint URL. Defaults to 'https://api.linkup.so/v1/search'.</li>
+<li><code>depth</code> (str, optional): Search depth. Typical values: 'standard', 'deep'. Defaults to 'standard'.</li>
+<li><code>outputType</code> (str, optional): Output type. Typical values: 'sourcedAnswer', 'searchResults'. Defaults to 'sourcedAnswer'.</li>
+<li>Additional Linkup API parameters may be included.</li>
+</ul>
+</details>        <p>The dictionary is forwarded to the Linkup Search API as the JSON body (with <code>q</code> and <code>maxResults</code>
+injected automatically). The special <code>url</code> key, if present, is popped and used as the request
+endpoint instead of the default. See the Linkup API documentation for additional supported parameters.</p>
+
+          
+    </div>
+
+</div>
+
 
 
 
@@ -10937,6 +11060,31 @@ See the Docling API documentation for additional supported parameters.</p>
 <li><code>page_ranges</code> (str, optional): Page ranges to process. Defaults to empty string.</li>
 </ul>
 </details>        <p>This dictionary is passed directly to the MinerU API for document parsing configuration.</p>
+
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h5 id="owui_client.models.retrieval.ConfigForm.MINERU_FILE_EXTENSIONS" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">MINERU_FILE_EXTENSIONS</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">MINERU_FILE_EXTENSIONS</span><span class="p">:</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="typing.List">List</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>List of file extensions that MinerU is allowed to process (e.g., <code>['pdf']</code>).</p>
+<p>Files uploaded to the system with extensions in this list are routed through the MinerU
+content extraction engine when <code>CONTENT_EXTRACTION_ENGINE</code> is set to <code>mineru</code>. Frontend
+typically accepts a comma-separated string (e.g., <code>'pdf'</code>) and splits it into a list.
+Defaults to <code>['pdf']</code> if not specified.</p>
 
           
     </div>

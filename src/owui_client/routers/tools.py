@@ -58,7 +58,7 @@ class ToolsClient(ResourceBase):
         return await self._request(
             "POST",
             "/v1/tools/load/url",
-            json=form_data.model_dump(mode="json"),
+            json=form_data.model_dump(mode="json", exclude_none=True),
             model=Optional[Dict[str, Any]],
         )
 
@@ -88,7 +88,7 @@ class ToolsClient(ResourceBase):
         return await self._request(
             "POST",
             "/v1/tools/create",
-            json=form_data.model_dump(mode="json"),
+            json=form_data.model_dump(mode="json", exclude_none=True),
             model=Optional[ToolResponse],
         )
 
@@ -124,7 +124,7 @@ class ToolsClient(ResourceBase):
         return await self._request(
             "POST",
             f"/v1/tools/id/{id}/update",
-            json=form_data.model_dump(mode="json"),
+            json=form_data.model_dump(mode="json", exclude_none=True),
             model=Optional[ToolModel],
         )
 
@@ -147,7 +147,7 @@ class ToolsClient(ResourceBase):
         return await self._request(
             "POST",
             f"/v1/tools/id/{id}/access/update",
-            json=form_data.model_dump(mode="json"),
+            json=form_data.model_dump(mode="json", exclude_none=True),
             model=Optional[ToolModel],
         )
 

@@ -43,7 +43,7 @@ class ImagesClient(ResourceBase):
             "POST",
             "/v1/images/config/update",
             model=ImagesConfig,
-            json=config.model_dump(),
+            json=config.model_dump(exclude_none=True),
         )
 
     async def verify_url(self) -> bool:
@@ -88,7 +88,7 @@ class ImagesClient(ResourceBase):
             "POST",
             "/v1/images/generations",
             model=dict,
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def edit_image(self, form_data: EditImageForm) -> List[Dict[str, str]]:
@@ -105,6 +105,6 @@ class ImagesClient(ResourceBase):
             "POST",
             "/v1/images/edit",
             model=dict,
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 

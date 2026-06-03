@@ -43,7 +43,7 @@ class FoldersClient(ResourceBase):
         return await self._request(
             "POST",
             "/v1/folders/",
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
             model=FolderModel,
         )
 
@@ -79,7 +79,7 @@ class FoldersClient(ResourceBase):
         return await self._request(
             "POST",
             f"/v1/folders/{id}/update",
-            json=form_data.model_dump(exclude_unset=True),
+            json=form_data.model_dump(exclude_unset=True, exclude_none=True),
             model=FolderModel,
         )
 
@@ -99,7 +99,7 @@ class FoldersClient(ResourceBase):
         return await self._request(
             "POST",
             f"/v1/folders/{id}/update/parent",
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
             model=FolderModel,
         )
 
@@ -119,7 +119,7 @@ class FoldersClient(ResourceBase):
         return await self._request(
             "POST",
             f"/v1/folders/{id}/update/expanded",
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
             model=FolderModel,
         )
 

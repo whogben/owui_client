@@ -1,5 +1,7 @@
+"""User models, forms, and API key management."""
+
 import datetime
-from typing import Optional
+from typing import List, Optional
 from pydantic import BaseModel, ConfigDict
 
 
@@ -668,3 +670,63 @@ class UserUpdateForm(BaseModel):
 
     password: Optional[str] = None
     """New password (optional). If provided, the user's password will be updated."""
+
+
+class ResourcePreviewItem(BaseModel):
+    """
+    Minimal resource reference (id, name) used in preview responses.
+    """
+
+    id: str
+    """Unique identifier of the resource."""
+
+    name: str
+    """Display name of the resource."""
+
+
+class ResourcePreviewList(BaseModel):
+    """
+    Wrapper for a list of accessible resources plus a total count.
+    """
+
+    items: List[ResourcePreviewItem]
+    """List of accessible resources the principal can read."""
+
+    total: int
+    """Total number of resources of this type in the system (active for models)."""
+
+
+class UserPreviewUser(BaseModel):
+    """
+    User reference embedded in the user preview response.
+    """
+
+    id: str
+    """Unique identifier of the user."""
+
+    name: str
+    """Display name of the user."""
+
+
+class UserPreview(BaseModel):
+    """
+    Response model for the user preview endpoint.
+
+    Shows what resources a specific user can access across all of their groups.
+    Returned by `GET /v1/users/{user_id}/preview` (admin-only).
+    """
+
+    user: UserPreviewUser
+    """The user being previewed."""
+
+    groups: List[ResourcePreviewItem] = []
+    """List of groups the user belongs to."""
+
+    models: ResourcePreviewList
+    """Models accessible to the user (active models only) with total count."""
+
+    knowledge: ResourcePreviewList
+    """Knowledge bases accessible to the user with total count."""
+
+    tools: ResourcePreviewList
+    """Tools accessible to the user with total count."""

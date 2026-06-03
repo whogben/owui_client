@@ -47,19 +47,25 @@ class RetrievalClient(ResourceBase):
         Returns:
             Dict containing the updated configuration.
         """
-        return await self._request("POST", "/v1/retrieval/embedding/update", json=form_data.model_dump())
+        return await self._request("POST", "/v1/retrieval/embedding/update", json=form_data.model_dump(exclude_none=True))
 
     async def update_config(self, form_data: ConfigForm) -> Dict:
         """
         Update the retrieval configuration.
 
         Args:
-            form_data: The configuration updates.
+            form_data: The configuration updates. Only fields explicitly set on
+                the form are sent to the backend; unset fields (those still at
+                their default value) are omitted so the backend keeps its current
+                value. This is required because the OWUI 0.9.6 backend now
+                strictly validates list-typed fields and rejects ``None``.
 
         Returns:
             Dict containing the updated configuration.
         """
-        return await self._request("POST", "/v1/retrieval/config/update", json=form_data.model_dump())
+        return await self._request(
+            "POST", "/v1/retrieval/config/update", json=form_data.model_dump(exclude_none=True)
+        )
 
     async def process_file(self, form_data: ProcessFileForm) -> Dict:
         """
@@ -71,7 +77,7 @@ class RetrievalClient(ResourceBase):
         Returns:
             Dict containing the processing result.
         """
-        return await self._request("POST", "/v1/retrieval/process/file", json=form_data.model_dump())
+        return await self._request("POST", "/v1/retrieval/process/file", json=form_data.model_dump(exclude_none=True))
 
     async def process_text(self, form_data: ProcessTextForm) -> Dict:
         """
@@ -83,7 +89,7 @@ class RetrievalClient(ResourceBase):
         Returns:
             Dict containing the processing result.
         """
-        return await self._request("POST", "/v1/retrieval/process/text", json=form_data.model_dump())
+        return await self._request("POST", "/v1/retrieval/process/text", json=form_data.model_dump(exclude_none=True))
 
     async def process_web(self, form_data: ProcessUrlForm) -> Dict:
         """
@@ -95,7 +101,7 @@ class RetrievalClient(ResourceBase):
         Returns:
             Dict containing the processing result.
         """
-        return await self._request("POST", "/v1/retrieval/process/web", json=form_data.model_dump())
+        return await self._request("POST", "/v1/retrieval/process/web", json=form_data.model_dump(exclude_none=True))
     
     async def process_youtube(self, form_data: ProcessUrlForm) -> Dict:
         """
@@ -107,7 +113,7 @@ class RetrievalClient(ResourceBase):
         Returns:
             Dict containing the processing result.
         """
-        return await self._request("POST", "/v1/retrieval/process/youtube", json=form_data.model_dump())
+        return await self._request("POST", "/v1/retrieval/process/youtube", json=form_data.model_dump(exclude_none=True))
 
     async def process_web_search(self, form_data: SearchForm) -> Dict:
         """
@@ -119,7 +125,7 @@ class RetrievalClient(ResourceBase):
         Returns:
             Dict containing the search results.
         """
-        return await self._request("POST", "/v1/retrieval/process/web/search", json=form_data.model_dump())
+        return await self._request("POST", "/v1/retrieval/process/web/search", json=form_data.model_dump(exclude_none=True))
 
     async def query_doc(self, form_data: QueryDocForm) -> Dict:
         """
@@ -131,7 +137,7 @@ class RetrievalClient(ResourceBase):
         Returns:
             Dict containing the query results.
         """
-        return await self._request("POST", "/v1/retrieval/query/doc", json=form_data.model_dump())
+        return await self._request("POST", "/v1/retrieval/query/doc", json=form_data.model_dump(exclude_none=True))
 
     async def query_collection(self, form_data: QueryCollectionsForm) -> Dict:
         """
@@ -143,7 +149,7 @@ class RetrievalClient(ResourceBase):
         Returns:
             Dict containing the query results.
         """
-        return await self._request("POST", "/v1/retrieval/query/collection", json=form_data.model_dump())
+        return await self._request("POST", "/v1/retrieval/query/collection", json=form_data.model_dump(exclude_none=True))
 
     async def delete(self, form_data: DeleteForm) -> bool:
         """
@@ -155,7 +161,7 @@ class RetrievalClient(ResourceBase):
         Returns:
             bool: True if successful.
         """
-        return await self._request("POST", "/v1/retrieval/delete", json=form_data.model_dump())
+        return await self._request("POST", "/v1/retrieval/delete", json=form_data.model_dump(exclude_none=True))
 
     async def reset_db(self) -> bool:
         """
@@ -187,7 +193,7 @@ class RetrievalClient(ResourceBase):
         Returns:
             `BatchProcessFilesResponse` containing the results.
         """
-        response = await self._request("POST", "/v1/retrieval/process/files/batch", json=form_data.model_dump())
+        response = await self._request("POST", "/v1/retrieval/process/files/batch", json=form_data.model_dump(exclude_none=True))
         return BatchProcessFilesResponse(**response)
 
     async def get_embeddings(self, text: str = "Hello World!") -> Dict:

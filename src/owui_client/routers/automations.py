@@ -67,7 +67,7 @@ class AutomationsClient(ResourceBase):
         return await self._request(
             "POST",
             "/v1/automations/create",
-            json=form_data.model_dump(mode="json"),
+            json=form_data.model_dump(mode="json", exclude_none=True),
             model=Optional[AutomationResponse],
         )
 
@@ -107,7 +107,7 @@ class AutomationsClient(ResourceBase):
         return await self._request(
             "POST",
             f"/v1/automations/{id}/update",
-            json=form_data.model_dump(mode="json"),
+            json=form_data.model_dump(mode="json", exclude_none=True),
             model=Optional[AutomationResponse],
         )
 

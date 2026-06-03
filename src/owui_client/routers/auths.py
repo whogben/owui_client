@@ -63,7 +63,7 @@ class AuthsClient(ResourceBase):
             "POST",
             "/v1/auths/update/profile",
             model=UserProfileImageResponse,
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def update_timezone(self, form_data: UpdateTimezoneForm) -> bool:
@@ -81,7 +81,7 @@ class AuthsClient(ResourceBase):
         response = await self._request(
             "POST",
             "/v1/auths/update/timezone",
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
         return response.get("status", False)
 
@@ -101,7 +101,7 @@ class AuthsClient(ResourceBase):
             "POST",
             "/v1/auths/update/password",
             model=bool,
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def signin(
@@ -124,7 +124,7 @@ class AuthsClient(ResourceBase):
             "POST",
             "/v1/auths/signin",
             model=SessionUserResponse,
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
         if set_client_api_key and response.token:
@@ -151,7 +151,7 @@ class AuthsClient(ResourceBase):
             "POST",
             "/v1/auths/ldap",
             model=SessionUserResponse,
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
         if set_client_api_key and response.token:
@@ -179,7 +179,7 @@ class AuthsClient(ResourceBase):
             "POST",
             "/v1/auths/signup",
             model=SessionUserResponse,
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
         if set_client_api_key and response.token:
@@ -203,7 +203,7 @@ class AuthsClient(ResourceBase):
             "POST",
             "/v1/auths/add",
             model=SigninResponse,
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def get_admin_details(self) -> AdminDetails:
@@ -275,7 +275,7 @@ class AuthsClient(ResourceBase):
             "POST",
             "/v1/auths/admin/config",
             model=AdminConfig,
-            json=config.model_dump(),
+            json=config.model_dump(exclude_none=True),
         )
 
     async def get_ldap_server(self) -> LdapServerConfig:
@@ -309,7 +309,7 @@ class AuthsClient(ResourceBase):
             "POST",
             "/v1/auths/admin/config/ldap/server",
             model=LdapServerConfig,
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def get_ldap_config(self) -> LdapConfigResponse:
@@ -343,7 +343,7 @@ class AuthsClient(ResourceBase):
             "POST",
             "/v1/auths/admin/config/ldap",
             model=LdapConfigResponse,
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def generate_api_key(self) -> ApiKey:
@@ -426,7 +426,7 @@ class AuthsClient(ResourceBase):
             "POST",
             f"/v1/auths/oauth/{provider}/token/exchange",
             model=SessionUserResponse,
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
         if set_client_api_key and response.token:

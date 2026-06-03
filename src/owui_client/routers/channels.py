@@ -103,7 +103,7 @@ class ChannelsClient(ResourceBase):
             "POST",
             "/v1/channels/create",
             model=Optional[ChannelModel],
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def get(self, id: str) -> Optional[ChannelFullResponse]:
@@ -176,7 +176,7 @@ class ChannelsClient(ResourceBase):
             "POST",
             f"/v1/channels/{id}/members/active",
             model=bool,
-            json=form.model_dump(),
+            json=form.model_dump(exclude_none=True),
         )
 
     async def add_members(
@@ -198,7 +198,7 @@ class ChannelsClient(ResourceBase):
             "POST",
             f"/v1/channels/{id}/update/members/add",
             model=ChannelMemberModel,
-            json=form.model_dump(),
+            json=form.model_dump(exclude_none=True),
         )
 
     async def remove_members(self, id: str, user_ids: List[str]) -> int:
@@ -217,7 +217,7 @@ class ChannelsClient(ResourceBase):
             "POST",
             f"/v1/channels/{id}/update/members/remove",
             model=int,
-            json=form.model_dump(),
+            json=form.model_dump(exclude_none=True),
         )
 
     async def update(self, id: str, form_data: ChannelForm) -> Optional[ChannelModel]:
@@ -235,7 +235,7 @@ class ChannelsClient(ResourceBase):
             "POST",
             f"/v1/channels/{id}/update",
             model=Optional[ChannelModel],
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def delete(self, id: str) -> bool:
@@ -314,7 +314,7 @@ class ChannelsClient(ResourceBase):
             "POST",
             f"/v1/channels/{id}/messages/post",
             model=Optional[MessageModel],
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def get_message(
@@ -417,7 +417,7 @@ class ChannelsClient(ResourceBase):
             "POST",
             f"/v1/channels/{id}/messages/{message_id}/update",
             model=Optional[MessageModel],
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def add_reaction(self, id: str, message_id: str, reaction_name: str) -> bool:
@@ -437,7 +437,7 @@ class ChannelsClient(ResourceBase):
             "POST",
             f"/v1/channels/{id}/messages/{message_id}/reactions/add",
             model=bool,
-            json=form.model_dump(),
+            json=form.model_dump(exclude_none=True),
         )
 
     async def remove_reaction(
@@ -459,7 +459,7 @@ class ChannelsClient(ResourceBase):
             "POST",
             f"/v1/channels/{id}/messages/{message_id}/reactions/remove",
             model=bool,
-            json=form.model_dump(),
+            json=form.model_dump(exclude_none=True),
         )
 
     async def delete_message(self, id: str, message_id: str) -> bool:
@@ -528,7 +528,7 @@ class ChannelsClient(ResourceBase):
             "POST",
             f"/v1/channels/{id}/webhooks/create",
             model=ChannelWebhookModel,
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def update_webhook(
@@ -549,7 +549,7 @@ class ChannelsClient(ResourceBase):
             "POST",
             f"/v1/channels/{id}/webhooks/{webhook_id}/update",
             model=ChannelWebhookModel,
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def delete_webhook(self, id: str, webhook_id: str) -> bool:
@@ -587,5 +587,5 @@ class ChannelsClient(ResourceBase):
             "POST",
             f"/v1/channels/webhooks/{webhook_id}/{token}",
             model=dict,
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )

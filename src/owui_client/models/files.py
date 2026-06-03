@@ -1,10 +1,7 @@
+"""Models for file management and metadata."""
+
 from typing import Optional
 from pydantic import BaseModel, ConfigDict
-
-
-"""
-Models for File management.
-"""
 
 
 class FileMeta(BaseModel):
@@ -181,3 +178,12 @@ class ContentForm(BaseModel):
 
     content: str
     """The new text content for the file."""
+
+
+class FileRenameForm(BaseModel):
+    """
+    Form for renaming a file.
+    """
+
+    filename: str
+    """The new filename for the file."""

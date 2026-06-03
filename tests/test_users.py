@@ -343,3 +343,34 @@ async def test_user_status_lifecycle(client):
     check_model = await client.users.get_user_status()
     assert check_model.status_emoji == "🚀"
     assert check_model.status_message == "Testing drift fixes"
+
+
+async def test_get_user_preview_by_id_admin_self(client):
+    """
+    Test the admin-only user preview endpoint using the admin's own user_id.
+
+    The admin fixture is signed in; we obtain the admin's user_id via
+    get_user_info (which returns the currently authenticated user) and then
+    request a preview of that user's effective resource access.
+    """
+    from owui_client.client import OpenWebUI
+
+    assert isinstance(client, OpenWebUI)
+
+    # Get the currently signed-in admin user's id and info
+    current = await client.auths.get_session_user()
+    assert current is not None
+    assert current.id is not None
+    user_id = current.id
+
+    # Request a preview of this user's effective resource access
+    preview = await client.users.get_user_preview_by_id(user_id)
+    assert preview is not None
+    # UserPreview top-level fields
+    assert hasattr(preview, "user")
+    assert preview.user is not None
+    assert hasattr(preview, "models")
+    assert hasattr(preview, "knowledge")
+    assert hasattr(preview, "tools")
+    # The preview user block should match the user_id we requested
+    assert preview.user.id == user_id

@@ -1,3 +1,5 @@
+"""Retrieval, RAG configuration, and web search models."""
+
 from typing import List, Optional, Union, Dict
 from pydantic import BaseModel
 from owui_client.models.files import FileModel
@@ -229,6 +231,21 @@ class WebConfig(BaseModel):
 
     Defaults to '{"query": {"searchType": "SEARCH_TYPE_COM"}}' if not specified.
     """
+    LINKUP_API_KEY: Optional[str] = None
+    """API key for Linkup Search."""
+    LINKUP_SEARCH_PARAMS: Optional[Dict] = None
+    """Parameters for Linkup search.
+
+    Dict Fields:
+        - `url` (str, optional): Override endpoint URL. Defaults to 'https://api.linkup.so/v1/search'.
+        - `depth` (str, optional): Search depth. Typical values: 'standard', 'deep'. Defaults to 'standard'.
+        - `outputType` (str, optional): Output type. Typical values: 'sourcedAnswer', 'searchResults'. Defaults to 'sourcedAnswer'.
+        - Additional Linkup API parameters may be included.
+
+    The dictionary is forwarded to the Linkup Search API as the JSON body (with `q` and `maxResults`
+    injected automatically). The special `url` key, if present, is popped and used as the request
+    endpoint instead of the default. See the Linkup API documentation for additional supported parameters.
+    """
 
 
 class ConfigForm(BaseModel):
@@ -346,6 +363,14 @@ class ConfigForm(BaseModel):
         - `page_ranges` (str, optional): Page ranges to process. Defaults to empty string.
 
     This dictionary is passed directly to the MinerU API for document parsing configuration.
+    """
+    MINERU_FILE_EXTENSIONS: Optional[List[str]] = None
+    """List of file extensions that MinerU is allowed to process (e.g., `['pdf']`).
+
+    Files uploaded to the system with extensions in this list are routed through the MinerU
+    content extraction engine when `CONTENT_EXTRACTION_ENGINE` is set to `mineru`. Frontend
+    typically accepts a comma-separated string (e.g., `'pdf'`) and splits it into a list.
+    Defaults to `['pdf']` if not specified.
     """
 
     # Reranking settings

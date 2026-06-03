@@ -59,7 +59,7 @@ class PipelinesClient(ResourceBase):
         Returns:
             dict: The response from the pipeline server, typically containing details of the added pipeline.
         """
-        return await self._request("POST", "/v1/pipelines/add", json=form.model_dump())
+        return await self._request("POST", "/v1/pipelines/add", json=form.model_dump(exclude_none=True))
 
     async def delete(self, form: DeletePipelineForm) -> dict:
         """
@@ -71,7 +71,7 @@ class PipelinesClient(ResourceBase):
         Returns:
             dict: The response from the pipeline server confirming deletion.
         """
-        return await self._request("DELETE", "/v1/pipelines/delete", json=form.model_dump())
+        return await self._request("DELETE", "/v1/pipelines/delete", json=form.model_dump(exclude_none=True))
 
     async def get(self, url_idx: Optional[int] = None) -> dict:
         """

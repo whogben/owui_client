@@ -1,3 +1,5 @@
+"""Client for user management and admin user endpoints."""
+
 from typing import Optional, List, Dict, Any
 from owui_client.client_base import ResourceBase
 from owui_client.models.users import (
@@ -11,6 +13,7 @@ from owui_client.models.users import (
     UserModel,
     UserStatus,
     UserActiveResponse,
+    UserPreview,
 )
 from owui_client.models.groups import GroupModel
 from owui_client.models.oauth_sessions import OAuthSessionModel
@@ -163,7 +166,7 @@ class UsersClient(ResourceBase):
             "POST",
             "/v1/users/default/permissions",
             model=UserPermissions,
-            json=permissions.model_dump(),
+            json=permissions.model_dump(exclude_none=True),
         )
 
     async def get_user_settings(self) -> Optional[UserSettings]:
@@ -193,7 +196,7 @@ class UsersClient(ResourceBase):
             "POST",
             "/v1/users/user/settings/update",
             model=UserSettings,
-            json=settings.model_dump(),
+            json=settings.model_dump(exclude_none=True),
         )
 
     async def get_user_status(self) -> UserModel:
@@ -223,7 +226,7 @@ class UsersClient(ResourceBase):
             "POST",
             "/v1/users/user/status/update",
             model=UserModel,
-            json=status.model_dump(),
+            json=status.model_dump(exclude_none=True),
         )
 
     async def get_user_info(self) -> Optional[Dict[str, Any]]:
@@ -294,7 +297,7 @@ class UsersClient(ResourceBase):
             "POST",
             f"/v1/users/{user_id}/update",
             model=UserModel,
-            json=form_data.model_dump(),
+            json=form_data.model_dump(exclude_none=True),
         )
 
     async def delete_user_by_id(self, user_id: str) -> bool:
@@ -385,4 +388,27 @@ class UsersClient(ResourceBase):
             "GET",
             f"/v1/users/{user_id}/groups",
             model=GroupModel,
+        )
+
+    async def get_user_preview_by_id(self, user_id: str) -> UserPreview:
+        """
+        Get a preview of the resources a user can access.
+
+        Returns a summary showing which models, knowledge bases, and tools the
+        specified user can access across all groups they belong to. Useful for
+        administrators to audit a user's effective permissions.
+
+        This is an admin-only endpoint.
+
+        Args:
+            user_id: The ID of the user to preview.
+
+        Returns:
+            `UserPreview`: The user preview payload, including the user, their
+            groups, and the accessible models/knowledge/tools with totals.
+        """
+        return await self._request(
+            "GET",
+            f"/v1/users/{user_id}/preview",
+            model=UserPreview,
         )
