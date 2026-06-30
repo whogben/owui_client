@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 from datetime import date
 from pydantic import BaseModel
 from owui_client.models.users import UserProfileImageResponse, UserStatus
@@ -346,6 +346,128 @@ class LdapConfigResponse(BaseModel):
 
     ENABLE_LDAP: bool
     """Whether LDAP authentication is enabled."""
+
+
+class OAuthConfigForm(BaseModel):
+    """
+    All OAuth/OIDC provider settings exposed to the admin Authentication page.
+
+    Every field is optional so partial updates are accepted by
+    `AuthsClient.update_oauth_config`; omitted fields are left unchanged.
+    Values are persisted under the ``oauth.*`` config namespace. Comma-list
+    fields (`OAUTH_ALLOWED_DOMAINS`, `OAUTH_ADMIN_ROLES`, `OAUTH_ALLOWED_ROLES`)
+    are returned as a comma-joined string and accepted back the same way.
+
+    Persistence caveat: unless the backend runs with
+    ``ENABLE_OAUTH_PERSISTENT_CONFIG=true``, reads of ``oauth.*`` keys return
+    compiled/env defaults and writes are not reflected on read.
+    """
+
+    # General OAuth
+    ENABLE_OAUTH_SIGNUP: Optional[bool] = None
+    """Allow new users to sign up via OAuth/OIDC."""
+
+    OAUTH_MERGE_ACCOUNTS_BY_EMAIL: Optional[bool] = None
+    """Auto-link OAuth logins to existing local accounts with a matching email."""
+
+    OAUTH_AUTO_REDIRECT: Optional[bool] = None
+    """Auto-redirect users to the OAuth provider on load (skip the login page)."""
+
+    OAUTH_ALLOWED_DOMAINS: Optional[str] = None
+    """Comma-separated email domains permitted to sign in (``*`` = all)."""
+
+    OAUTH_BLOCKED_GROUPS: Optional[str] = None
+    """JSON array (as a string) of provider group names blocked from sign-in."""
+
+    # Role management
+    ENABLE_OAUTH_ROLE_MANAGEMENT: Optional[bool] = None
+    """Enable mapping provider roles/groups to Open WebUI roles."""
+
+    OAUTH_ROLES_CLAIM: Optional[str] = None
+    """JWT claim name carrying role/group info (default ``roles``)."""
+
+    OAUTH_ADMIN_ROLES: Optional[str] = None
+    """Comma-separated role/group names that grant the ``admin`` role (default ``admin``)."""
+
+    OAUTH_ALLOWED_ROLES: Optional[str] = None
+    """Comma-separated role/group names permitted to sign in."""
+
+    # Group management
+    ENABLE_OAUTH_GROUP_MANAGEMENT: Optional[bool] = None
+    """Map provider groups to Open WebUI groups on login."""
+
+    ENABLE_OAUTH_GROUP_CREATION: Optional[bool] = None
+    """Allow creating Open WebUI groups for provider groups that don't yet exist."""
+
+    OAUTH_GROUP_CLAIM: Optional[str] = None
+    """JWT claim name carrying group membership (default ``groups``)."""
+
+    OAUTH_GROUP_DEFAULT_SHARE: Optional[Union[bool, str]] = None
+    """Default access for auto-created groups: ``True`` (public), ``False`` (private), or ``'members'``."""
+
+    # OIDC provider settings
+    OAUTH_PROVIDER_NAME: Optional[str] = None
+    """Display name for the SSO provider shown in the UI (default ``SSO``)."""
+
+    OPENID_PROVIDER_URL: Optional[str] = None
+    """OIDC issuer /.well-known/openid-configuration discovery URL."""
+
+    OAUTH_CLIENT_ID: Optional[str] = None
+    """OAuth/OIDC client ID registered with the provider."""
+
+    OAUTH_CLIENT_SECRET: Optional[str] = None
+    """OAuth/OIDC client secret registered with the provider."""
+
+    OPENID_REDIRECT_URI: Optional[str] = None
+    """Redirect URI registered with the provider for the authorization callback."""
+
+    OAUTH_SCOPES: Optional[str] = None
+    """Space-separated scopes requested during login (default ``openid email profile``)."""
+
+    OAUTH_CODE_CHALLENGE_METHOD: Optional[str] = None
+    """PKCE code challenge method; ``S256`` is the supported value when used."""
+
+    OAUTH_TOKEN_ENDPOINT_AUTH_METHOD: Optional[str] = None
+    """Token endpoint auth method (e.g. ``client_secret_post``, ``client_secret_basic``)."""
+
+    OPENID_END_SESSION_ENDPOINT: Optional[str] = None
+    """Provider end-session URL used for RP-initiated logout."""
+
+    OAUTH_TIMEOUT: Optional[Union[int, str]] = None
+    """HTTP timeout (seconds) for the login OAuth flow; empty string disables it."""
+
+    OAUTH_CLIENT_TIMEOUT: Optional[Union[int, str]] = None
+    """HTTP timeout (seconds) for OAuth client operations (e.g. MCP tool servers); empty disables it."""
+
+    # Claims
+    OAUTH_EMAIL_CLAIM: Optional[str] = None
+    """JWT claim name for the user email (default ``email``)."""
+
+    OAUTH_USERNAME_CLAIM: Optional[str] = None
+    """JWT claim name for the username/display name (default ``name``)."""
+
+    OAUTH_PICTURE_CLAIM: Optional[str] = None
+    """JWT claim name for the avatar/picture URL (default ``picture``)."""
+
+    OAUTH_SUB_CLAIM: Optional[str] = None
+    """JWT claim name for the subject identifier (default ``sub``)."""
+
+    OAUTH_AUDIENCE: Optional[str] = None
+    """Audience (``aud``) value sent to the provider, e.g. an API/resource identifier."""
+
+    # Profile update toggles
+    OAUTH_UPDATE_EMAIL_ON_LOGIN: Optional[bool] = None
+    """Overwrite the local user's email with the provider value on each login."""
+
+    OAUTH_UPDATE_NAME_ON_LOGIN: Optional[bool] = None
+    """Overwrite the local user's name with the provider value on each login."""
+
+    OAUTH_UPDATE_PICTURE_ON_LOGIN: Optional[bool] = None
+    """Overwrite the local user's avatar with the provider value on each login."""
+
+    # Token
+    OAUTH_REFRESH_TOKEN_INCLUDE_SCOPE: Optional[bool] = None
+    """Include the original scope when refreshing OAuth tokens."""
 
 
 class ApiKey(BaseModel):

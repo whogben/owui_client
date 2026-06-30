@@ -1,7 +1,7 @@
 import asyncio
 
 import pytest
-from owui_client.models.chats import ChatForm, MessageForm, TagForm, ChatCompletionForm, ChatCompletedForm, ChatActionForm
+from owui_client.models.chats import ChatForm, MessageForm, TagForm, ChatCompletionForm, ChatCompletedForm, ChatActionForm, CompactChatForm
 from owui_client.models.openai import OpenAIConfigForm
 
 pytestmark = pytest.mark.asyncio
@@ -335,4 +335,150 @@ async def test_chat_action(client, mock_openai_server):
 
     finally:
         # Cleanup
+        await client.chats.delete(chat_id)
+
+
+async def test_chat_archived_count(client):
+    """
+    Test GET /chats/archived/count returns the number of archived chats.
+    """
+    form = ChatForm(
+        chat={"title": "Archived Count Chat", "history": {"messages": {}, "currentId": None}}
+    )
+    created = await client.chats.create_new(form)
+    assert created is not None
+    chat_id = created.id
+
+    try:
+        # Baseline count before archiving.
+        before = await client.chats.get_archived_count()
+        assert isinstance(before, int)
+
+        # Archive the chat and confirm the count increases by exactly one.
+        archived = await client.chats.archive(chat_id)
+        assert archived is not None
+        assert archived.archived is True
+
+        after = await client.chats.get_archived_count()
+        assert after == before + 1
+    finally:
+        await client.chats.delete(chat_id)
+
+
+async def test_chat_unshare_all(client):
+    """
+    Test DELETE /chats/share/all removes every shared chat for the user.
+    """
+    form = ChatForm(
+        chat={"title": "Unshare All Chat", "history": {"messages": {}, "currentId": None}}
+    )
+    created = await client.chats.create_new(form)
+    assert created is not None
+    chat_id = created.id
+
+    try:
+        # Share the chat so there is something to unshare.
+        shared = await client.chats.share(chat_id)
+        assert shared is not None
+        assert shared.share_id is not None
+
+        # Unshare everything.
+        result = await client.chats.unshare_all()
+        assert result is True
+
+        # The chat should no longer carry a share_id.
+        fetched = await client.chats.get(chat_id)
+        assert fetched is not None
+        assert fetched.share_id is None
+    finally:
+        await client.chats.delete(chat_id)
+
+
+async def test_chat_compact(client):
+    """
+    Test POST /chats/{id}/compact.
+
+    Context compaction is disabled by default (ENABLE_CONTEXT_COMPACTION=False),
+    so the backend returns a result dict with `compacted` False and reason
+    'disabled' without invoking a model. Passing an explicit model in the form
+    lets the router resolve the model id even though the chat has no assistant
+    messages, exercising the endpoint end-to-end without an LLM.
+    """
+    chat_data = {
+        "title": "Compact Chat",
+        "history": {
+            "messages": {
+                "msg_1": {
+                    "id": "msg_1",
+                    "role": "user",
+                    "content": "hello",
+                    "timestamp": 1600000000,
+                    "parentId": None,
+                    "childrenIds": [],
+                    "model": "gpt-4",
+                }
+            },
+            "currentId": "msg_1",
+        },
+    }
+    form = ChatForm(chat=chat_data)
+    created = await client.chats.create_new(form)
+    assert created is not None
+    chat_id = created.id
+
+    try:
+        result = await client.chats.compact(chat_id, CompactChatForm(model="gpt-4"))
+        assert isinstance(result, dict)
+        assert result.get("ok") is True
+        # Default config disables compaction, so nothing is actually summarized.
+        assert result.get("compacted") is False
+        assert result.get("reason") == "disabled"
+    finally:
+        await client.chats.delete(chat_id)
+
+
+async def test_chat_search_snippet(client):
+    """
+    Test that the ChatTitleIdResponse.snippet field is populated by search.
+    """
+    needle = "supercalifragilistic"
+    chat_data = {
+        "title": "Snippet Search Chat",
+        # The backend search scans the top-level `messages` array
+        # (json_each(Chat.chat, '$.messages')), so include it alongside the
+        # tree-shaped `history.messages` map that the rest of the app reads.
+        "messages": [
+            {
+                "id": "msg_1",
+                "role": "user",
+                "content": f"Please find this {needle} term in my message.",
+            }
+        ],
+        "history": {
+            "messages": {
+                "msg_1": {
+                    "id": "msg_1",
+                    "role": "user",
+                    "content": f"Please find this {needle} term in my message.",
+                    "timestamp": 1600000000,
+                    "parentId": None,
+                    "childrenIds": [],
+                }
+            },
+            "currentId": "msg_1",
+        },
+    }
+    form = ChatForm(chat=chat_data)
+    created = await client.chats.create_new(form)
+    assert created is not None
+    chat_id = created.id
+
+    try:
+        results = await client.chats.search(needle)
+        assert results is not None
+        match = next((c for c in results if c.id == chat_id), None)
+        assert match is not None
+        assert match.snippet is not None
+        assert needle in match.snippet.lower()
+    finally:
         await client.chats.delete(chat_id)

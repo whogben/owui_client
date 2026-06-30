@@ -611,6 +611,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#owui_client.models.analytics.ModelAnalyticsEntry.unique_users" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        unique_users
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.analytics.ModelAnalyticsEntry.unique_chats" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        unique_chats
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1737,6 +1759,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../feedbacks/" class="md-nav__link">
         
   
@@ -2720,6 +2770,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../routers/events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../routers/files/" class="md-nav__link">
         
   
@@ -3518,6 +3596,28 @@
     <span class="md-ellipsis">
       
         count
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.analytics.ModelAnalyticsEntry.unique_users" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        unique_users
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.analytics.ModelAnalyticsEntry.unique_chats" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        unique_chats
       
     </span>
   </a>
@@ -4477,7 +4577,7 @@ user activity, and model performance. All endpoints require admin privileges.</p
 
 
 
-        <p>Message count for a single model.</p>
+        <p>Message count for a single model, within the queried date/group window.</p>
 
           
 
@@ -4573,6 +4673,48 @@ user activity, and model performance. All endpoints require admin privileges.</p
     <div class="doc doc-contents ">
 
         <p>Number of messages sent using this model.</p>
+
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h5 id="owui_client.models.analytics.ModelAnalyticsEntry.unique_users" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">unique_users</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">unique_users</span><span class="p">:</span> <span class="n"><span title="int">int</span></span> <span class="o">=</span> <span class="mi">0</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Number of distinct users who sent messages using this model.</p>
+
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h5 id="owui_client.models.analytics.ModelAnalyticsEntry.unique_chats" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">unique_chats</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">unique_chats</span><span class="p">:</span> <span class="n"><span title="int">int</span></span> <span class="o">=</span> <span class="mi">0</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Number of distinct chats that used this model.</p>
 
           
     </div>

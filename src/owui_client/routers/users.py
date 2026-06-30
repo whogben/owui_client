@@ -166,7 +166,27 @@ class UsersClient(ResourceBase):
             "POST",
             "/v1/users/default/permissions",
             model=UserPermissions,
-            json=permissions.model_dump(exclude_none=True),
+            json=permissions.model_dump(exclude_none=True, by_alias=True),
+        )
+
+    async def get_default_user_permission_defaults(self) -> UserPermissions:
+        """
+        Get the built-in default user permission set.
+
+        Returns the hardcoded `DEFAULT_USER_PERMISSIONS` shipped with Open WebUI,
+        unaffected by the currently configured defaults returned by
+        `get_default_user_permissions`. Intended for a "reset permissions to
+        defaults" workflow.
+
+        This is an admin-only endpoint.
+
+        Returns:
+            `UserPermissions`: The built-in default permissions.
+        """
+        return await self._request(
+            "GET",
+            "/v1/users/default/permissions/defaults",
+            model=UserPermissions,
         )
 
     async def get_user_settings(self) -> Optional[UserSettings]:

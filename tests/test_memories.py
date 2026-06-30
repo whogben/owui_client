@@ -3,6 +3,8 @@ from owui_client.models.memories import (
     AddMemoryForm,
     MemoryUpdateModel,
     QueryMemoryForm,
+    ListMemoryPathsForm,
+    ReadMemoryPathForm,
 )
 from owui_client.client import OpenWebUI
 
@@ -109,6 +111,80 @@ async def test_memories_query(client: OpenWebUI):
         # We can warn but maybe not fail the test if it's an environment issue?
         # But strictly, we should expect it to work if the environment is correct.
         pytest.fail(f"Query failed: {e}")
+
+
+async def _add_pathed_memory(client: OpenWebUI, content: str, path: str, memory_type: str = "context"):
+    """Helper: add a memory with a path/type and return it."""
+    return await client.memories.add_memory(
+        AddMemoryForm(content=content, type=memory_type, path=path)
+    )
+
+
+@pytest.mark.asyncio
+async def test_memories_list_paths(client: OpenWebUI):
+    # POST /memories/paths groups memories by (path, type) into a tree.
+    await client.memories.delete_memory_by_user_id()
+
+    await _add_pathed_memory(client, "work root note", "work")
+    await _add_pathed_memory(client, "project a note one", "work/project-a")
+    await _add_pathed_memory(client, "project a note two", "work/project-a")
+    await _add_pathed_memory(client, "personal note", "personal")
+
+    result = await client.memories.list_memory_paths(ListMemoryPathsForm())
+
+    assert isinstance(result, dict)
+    assert "paths" in result and "count" in result
+    assert isinstance(result["paths"], list)
+    assert isinstance(result["count"], int)
+    assert result["count"] >= 3  # work, work/project-a, personal
+
+    # Each group carries the documented keys.
+    for group in result["paths"]:
+        assert set(group.keys()) >= {"path", "type", "count", "updated_at", "children"}
+        assert isinstance(group["children"], list)
+
+    # The "work" group's immediate children should include "work/project-a".
+    work_group = next((g for g in result["paths"] if g["path"] == "work"), None)
+    assert work_group is not None, "expected a group for path 'work'"
+    assert "work/project-a" in work_group["children"]
+
+    # The "work/project-a" group should aggregate the two notes (count >= 2).
+    pa_group = next((g for g in result["paths"] if g["path"] == "work/project-a"), None)
+    assert pa_group is not None, "expected a group for path 'work/project-a'"
+    assert pa_group["count"] >= 2
+
+    await client.memories.delete_memory_by_user_id()
+
+
+@pytest.mark.asyncio
+async def test_memories_read_path(client: OpenWebUI):
+    # POST /memories/path returns memory rows at a path plus ancestors/descendants.
+    await client.memories.delete_memory_by_user_id()
+
+    await _add_pathed_memory(client, "work root note", "work")
+    await _add_pathed_memory(client, "project a note one", "work/project-a")
+    await _add_pathed_memory(client, "project a note two", "work/project-a")
+
+    result = await client.memories.read_memory_path(
+        ReadMemoryPathForm(path="work/project-a")
+    )
+
+    assert isinstance(result, dict)
+    assert result["path"] == "work/project-a"
+    assert isinstance(result["parents"], list)
+    assert isinstance(result["children"], list)
+    assert isinstance(result["memories"], list)
+
+    # The ancestor path "work" should be reported and its memory included.
+    assert "work" in result["parents"]
+    memory_paths = {m["path"] for m in result["memories"]}
+    assert "work/project-a" in memory_paths
+    assert "work" in memory_paths  # parent memory selected too
+    # Each returned memory is a full MemoryModel dict, including new fields.
+    for memory in result["memories"]:
+        assert {"id", "content", "type", "path", "meta"} <= set(memory.keys())
+
+    await client.memories.delete_memory_by_user_id()
 
 
 @pytest.mark.asyncio

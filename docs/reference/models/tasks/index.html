@@ -739,6 +739,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../feedbacks/" class="md-nav__link">
         
   
@@ -1569,6 +1597,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#owui_client.models.tasks.TaskConfigForm.AUTOCOMPLETE_GENERATION_PROMPT_TEMPLATE" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AUTOCOMPLETE_GENERATION_PROMPT_TEMPLATE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#owui_client.models.tasks.TaskConfigForm.TAGS_GENERATION_PROMPT_TEMPLATE" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2084,6 +2123,34 @@
     
   
     evaluations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../routers/events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    events
   
 
     
@@ -3054,6 +3121,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#owui_client.models.tasks.TaskConfigForm.AUTOCOMPLETE_GENERATION_PROMPT_TEMPLATE" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AUTOCOMPLETE_GENERATION_PROMPT_TEMPLATE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#owui_client.models.tasks.TaskConfigForm.TAGS_GENERATION_PROMPT_TEMPLATE" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3660,6 +3738,32 @@
     <div class="doc doc-contents ">
 
         <p>The maximum length of the input text context to consider for autocompletion.</p>
+
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h5 id="owui_client.models.tasks.TaskConfigForm.AUTOCOMPLETE_GENERATION_PROMPT_TEMPLATE" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">AUTOCOMPLETE_GENERATION_PROMPT_TEMPLATE</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">AUTOCOMPLETE_GENERATION_PROMPT_TEMPLATE</span><span class="p">:</span> <span class="n"><span title="str">str</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Custom prompt template for autocomplete generation.</p>
+<p>An empty string means the backend falls back to its built-in default
+autocomplete template. When non-empty, it may use these placeholders:
+<code>{{PROMPT}}</code> (text being completed), <code>{{TYPE}}</code> (completion type, e.g.
+'General' or 'Search Query'), and <code>{{MESSAGES:END:N}}</code> (the last N chat
+messages for context).</p>
 
           
     </div>

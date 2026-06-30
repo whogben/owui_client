@@ -388,6 +388,15 @@ class ChatTitleIdResponse(BaseModel):
     last_read_at: Optional[int] = None
     """Timestamp when the user last read the chat (Unix epoch)."""
 
+    snippet: Optional[str] = None
+    """Short excerpt of chat content matching a search query.
+
+    Populated only by the chat search endpoint (`GET /search`): it returns up to
+    roughly 200 characters of the first message whose `content` contains the
+    search text, centered on the match and wrapped with `...` when truncated.
+    `None` for results that do not come from a content search.
+    """
+
 
 # Models from router
 class TagForm(BaseModel):
@@ -463,6 +472,19 @@ class EventForm(BaseModel):
 
     The data field is passed through the event emission system and processed based on the event type.
     """
+
+
+class CompactChatForm(BaseModel):
+    """
+    Form for triggering context compaction on a chat.
+
+    Passed to the `POST /{id}/compact` endpoint to optionally override the model
+    used to generate the compaction summary. If `model` is omitted the backend
+    infers it from the chat's last assistant message, then `chat.models`.
+    """
+
+    model: Optional[str] = None
+    """Optional model id to use for generating the compaction summary."""
 
 
 class CloneForm(BaseModel):

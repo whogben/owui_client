@@ -21,9 +21,10 @@ async def test_format_code(client):
 
 @pytest.mark.asyncio
 @pytest.mark.xfail(
-    reason="The /v1/utils/markdown endpoint was removed in Open WebUI 0.9.6; "
-           "the client method is retained for forward compatibility. "
-           "Remove or update this test if the endpoint returns in a future release.",
+    reason="The /v1/utils/markdown endpoint was removed in Open WebUI 0.9.6 and "
+           "remains absent through 0.10.1; the client method is retained for "
+           "forward compatibility. Remove or update this test if the endpoint "
+           "returns in a future release.",
     strict=False,
 )
 async def test_markdown(client):

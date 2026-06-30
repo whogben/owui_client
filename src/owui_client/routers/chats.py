@@ -16,6 +16,7 @@ from owui_client.models.chats import (
     MessageForm,
     EventForm,
     CloneForm,
+    CompactChatForm,
     ChatFolderIdForm,
     ChatAccessGrantsForm,
     ChatStatsExport,
@@ -360,6 +361,15 @@ class ChatsClient(ResourceBase):
         """
         return await self._request("POST", "/v1/chats/unarchive/all", model=bool)
 
+    async def get_archived_count(self) -> int:
+        """
+        Get the number of archived chats for the current user.
+
+        Returns:
+            The count of archived chats (server response is a bare integer).
+        """
+        return await self._request("GET", "/v1/chats/archived/count", model=int)
+
     async def get_shared(self, share_id: str) -> Optional[ChatResponse]:
         """
         Get a shared chat.
@@ -520,6 +530,46 @@ class ChatsClient(ResourceBase):
         """
         return await self._request("POST", f"/v1/chats/{id}/clone/shared", model=ChatResponse)
 
+    async def compact(
+        self, id: str, form_data: Optional[CompactChatForm] = None
+    ) -> dict:
+        """
+        Compact a chat's context by summarizing its older messages.
+
+        Triggers context compaction on the chat's current branch: the backend
+        summarizes earlier messages so they can be dropped from the active
+        context window while a `contextSummary` is kept on the checkpoint
+        message. When `form_data.model` is omitted, the backend infers the model
+        from the chat's last assistant message, then from `chat.models`.
+
+        Compaction only runs when enabled via config
+        (`chat.context_compaction.enable`, disabled by default). When disabled
+        the backend returns a result with `compacted` False without invoking a
+        model; when enabled it calls the task model to produce the summary.
+
+        Args:
+            id: The chat ID.
+            form_data: Optional `CompactChatForm` carrying an explicit model id.
+
+        Returns:
+            An outcome dict. Keys vary by case:
+            - `ok` (bool): always True on success.
+            - `compacted` (bool): whether messages were actually summarized.
+            - `reason` (str): present when not compacted; one of 'disabled', 'empty', or 'too_short'.
+            - `dropped_messages` (int): present when compacted; count summarized out of the active context.
+            - `kept_messages` (int): present when compacted; count retained.
+            - `summary_chars` (int): present when compacted; length of the generated summary.
+
+        Raises:
+            HTTPStatusError: 401 if the chat does not exist or is not owned by
+                the caller; 409 if a generation task is still active for the
+                chat; 400 if no model can be resolved for compaction.
+        """
+        json_body = form_data.model_dump(exclude_none=True) if form_data else None
+        return await self._request(
+            "POST", f"/v1/chats/{id}/compact", model=dict, json=json_body
+        )
+
     async def archive(self, id: str) -> Optional[ChatResponse]:
         """
         Toggle the archived status of a chat.
@@ -557,6 +607,18 @@ class ChatsClient(ResourceBase):
             True if successful.
         """
         return await self._request("DELETE", f"/v1/chats/{id}/share", model=bool)
+
+    async def unshare_all(self) -> bool:
+        """
+        Stop sharing every chat owned by the current user.
+
+        Removes all shared snapshots, clears each chat's `share_id`, and deletes
+        any `shared_chat` access grants in a single action.
+
+        Returns:
+            True if the shared chats were removed successfully.
+        """
+        return await self._request("DELETE", "/v1/chats/share/all", model=bool)
 
     async def update_shared_chat_access(
         self, id: str, form_data: ChatAccessGrantsForm

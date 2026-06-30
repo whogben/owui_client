@@ -1757,6 +1757,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#owui_client.models.chats.ChatTitleIdResponse.snippet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        snippet
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1953,6 +1964,51 @@
     <span class="md-ellipsis">
       
         data
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.chats.CompactChatForm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CompactChatForm
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CompactChatForm">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.chats.CompactChatForm-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Attributes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.chats.CompactChatForm.model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        model
       
     </span>
   </a>
@@ -3291,6 +3347,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../feedbacks/" class="md-nav__link">
         
   
@@ -4254,6 +4338,34 @@
     
   
     evaluations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../routers/events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    events
   
 
     
@@ -6056,6 +6168,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#owui_client.models.chats.ChatTitleIdResponse.snippet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        snippet
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -6252,6 +6375,51 @@
     <span class="md-ellipsis">
       
         data
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.chats.CompactChatForm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CompactChatForm
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CompactChatForm">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.chats.CompactChatForm-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Attributes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.chats.CompactChatForm.model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        model
       
     </span>
   </a>
@@ -10023,6 +10191,31 @@ It plays a crucial role in the chat management system, particularly in tag-based
 
 </div>
 
+<div class="doc doc-object doc-attribute">
+
+
+
+<h5 id="owui_client.models.chats.ChatTitleIdResponse.snippet" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">snippet</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">snippet</span><span class="p">:</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Short excerpt of chat content matching a search query.</p>
+<p>Populated only by the chat search endpoint (<code>GET /search</code>): it returns up to
+roughly 200 characters of the first message whose <code>content</code> contains the
+search text, centered on the match and wrapped with <code>...</code> when truncated.
+<code>None</code> for results that do not come from a content search.</p>
+
+          
+    </div>
+
+</div>
+
 
 
 
@@ -10563,6 +10756,118 @@ This dictionary holds the actual content and metadata for the event being trigge
 - 'files': Adds file objects to messages
 - 'source'/'citation': Handles source and citation data</p>
 <p>The data field is passed through the event emission system and processed based on the event type.</p>
+
+          
+    </div>
+
+</div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="owui_client.models.chats.CompactChatForm" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">CompactChatForm</span>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+
+        <p>Form for triggering context compaction on a chat.</p>
+<p>Passed to the <code>POST /{id}/compact</code> endpoint to optionally override the model
+used to generate the compaction summary. If <code>model</code> is omitted the backend
+infers it from the chat's last assistant message, then <code>chat.models</code>.</p>
+
+          
+
+
+  <div class="doc doc-backlinks">
+        <b class="doc doc-backlink-type">Used by:</b>
+          <ul class="doc doc-backlink-list">
+      <li class="doc doc-backlink">
+            <span class="doc doc-backlink-crumb">
+      <span>Code Reference</span>
+  </span>
+
+            <span class="doc doc-backlink-crumb">
+      <span>routers</span>
+  </span>
+
+            <span class="doc doc-backlink-crumb">
+      <a href="../../routers/chats/#">chats</a>
+  </span>
+
+            <span class="doc doc-backlink-crumb">
+      <a href="../../routers/chats/#owui_client.routers.chats-classes">Classes</a>
+  </span>
+
+            <span class="doc doc-backlink-crumb">
+      <a href="../../routers/chats/#owui_client.routers.chats.ChatsClient">ChatsClient</a>
+  </span>
+
+            <span class="doc doc-backlink-crumb">
+      <a href="../../routers/chats/#owui_client.routers.chats.ChatsClient-functions">Functions</a>
+  </span>
+
+            <span class="doc doc-backlink-crumb last">
+      <a href="../../routers/chats/#owui_client.routers.chats.ChatsClient.compact">compact</a>
+  </span>
+
+      </li>
+  </ul>
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+<h4 id="owui_client.models.chats.CompactChatForm-attributes">Attributes</h4>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h5 id="owui_client.models.chats.CompactChatForm.model" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">model</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">model</span><span class="p">:</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Optional model id to use for generating the compaction summary.</p>
 
           
     </div>

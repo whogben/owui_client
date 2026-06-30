@@ -156,18 +156,45 @@ async def test_user_permissions_lifecycle(client):
     # Toggle a permission
     original_web_search = default_perms.features.web_search
     default_perms.features.web_search = not original_web_search
+    # Also exercise the `chat.import_` field, which is serialized under its JSON
+    # alias `import` (a Python keyword). Round-tripping it proves the alias write
+    # path works and guards against a future backend dropping populate_by_name.
+    original_import = default_perms.chat.import_
+    default_perms.chat.import_ = not original_import
 
     updated_perms = await client.users.update_default_user_permissions(default_perms)
     assert isinstance(updated_perms, UserPermissions)
     assert updated_perms.features.web_search == (not original_web_search)
+    assert updated_perms.chat.import_ == (not original_import)
 
     # 5. Verify persistence
     check_perms = await client.users.get_default_user_permissions()
     assert check_perms.features.web_search == (not original_web_search)
+    assert check_perms.chat.import_ == (not original_import)
 
     # 6. Revert
     default_perms.features.web_search = original_web_search
+    default_perms.chat.import_ = original_import
     await client.users.update_default_user_permissions(default_perms)
+
+
+async def test_get_default_user_permission_defaults(client):
+    """
+    Test get_default_user_permission_defaults returns the built-in default
+    permission set, including the newly added skills/chat-import/webhook fields.
+    """
+    defaults = await client.users.get_default_user_permission_defaults()
+    assert isinstance(defaults, UserPermissions)
+
+    # Workspace skills import/export fields exist and are bools.
+    assert isinstance(defaults.workspace.skills_import, bool)
+    assert isinstance(defaults.workspace.skills_export, bool)
+
+    # Chat import field is exposed as `import_` (JSON key `import`).
+    assert isinstance(defaults.chat.import_, bool)
+
+    # Features webhooks field exists and is a bool.
+    assert isinstance(defaults.features.webhooks, bool)
 
 
 async def test_user_settings_lifecycle(client):

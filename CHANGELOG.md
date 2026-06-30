@@ -7,6 +7,77 @@ Package version numbers follow the Open WebUI mapping described in the README (t
 
 ## [Unreleased]
 
+## [10.1.0] - 2026-06-30
+
+Upgrades the target from Open WebUI 0.9.6 to **0.10.1**. Open WebUI 0.10.0 was a large release; this client version adds support for its headline features (event webhooks, external knowledge bases, shared folders, the reworked memory system, admin OAuth configuration, terminal-server orchestration, context compaction, and the new web-search providers) and resolves all detected drift against the 0.10.1 backend.
+
+### Changed
+
+- Updated target Open WebUI version from 0.9.6 to 0.10.1.
+- Updated reference source (`refs/owui_source_main/`) and regenerated `refs/owui_openapi_main.json` from Open WebUI 0.10.1.
+- `ModelsClient.update_model_by_id()` now **preserves a model's existing access grants** when `access_grants` is omitted from the `ModelForm`. Previously (as a workaround for an OWUI 0.9.6-0.10.1 backend bug where the handler re-validates `ModelForm(...)` and 500s on `access_grants=None`) it defaulted to `[]`, which the backend interprets as "delete all grants" and would silently wipe a model's sharing grants. It now fetches the current grants and re-sends them. Passing an explicit `[]` still clears grants, and a populated list still replaces them.
+- `EvaluationsClient`: migrated to the restructured 0.10.1 feedback endpoints. The old `GET /feedbacks/all` (returning `List[FeedbackResponse]`) no longer exists; the client now uses `GET /feedbacks/all/ids` and `GET /feedbacks/all/export` (the `get_all_feedbacks`-style method was removed).
+
+### Added
+
+#### New resource: `EventsClient` (event webhooks system)
+- New `owui_client.models.events` module and `owui_client.routers.events` (`client.events`) implementing Open WebUI's 0.10.0 event-webhooks system, which replaced the legacy per-user webhook.
+- Models: `EventWebhook`, `EventWebhookTarget`, `EventWebhookForm`, `EventWebhookUpdateForm`.
+- Endpoints: `get_event_webhooks()` (`GET /events/webhooks`), `create_event_webhook()` (`POST`), `update_event_webhook()` (`PUT /events/webhooks/{id}`), `delete_event_webhook()` (`DELETE`).
+
+#### Routers - New Endpoints
+- `KnowledgeClient`: full **External Knowledge Bases / Connections** feature (11 endpoints) — `get/create/get/update/delete_external_knowledge_connection`, `test_external_knowledge_connection`, `test_external_knowledge_source`, `test_external_knowledge_retrieval`, `create_external_knowledge`, `create_external_knowledge_source`, `update_external_knowledge_source` (under `/external/connections`, `/external/source`, `/external/knowledge`).
+- `FoldersClient`: shared-folders feature — `get_shared_folders()` (`GET /shared`), `update_folder_access_by_id()` (`POST /{id}/access/update`), `get_shared_folder_chats()` (`GET /{id}/shared/chats`).
+- `MemoriesClient`: reworked memory system — `list_memory_paths()` (`POST /paths`), `read_memory_path()` (`POST /path`).
+- `AuthsClient`: admin OAuth configuration — `get_oauth_config()` / `update_oauth_config()` (`GET`/`POST /admin/config/oauth`).
+- `ConfigsClient`: `get_config_namespace()` (`GET /namespace/{namespace}`), `put_terminal_server_lifecycle()` (`POST /terminal_servers/lifecycle`), `refresh_terminal_server_terminals()` (`POST /terminal_servers/refresh`).
+- `ChatsClient`: `get_archived_count()` (`GET /archived/count`), `unshare_all()` (`DELETE /share/all`), `compact()` (`POST /{id}/compact`, automatic context compaction).
+- `UsersClient`: `get_default_user_permission_defaults()` (`GET /default/permissions/defaults`).
+- `FilesClient`: `count_files()` (`GET /count`).
+- `ModelsClient`: `get_base_model_tags()` (`GET /base/tags`).
+
+#### Models - New Classes
+- events: `EventWebhook`, `EventWebhookTarget`, `EventWebhookForm`, `EventWebhookUpdateForm`
+- knowledge: `ExternalKnowledgeConnectionForm`, `ExternalKnowledgeSourceForm`, `ExternalKnowledgeCreateForm`, `ExternalKnowledgeSourceCreateForm`, `ExternalKnowledgeSourceUpdateForm`, `ExternalKnowledgeSourceTestForm`, `ExternalKnowledgeRetrieveTestForm`, `ExternalKnowledgeConnectionListResponse`
+- folders: `SharedFolderResponse`, `FolderAccessGrantsForm`
+- memories: `ListMemoryPathsForm`, `ReadMemoryPathForm`
+- auths: `OAuthConfigForm`
+- configs: `TerminalServerLifecycleForm`, `TerminalServerRefreshForm`
+- chats: `CompactChatForm`
+- folders: `FolderModel` gained an `access_grants` field (the backend already returns it on `get_folder_by_id` / `update_folder_access_by_id`; previously it was silently dropped during parsing, so the shared-folders feature could write grants but not read them back)
+
+#### Models - New Fields
+- `TaskConfigForm`: `AUTOCOMPLETE_GENERATION_PROMPT_TEMPLATE`
+- `ToolMeta`: `has_user_valves`
+- `ModelAnalyticsEntry`: `unique_users`, `unique_chats`
+- `WorkspacePermissions`: `skills_import`, `skills_export`
+- `ChatPermissions`: `import_` (JSON key `import`; serialized via field alias)
+- `FeaturesPermissions`: `webhooks`
+- `WebConfig` (retrieval): `ENABLE_WEB_SEARCH_CONFIRMATION`, `WEB_SEARCH_CONFIRMATION_CONTENT`, `SERPHOUSE_API_KEY`, `SERPHOUSE_DOMAIN`, `MICROSOFT_WEB_IQ_API_KEY`, `MICROSOFT_WEB_IQ_API_BASE_URL`, `MICROSOFT_WEB_IQ_LANGUAGE`
+- `ConfigForm` (retrieval): `EXTERNAL_DOCUMENT_LOADER_HEADERS`, `MISTRAL_OCR_USE_BASE64`, `RAG_TOKENIZER_MODEL`
+- `ChatTitleIdResponse`: `snippet`
+- `MemoryModel` / `AddMemoryForm` / `MemoryUpdateModel`: `type` (`"user"`/`"context"`), `path`, (`MemoryModel` only) `meta`
+- `OAuthClientRegistrationForm`: `oauth_scope`
+
+### Fixed
+
+- `tests/test_tasks.py` `test_tasks_config` / `test_title_generation`: now send `AUTOCOMPLETE_GENERATION_PROMPT_TEMPLATE` (required by the 0.10.1 backend); previously 422.
+- `tests/test_root.py` `test_webhook_url`: removed (the legacy `/api/webhook` endpoints were removed in OWUI 0.10.0 and replaced by the event-webhooks system).
+- Removed obsolete `xfail` markers that targeted 0.9.6 backend bugs now fixed upstream: `test_ollama.test_ollama_models`, `test_evaluations.test_feedback_lifecycle`, `test_models.test_model_lifecycle` — all now pass against 0.10.1.
+- `UsersClient.update_default_user_permissions()` now serializes permissions with `by_alias=True`, so the `ChatPermissions.import_` field is sent under its JSON key `import` (matching the backend's storage key). Previously it relied on the backend's `populate_by_name` to accept `import_`; the round-trip is now covered by a test.
+- `KnowledgeClient.get_pending_knowledge_files()` (pre-existing latent bug) used `model=list`, which corrupted list-of-dicts responses into lists of dict keys. Fixed to `list[dict]`.
+
+### Removed
+
+- `RootClient.get_webhook_url()` and `update_webhook_url()`, plus `models.root.UrlForm` — the underlying `/api/webhook` endpoints were removed in Open WebUI 0.10.0. Use the new `EventsClient` instead.
+- `EvaluationsClient.get_all_feedbacks()` — the `GET /feedbacks/all` endpoint was removed in 0.10.1; use `get_all_feedback_ids()` / `export_all_feedbacks()`.
+
+### Known Issues (OWUI 0.10.1 Backend / Test Environment)
+
+These tests are marked `xfail` due to upstream behavior unrelated to the client:
+- `tests/test_utils.py::test_markdown` — the `/v1/utils/markdown` endpoint was removed in Open WebUI 0.9.6 and remains absent through 0.10.1. The client method and `MarkdownForm` model are retained for forward compatibility but return 404/405 against current backends.
+- `tests/test_openai.py::test_speech` — `/audio/speech` hardcodes `https://api.openai.com/v1`, so it cannot be exercised against the mock inference provider in tests.
+
 ## [9.6.0] - 2026-06-02
 
 ### Changed

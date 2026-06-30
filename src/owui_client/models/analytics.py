@@ -9,13 +9,19 @@ from pydantic import BaseModel, ConfigDict
 
 
 class ModelAnalyticsEntry(BaseModel):
-    """Message count for a single model."""
+    """Message count for a single model, within the queried date/group window."""
 
     model_id: str
     """Identifier of the model (e.g. 'gpt-4o', 'llama3')."""
 
     count: int
     """Number of messages sent using this model."""
+
+    unique_users: int = 0
+    """Number of distinct users who sent messages using this model."""
+
+    unique_chats: int = 0
+    """Number of distinct chats that used this model."""
 
 
 class ModelAnalyticsResponse(BaseModel):

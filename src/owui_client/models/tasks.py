@@ -46,6 +46,16 @@ class TaskConfigForm(BaseModel):
     AUTOCOMPLETE_GENERATION_INPUT_MAX_LENGTH: int
     """The maximum length of the input text context to consider for autocompletion."""
 
+    AUTOCOMPLETE_GENERATION_PROMPT_TEMPLATE: str
+    """Custom prompt template for autocomplete generation.
+
+    An empty string means the backend falls back to its built-in default
+    autocomplete template. When non-empty, it may use these placeholders:
+    `{{PROMPT}}` (text being completed), `{{TYPE}}` (completion type, e.g.
+    'General' or 'Search Query'), and `{{MESSAGES:END:N}}` (the last N chat
+    messages for context).
+    """
+
     TAGS_GENERATION_PROMPT_TEMPLATE: str
     """The prompt template used for generating chat tags."""
 

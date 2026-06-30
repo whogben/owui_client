@@ -34,6 +34,7 @@ from owui_client.routers.calendar import CalendarClient
 from owui_client.routers.folders import FoldersClient
 from owui_client.routers.functions import FunctionsClient
 from owui_client.routers.evaluations import EvaluationsClient
+from owui_client.routers.events import EventsClient
 from owui_client.routers.utils import UtilsClient
 from owui_client.routers.terminals import TerminalsClient
 from owui_client.routers.root import RootClient
@@ -137,6 +138,9 @@ class OpenWebUI(OWUIClientBase):
 
         self.evaluations = EvaluationsClient(self)
         """Client for Evaluations endpoints."""
+
+        self.events = EventsClient(self)
+        """Client for Event Webhooks endpoints."""
 
         self.terminals = TerminalsClient(self)
         """Client for Terminals endpoints."""

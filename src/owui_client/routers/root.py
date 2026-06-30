@@ -4,12 +4,15 @@ Client for root/main endpoints.
 
 from typing import Dict, Any
 from owui_client.client_base import ResourceBase
-from owui_client.models.root import UrlForm
 
 
 class RootClient(ResourceBase):
     """
-    Client for root/main endpoints (version, config, models, etc.).
+    Client for root/main endpoints (version, config, models, chat, etc.).
+
+    Note: the legacy per-instance `/api/webhook` URL endpoints were removed in
+    Open WebUI 0.10.0 in favor of the full event webhooks system; see
+    `OpenWebUI.events` (`EventsClient`).
     """
     async def get_version(self) -> Dict[str, Any]:
         """
@@ -56,32 +59,6 @@ class RootClient(ResourceBase):
             - `default_models`: Default models configuration (if authenticated).
         """
         return await self._request("GET", "/config", model=dict)
-
-    async def get_webhook_url(self) -> Dict[str, str]:
-        """
-        Get the configured webhook URL.
-
-        Returns:
-            A dictionary containing the `url`.
-        """
-        return await self._request("GET", "/webhook", model=dict)
-
-    async def update_webhook_url(self, url: str) -> Dict[str, str]:
-        """
-        Update the webhook URL.
-
-        Args:
-            url: The new webhook URL.
-
-        Returns:
-            A dictionary containing the updated `url`.
-        """
-        return await self._request(
-            "POST",
-            "/webhook",
-            model=dict,
-            json=UrlForm(url=url).model_dump(),
-        )
 
     async def get_models(self) -> Dict[str, Any]:
         """

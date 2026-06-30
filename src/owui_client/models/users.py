@@ -2,7 +2,7 @@
 
 import datetime
 from typing import List, Optional
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class UpdateProfileForm(BaseModel):
@@ -443,6 +443,12 @@ class WorkspacePermissions(BaseModel):
     tools_export: bool = False
     """Permission to export tools."""
 
+    skills_import: bool = False
+    """Permission to import skills."""
+
+    skills_export: bool = False
+    """Permission to export skills."""
+
 
 class SharingPermissions(BaseModel):
     """
@@ -495,7 +501,14 @@ class SharingPermissions(BaseModel):
 class ChatPermissions(BaseModel):
     """
     Permissions related to chat functionality.
+
+    The `import_` field is serialized under the JSON key `import` (a Pydantic
+    alias) because `import` is a reserved Python keyword. With
+    `populate_by_name=True`, the field accepts both the alias `import` and the
+    field name `import_` on input.
     """
+
+    model_config = ConfigDict(populate_by_name=True)
 
     controls: bool = True
     """Access to chat controls."""
@@ -538,6 +551,9 @@ class ChatPermissions(BaseModel):
 
     export: bool = True
     """Permission to export chats."""
+
+    import_: bool = Field(default=True, alias='import')
+    """Permission to import chats. JSON key is `import` (Python keyword)."""
 
     stt: bool = True
     """Access to Speech-to-Text."""
@@ -595,6 +611,9 @@ class FeaturesPermissions(BaseModel):
 
     calendar: bool = True
     """Access to calendar."""
+
+    webhooks: bool = False
+    """Access to user webhooks."""
 
 
 class SettingsPermissions(BaseModel):

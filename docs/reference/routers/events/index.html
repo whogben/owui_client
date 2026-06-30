@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../users/">
+        <link rel="prev" href="../evaluations/">
       
       
-        <link rel="next" href="../../shortcuts/">
+        <link rel="next" href="../files/">
       
       
         
@@ -23,7 +23,7 @@
     
     
       
-        <title>utils - Python Client for Open WebUI</title>
+        <title>events - Python Client for Open WebUI</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#owui_client.routers.utils" class="md-skip">
+        <a href="#owui_client.routers.events" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              utils
+              events
             
           </span>
         </div>
@@ -1747,10 +1747,35 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../events/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    events
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1766,6 +1791,130 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#owui_client.routers.events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        events
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#owui_client.routers.events-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Classes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.routers.events.EventsClient" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EventsClient
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="EventsClient">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.routers.events.EventsClient-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Functions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Functions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.routers.events.EventsClient.get_event_webhooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_event_webhooks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.routers.events.EventsClient.create_event_webhook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create_event_webhook
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.routers.events.EventsClient.update_event_webhook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        update_event_webhook
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.routers.events.EventsClient.delete_event_webhook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        delete_event_webhook
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2335,35 +2484,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    utils
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../utils/" class="md-nav__link">
         
   
   
@@ -2379,152 +2503,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#owui_client.routers.utils" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        utils
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#owui_client.routers.utils-classes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Classes
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Classes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#owui_client.routers.utils.UtilsClient" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        UtilsClient
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="UtilsClient">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#owui_client.routers.utils.UtilsClient-functions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Functions
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Functions">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#owui_client.routers.utils.UtilsClient.get_gravatar" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        get_gravatar
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#owui_client.routers.utils.UtilsClient.format_code" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        format_code
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#owui_client.routers.utils.UtilsClient.execute_code" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        execute_code
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#owui_client.routers.utils.UtilsClient.get_html_from_markdown" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        get_html_from_markdown
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#owui_client.routers.utils.UtilsClient.download_chat_as_pdf" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        download_chat_as_pdf
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#owui_client.routers.utils.UtilsClient.download_db" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        download_db
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2685,10 +2663,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#owui_client.routers.utils" class="md-nav__link">
+  <a href="#owui_client.routers.events" class="md-nav__link">
     <span class="md-ellipsis">
       
-        utils
+        events
       
     </span>
   </a>
@@ -2696,7 +2674,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#owui_client.routers.utils-classes" class="md-nav__link">
+  <a href="#owui_client.routers.events-classes" class="md-nav__link">
     <span class="md-ellipsis">
       
         Classes
@@ -2708,19 +2686,19 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#owui_client.routers.utils.UtilsClient" class="md-nav__link">
+  <a href="#owui_client.routers.events.EventsClient" class="md-nav__link">
     <span class="md-ellipsis">
       
-        UtilsClient
+        EventsClient
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="UtilsClient">
+    <nav class="md-nav" aria-label="EventsClient">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#owui_client.routers.utils.UtilsClient-functions" class="md-nav__link">
+  <a href="#owui_client.routers.events.EventsClient-functions" class="md-nav__link">
     <span class="md-ellipsis">
       
         Functions
@@ -2732,10 +2710,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#owui_client.routers.utils.UtilsClient.get_gravatar" class="md-nav__link">
+  <a href="#owui_client.routers.events.EventsClient.get_event_webhooks" class="md-nav__link">
     <span class="md-ellipsis">
       
-        get_gravatar
+        get_event_webhooks
       
     </span>
   </a>
@@ -2743,10 +2721,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#owui_client.routers.utils.UtilsClient.format_code" class="md-nav__link">
+  <a href="#owui_client.routers.events.EventsClient.create_event_webhook" class="md-nav__link">
     <span class="md-ellipsis">
       
-        format_code
+        create_event_webhook
       
     </span>
   </a>
@@ -2754,10 +2732,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#owui_client.routers.utils.UtilsClient.execute_code" class="md-nav__link">
+  <a href="#owui_client.routers.events.EventsClient.update_event_webhook" class="md-nav__link">
     <span class="md-ellipsis">
       
-        execute_code
+        update_event_webhook
       
     </span>
   </a>
@@ -2765,32 +2743,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#owui_client.routers.utils.UtilsClient.get_html_from_markdown" class="md-nav__link">
+  <a href="#owui_client.routers.events.EventsClient.delete_event_webhook" class="md-nav__link">
     <span class="md-ellipsis">
       
-        get_html_from_markdown
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#owui_client.routers.utils.UtilsClient.download_chat_as_pdf" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        download_chat_as_pdf
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#owui_client.routers.utils.UtilsClient.download_db" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        download_db
+        delete_event_webhook
       
     </span>
   </a>
@@ -2829,16 +2785,20 @@
 
 
 
-  <h1>utils</h1>
+  <h1>events</h1>
 
 <div class="doc doc-object doc-module">
 
 
 
-<a id="owui_client.routers.utils"></a>
+<a id="owui_client.routers.events"></a>
     <div class="doc doc-contents first">
 
-        <p>Client for the Utils endpoints.</p>
+        <p>Client for the Event Webhooks endpoints.</p>
+<p>These are top-level <code>@app</code> routes under <code>/api/events/webhooks</code> (defined in
+<code>refs/owui_source_main/backend/open_webui/main.py</code>, not in a router module). All
+four endpoints require administrator access. The event webhooks system replaced
+the old per-instance <code>/api/webhook</code> URL endpoints in Open WebUI 0.10.0.</p>
 
           
 
@@ -2858,18 +2818,18 @@
 
 
 
-<h2 id="owui_client.routers.utils-classes">Classes</h2>
+<h2 id="owui_client.routers.events-classes">Classes</h2>
 
 <div class="doc doc-object doc-class">
 
 
 
-<h3 id="owui_client.routers.utils.UtilsClient" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">UtilsClient</span>
+<h3 id="owui_client.routers.events.EventsClient" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">EventsClient</span>
 
 
 </h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">UtilsClient</span><span class="p">(</span><span class="n">client</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            OWUIClientBase (owui_client.client_base.OWUIClientBase)" href="../../client_base/#owui_client.client_base.OWUIClientBase">OWUIClientBase</a></span><span class="p">)</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">EventsClient</span><span class="p">(</span><span class="n">client</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            OWUIClientBase (owui_client.client_base.OWUIClientBase)" href="../../client_base/#owui_client.client_base.OWUIClientBase">OWUIClientBase</a></span><span class="p">)</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
@@ -2878,7 +2838,7 @@
 
 
 
-        <p>Client for utility operations such as Gravatar, code formatting/execution, markdown conversion, and database downloads.</p>
+        <p>Client for the Event Webhooks admin endpoints.</p>
 
           
 
@@ -2908,7 +2868,7 @@
   </span>
 
             <span class="doc doc-backlink-crumb last">
-      <a href="../../client/#owui_client.client.OpenWebUI.utils">utils</a>
+      <a href="../../client/#owui_client.client.OpenWebUI.events">events</a>
   </span>
 
       </li>
@@ -2942,53 +2902,25 @@
 
 
 
-<h4 id="owui_client.routers.utils.UtilsClient-functions">Functions</h4>
+<h4 id="owui_client.routers.events.EventsClient-functions">Functions</h4>
 
 <div class="doc doc-object doc-function">
 
 
-<h5 id="owui_client.routers.utils.UtilsClient.get_gravatar" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">get_gravatar</span>
+<h5 id="owui_client.routers.events.EventsClient.get_event_webhooks" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">get_event_webhooks</span>
 
 
 </h5>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_gravatar</span><span class="p">(</span><span class="n">email</span><span class="p">:</span> <span class="n"><span title="str">str</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="str">str</span></span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_event_webhooks</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n"><span title="typing.List">List</span></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-internal" title="            EventWebhook (owui_client.models.events.EventWebhook)" href="../../models/events/#owui_client.models.events.EventWebhook">EventWebhook</a></span><span class="p">]</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
 
-        <p>Get the Gravatar URL for a given email address.</p>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>email</code>
-            </td>
-            <td>
-                  <code><span title="str">str</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>The email address to retrieve the Gravatar URL for.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-      </tbody>
-    </table>
+        <p>List all configured event webhooks.</p>
+<p>Returns the normalized webhook list stored under the <code>events.webhooks</code>
+config key. Invalid entries in the stored config are skipped by the
+backend rather than causing an error.</p>
 
 
     <p><span class="doc-section-title">Returns:</span></p>
@@ -3002,11 +2934,11 @@
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="str">str</span></code>
+                  <code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="            EventWebhook (owui_client.models.events.EventWebhook)" href="../../models/events/#owui_client.models.events.EventWebhook">EventWebhook</a>]</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The URL of the Gravatar image.</p>
+                <p>List[EventWebhook]: All event webhooks (may be empty).</p>
               </div>
             </td>
           </tr>
@@ -3016,108 +2948,9 @@
           
 
             <details class="mkdocstrings-source">
-              <summary>Source code in <code>src/owui_client/routers/utils.py</code></summary>
-              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-13">13</a></span>
-<span class="normal"><a href="#__codelineno-0-14">14</a></span>
-<span class="normal"><a href="#__codelineno-0-15">15</a></span>
-<span class="normal"><a href="#__codelineno-0-16">16</a></span>
-<span class="normal"><a href="#__codelineno-0-17">17</a></span>
-<span class="normal"><a href="#__codelineno-0-18">18</a></span>
-<span class="normal"><a href="#__codelineno-0-19">19</a></span>
-<span class="normal"><a href="#__codelineno-0-20">20</a></span>
-<span class="normal"><a href="#__codelineno-0-21">21</a></span>
-<span class="normal"><a href="#__codelineno-0-22">22</a></span>
-<span class="normal"><a href="#__codelineno-0-23">23</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_gravatar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="sd">    Get the Gravatar URL for a given email address.</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16"></a>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="sd">    Args:</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="sd">        email: The email address to retrieve the Gravatar URL for.</span>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19"></a>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="sd">    Returns:</span>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="sd">        The URL of the Gravatar image.</span>
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23"></a>    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;/v1/utils/gravatar&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="n">email</span><span class="p">})</span>
-</span></code></pre></div></td></tr></table></div>
-            </details>
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h5 id="owui_client.routers.utils.UtilsClient.format_code" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">format_code</span>
-
-
-</h5>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">format_code</span><span class="p">(</span><span class="n">form_data</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            CodeForm (owui_client.models.utils.CodeForm)" href="../../models/utils/#owui_client.models.utils.CodeForm">CodeForm</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="typing.Dict">Dict</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">,</span> <span class="n"><span title="str">str</span></span><span class="p">]</span>
-</span></code></pre></div>
-
-    <div class="doc doc-contents ">
-
-        <p>Format the provided code using Black (Python formatter).</p>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>form_data</code>
-            </td>
-            <td>
-                  <code><a class="autorefs autorefs-internal" title="            CodeForm (owui_client.models.utils.CodeForm)" href="../../models/utils/#owui_client.models.utils.CodeForm">CodeForm</a></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>The <code>CodeForm</code> containing the code to format.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                  <code><span title="typing.Dict">Dict</span>[<span title="str">str</span>, <span title="str">str</span>]</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>A dictionary containing the formatted code under the "code" key.</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-          
-
-            <details class="mkdocstrings-source">
-              <summary>Source code in <code>src/owui_client/routers/utils.py</code></summary>
-              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-25">25</a></span>
+              <summary>Source code in <code>src/owui_client/routers/events.py</code></summary>
+              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-24">24</a></span>
+<span class="normal"><a href="#__codelineno-0-25">25</a></span>
 <span class="normal"><a href="#__codelineno-0-26">26</a></span>
 <span class="normal"><a href="#__codelineno-0-27">27</a></span>
 <span class="normal"><a href="#__codelineno-0-28">28</a></span>
@@ -3127,17 +2960,24 @@
 <span class="normal"><a href="#__codelineno-0-32">32</a></span>
 <span class="normal"><a href="#__codelineno-0-33">33</a></span>
 <span class="normal"><a href="#__codelineno-0-34">34</a></span>
-<span class="normal"><a href="#__codelineno-0-35">35</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">format_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">form_data</span><span class="p">:</span> <span class="n">CodeForm</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="sd">    Format the provided code using Black (Python formatter).</span>
-</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28"></a>
-</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="sd">    Args:</span>
-</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="sd">        form_data: The `CodeForm` containing the code to format.</span>
-</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31"></a>
-</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="sd">    Returns:</span>
-</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="sd">        A dictionary containing the formatted code under the &quot;code&quot; key.</span>
-</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35"></a>    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="s2">&quot;/v1/utils/code/format&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">form_data</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<span class="normal"><a href="#__codelineno-0-35">35</a></span>
+<span class="normal"><a href="#__codelineno-0-36">36</a></span>
+<span class="normal"><a href="#__codelineno-0-37">37</a></span>
+<span class="normal"><a href="#__codelineno-0-38">38</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_event_webhooks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">EventWebhook</span><span class="p">]:</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;List all configured event webhooks.</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26"></a>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="sd">    Returns the normalized webhook list stored under the `events.webhooks`</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="sd">    config key. Invalid entries in the stored config are skipped by the</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="sd">    backend rather than causing an error.</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30"></a>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31"></a><span class="sd">    Returns:</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="sd">        List[EventWebhook]: All event webhooks (may be empty).</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34"></a>    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35"></a>        <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36"></a>        <span class="s2">&quot;/events/webhooks&quot;</span><span class="p">,</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37"></a>        <span class="n">model</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">EventWebhook</span><span class="p">],</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38"></a>    <span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -3147,18 +2987,24 @@
 <div class="doc doc-object doc-function">
 
 
-<h5 id="owui_client.routers.utils.UtilsClient.execute_code" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">execute_code</span>
+<h5 id="owui_client.routers.events.EventsClient.create_event_webhook" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">create_event_webhook</span>
 
 
 </h5>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">execute_code</span><span class="p">(</span><span class="n">form_data</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            CodeForm (owui_client.models.utils.CodeForm)" href="../../models/utils/#owui_client.models.utils.CodeForm">CodeForm</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="typing.Dict">Dict</span></span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">create_event_webhook</span><span class="p">(</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">form_data</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            EventWebhookForm (owui_client.models.events.EventWebhookForm)" href="../../models/events/#owui_client.models.events.EventWebhookForm">EventWebhookForm</a></span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="            EventWebhook (owui_client.models.events.EventWebhook)" href="../../models/events/#owui_client.models.events.EventWebhook">EventWebhook</a></span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
 
-        <p>Execute the provided code using a Jupyter kernel.</p>
-<p>Note: Code execution must be enabled and configured (e.g., Jupyter URL) on the server.</p>
+        <p>Create an event webhook (always appends).</p>
+<p>Submits the form to <code>POST /api/events/webhooks</code>. Because <code>EventWebhookForm</code>
+does not expose <code>id</code>, this always appends a new webhook with a
+server-generated id; the backend's underlying upsert-by-id path is not
+reachable from this client. The URL is validated against the server URL
+allow-list and event filters are validated against the event catalog.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -3177,11 +3023,11 @@
                 <code>form_data</code>
             </td>
             <td>
-                  <code><a class="autorefs autorefs-internal" title="            CodeForm (owui_client.models.utils.CodeForm)" href="../../models/utils/#owui_client.models.utils.CodeForm">CodeForm</a></code>
+                  <code><a class="autorefs autorefs-internal" title="            EventWebhookForm (owui_client.models.events.EventWebhookForm)" href="../../models/events/#owui_client.models.events.EventWebhookForm">EventWebhookForm</a></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The <code>CodeForm</code> containing the code to execute.</p>
+                <p>Creation body; <code>url</code> is required.</p>
               </div>
             </td>
             <td>
@@ -3203,11 +3049,11 @@
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="typing.Dict">Dict</span></code>
+                  <code><a class="autorefs autorefs-internal" title="            EventWebhook (owui_client.models.events.EventWebhook)" href="../../models/events/#owui_client.models.events.EventWebhook">EventWebhook</a></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The output of the code execution from Jupyter.</p>
+                <p><code>EventWebhook</code>: The created/updated webhook.</p>
               </div>
             </td>
           </tr>
@@ -3226,11 +3072,12 @@
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="HTTPException">HTTPException</span></code>
+                  <code><span title="httpx.HTTPStatusError">HTTPStatusError</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>If the code execution engine is not supported or configured.</p>
+                <p><code>400</code> if the URL or event filters are
+invalid.</p>
               </div>
             </td>
           </tr>
@@ -3240,11 +3087,8 @@
           
 
             <details class="mkdocstrings-source">
-              <summary>Source code in <code>src/owui_client/routers/utils.py</code></summary>
-              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-37">37</a></span>
-<span class="normal"><a href="#__codelineno-0-38">38</a></span>
-<span class="normal"><a href="#__codelineno-0-39">39</a></span>
-<span class="normal"><a href="#__codelineno-0-40">40</a></span>
+              <summary>Source code in <code>src/owui_client/routers/events.py</code></summary>
+              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-40">40</a></span>
 <span class="normal"><a href="#__codelineno-0-41">41</a></span>
 <span class="normal"><a href="#__codelineno-0-42">42</a></span>
 <span class="normal"><a href="#__codelineno-0-43">43</a></span>
@@ -3256,104 +3100,9 @@
 <span class="normal"><a href="#__codelineno-0-49">49</a></span>
 <span class="normal"><a href="#__codelineno-0-50">50</a></span>
 <span class="normal"><a href="#__codelineno-0-51">51</a></span>
-<span class="normal"><a href="#__codelineno-0-52">52</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">execute_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">form_data</span><span class="p">:</span> <span class="n">CodeForm</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39"></a><span class="sd">    Execute the provided code using a Jupyter kernel.</span>
-</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40"></a>
-</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41"></a><span class="sd">    Note: Code execution must be enabled and configured (e.g., Jupyter URL) on the server.</span>
-</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42"></a>
-</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43"></a><span class="sd">    Args:</span>
-</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44"></a><span class="sd">        form_data: The `CodeForm` containing the code to execute.</span>
-</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45"></a>
-</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46"></a><span class="sd">    Returns:</span>
-</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47"></a><span class="sd">        The output of the code execution from Jupyter.</span>
-</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48"></a>
-</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49"></a><span class="sd">    Raises:</span>
-</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50"></a><span class="sd">        HTTPException: If the code execution engine is not supported or configured.</span>
-</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51"></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52"></a>    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="s2">&quot;/v1/utils/code/execute&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">form_data</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-</span></code></pre></div></td></tr></table></div>
-            </details>
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h5 id="owui_client.routers.utils.UtilsClient.get_html_from_markdown" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">get_html_from_markdown</span>
-
-
-</h5>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_html_from_markdown</span><span class="p">(</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">form_data</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            MarkdownForm (owui_client.models.utils.MarkdownForm)" href="../../models/utils/#owui_client.models.utils.MarkdownForm">MarkdownForm</a></span><span class="p">,</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="typing.Dict">Dict</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">,</span> <span class="n"><span title="str">str</span></span><span class="p">]</span>
-</span></code></pre></div>
-
-    <div class="doc doc-contents ">
-
-        <p>Convert Markdown content to HTML.</p>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>form_data</code>
-            </td>
-            <td>
-                  <code><a class="autorefs autorefs-internal" title="            MarkdownForm (owui_client.models.utils.MarkdownForm)" href="../../models/utils/#owui_client.models.utils.MarkdownForm">MarkdownForm</a></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>The <code>MarkdownForm</code> containing the markdown content.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                  <code><span title="typing.Dict">Dict</span>[<span title="str">str</span>, <span title="str">str</span>]</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>A dictionary containing the generated HTML under the "html" key.</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-          
-
-            <details class="mkdocstrings-source">
-              <summary>Source code in <code>src/owui_client/routers/utils.py</code></summary>
-              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-54">54</a></span>
+<span class="normal"><a href="#__codelineno-0-52">52</a></span>
+<span class="normal"><a href="#__codelineno-0-53">53</a></span>
+<span class="normal"><a href="#__codelineno-0-54">54</a></span>
 <span class="normal"><a href="#__codelineno-0-55">55</a></span>
 <span class="normal"><a href="#__codelineno-0-56">56</a></span>
 <span class="normal"><a href="#__codelineno-0-57">57</a></span>
@@ -3363,17 +3112,35 @@
 <span class="normal"><a href="#__codelineno-0-61">61</a></span>
 <span class="normal"><a href="#__codelineno-0-62">62</a></span>
 <span class="normal"><a href="#__codelineno-0-63">63</a></span>
-<span class="normal"><a href="#__codelineno-0-64">64</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_html_from_markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">form_data</span><span class="p">:</span> <span class="n">MarkdownForm</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-</span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56"></a><span class="sd">    Convert Markdown content to HTML.</span>
-</span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57"></a>
-</span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58"></a><span class="sd">    Args:</span>
-</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59"></a><span class="sd">        form_data: The `MarkdownForm` containing the markdown content.</span>
-</span><span id="__span-0-60"><a id="__codelineno-0-60" name="__codelineno-0-60"></a>
-</span><span id="__span-0-61"><a id="__codelineno-0-61" name="__codelineno-0-61"></a><span class="sd">    Returns:</span>
-</span><span id="__span-0-62"><a id="__codelineno-0-62" name="__codelineno-0-62"></a><span class="sd">        A dictionary containing the generated HTML under the &quot;html&quot; key.</span>
-</span><span id="__span-0-63"><a id="__codelineno-0-63" name="__codelineno-0-63"></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="__span-0-64"><a id="__codelineno-0-64" name="__codelineno-0-64"></a>    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="s2">&quot;/v1/utils/markdown&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">form_data</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<span class="normal"><a href="#__codelineno-0-64">64</a></span>
+<span class="normal"><a href="#__codelineno-0-65">65</a></span>
+<span class="normal"><a href="#__codelineno-0-66">66</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create_event_webhook</span><span class="p">(</span>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41"></a>    <span class="bp">self</span><span class="p">,</span> <span class="n">form_data</span><span class="p">:</span> <span class="n">EventWebhookForm</span>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EventWebhook</span><span class="p">:</span>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Create an event webhook (always appends).</span>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44"></a>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45"></a><span class="sd">    Submits the form to `POST /api/events/webhooks`. Because `EventWebhookForm`</span>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46"></a><span class="sd">    does not expose `id`, this always appends a new webhook with a</span>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47"></a><span class="sd">    server-generated id; the backend&#39;s underlying upsert-by-id path is not</span>
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48"></a><span class="sd">    reachable from this client. The URL is validated against the server URL</span>
+</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49"></a><span class="sd">    allow-list and event filters are validated against the event catalog.</span>
+</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50"></a>
+</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51"></a><span class="sd">    Args:</span>
+</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52"></a><span class="sd">        form_data: Creation body; `url` is required.</span>
+</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53"></a>
+</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54"></a><span class="sd">    Returns:</span>
+</span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55"></a><span class="sd">        `EventWebhook`: The created/updated webhook.</span>
+</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56"></a>
+</span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57"></a><span class="sd">    Raises:</span>
+</span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58"></a><span class="sd">        httpx.HTTPStatusError: `400` if the URL or event filters are</span>
+</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59"></a><span class="sd">            invalid.</span>
+</span><span id="__span-0-60"><a id="__codelineno-0-60" name="__codelineno-0-60"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-0-61"><a id="__codelineno-0-61" name="__codelineno-0-61"></a>    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span>
+</span><span id="__span-0-62"><a id="__codelineno-0-62" name="__codelineno-0-62"></a>        <span class="s2">&quot;POST&quot;</span><span class="p">,</span>
+</span><span id="__span-0-63"><a id="__codelineno-0-63" name="__codelineno-0-63"></a>        <span class="s2">&quot;/events/webhooks&quot;</span><span class="p">,</span>
+</span><span id="__span-0-64"><a id="__codelineno-0-64" name="__codelineno-0-64"></a>        <span class="n">json</span><span class="o">=</span><span class="n">form_data</span><span class="o">.</span><span class="n">to_payload</span><span class="p">(),</span>
+</span><span id="__span-0-65"><a id="__codelineno-0-65" name="__codelineno-0-65"></a>        <span class="n">model</span><span class="o">=</span><span class="n">EventWebhook</span><span class="p">,</span>
+</span><span id="__span-0-66"><a id="__codelineno-0-66" name="__codelineno-0-66"></a>    <span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -3383,19 +3150,21 @@
 <div class="doc doc-object doc-function">
 
 
-<h5 id="owui_client.routers.utils.UtilsClient.download_chat_as_pdf" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">download_chat_as_pdf</span>
+<h5 id="owui_client.routers.events.EventsClient.update_event_webhook" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">update_event_webhook</span>
 
 
 </h5>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">download_chat_as_pdf</span><span class="p">(</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">form_data</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            ChatTitleMessagesForm (owui_client.models.chats.ChatTitleMessagesForm)" href="../../models/chats/#owui_client.models.chats.ChatTitleMessagesForm">ChatTitleMessagesForm</a></span><span class="p">,</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="bytes">bytes</span></span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">update_event_webhook</span><span class="p">(</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">webhook_id</span><span class="p">:</span> <span class="n"><span title="str">str</span></span><span class="p">,</span> <span class="n">form_data</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            EventWebhookUpdateForm (owui_client.models.events.EventWebhookUpdateForm)" href="../../models/events/#owui_client.models.events.EventWebhookUpdateForm">EventWebhookUpdateForm</a></span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="            EventWebhook (owui_client.models.events.EventWebhook)" href="../../models/events/#owui_client.models.events.EventWebhook">EventWebhook</a></span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
 
-        <p>Generate and download a PDF version of a chat.</p>
+        <p>Update an existing event webhook by id.</p>
+<p>Only the non-<code>None</code> fields on <code>form_data</code> are merged onto the stored
+webhook. The URL (if provided) and event filters are re-validated.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -3411,14 +3180,30 @@
       <tbody>
           <tr class="doc-section-item">
             <td>
-                <code>form_data</code>
+                <code>webhook_id</code>
             </td>
             <td>
-                  <code><a class="autorefs autorefs-internal" title="            ChatTitleMessagesForm (owui_client.models.chats.ChatTitleMessagesForm)" href="../../models/chats/#owui_client.models.chats.ChatTitleMessagesForm">ChatTitleMessagesForm</a></code>
+                  <code><span title="str">str</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The <code>ChatTitleMessagesForm</code> containing chat title and messages.</p>
+                <p>The id of the webhook to update.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>form_data</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="            EventWebhookUpdateForm (owui_client.models.events.EventWebhookUpdateForm)" href="../../models/events/#owui_client.models.events.EventWebhookUpdateForm">EventWebhookUpdateForm</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Partial update body.</p>
               </div>
             </td>
             <td>
@@ -3440,82 +3225,11 @@
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="bytes">bytes</span></code>
+                  <code><a class="autorefs autorefs-internal" title="            EventWebhook (owui_client.models.events.EventWebhook)" href="../../models/events/#owui_client.models.events.EventWebhook">EventWebhook</a></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The PDF file content as bytes.</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-          
-
-            <details class="mkdocstrings-source">
-              <summary>Source code in <code>src/owui_client/routers/utils.py</code></summary>
-              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-66">66</a></span>
-<span class="normal"><a href="#__codelineno-0-67">67</a></span>
-<span class="normal"><a href="#__codelineno-0-68">68</a></span>
-<span class="normal"><a href="#__codelineno-0-69">69</a></span>
-<span class="normal"><a href="#__codelineno-0-70">70</a></span>
-<span class="normal"><a href="#__codelineno-0-71">71</a></span>
-<span class="normal"><a href="#__codelineno-0-72">72</a></span>
-<span class="normal"><a href="#__codelineno-0-73">73</a></span>
-<span class="normal"><a href="#__codelineno-0-74">74</a></span>
-<span class="normal"><a href="#__codelineno-0-75">75</a></span>
-<span class="normal"><a href="#__codelineno-0-76">76</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-66"><a id="__codelineno-0-66" name="__codelineno-0-66"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">download_chat_as_pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">form_data</span><span class="p">:</span> <span class="n">ChatTitleMessagesForm</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-</span><span id="__span-0-67"><a id="__codelineno-0-67" name="__codelineno-0-67"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="__span-0-68"><a id="__codelineno-0-68" name="__codelineno-0-68"></a><span class="sd">    Generate and download a PDF version of a chat.</span>
-</span><span id="__span-0-69"><a id="__codelineno-0-69" name="__codelineno-0-69"></a>
-</span><span id="__span-0-70"><a id="__codelineno-0-70" name="__codelineno-0-70"></a><span class="sd">    Args:</span>
-</span><span id="__span-0-71"><a id="__codelineno-0-71" name="__codelineno-0-71"></a><span class="sd">        form_data: The `ChatTitleMessagesForm` containing chat title and messages.</span>
-</span><span id="__span-0-72"><a id="__codelineno-0-72" name="__codelineno-0-72"></a>
-</span><span id="__span-0-73"><a id="__codelineno-0-73" name="__codelineno-0-73"></a><span class="sd">    Returns:</span>
-</span><span id="__span-0-74"><a id="__codelineno-0-74" name="__codelineno-0-74"></a><span class="sd">        The PDF file content as bytes.</span>
-</span><span id="__span-0-75"><a id="__codelineno-0-75" name="__codelineno-0-75"></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="__span-0-76"><a id="__codelineno-0-76" name="__codelineno-0-76"></a>    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="s2">&quot;/v1/utils/pdf&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="nb">bytes</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">form_data</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-</span></code></pre></div></td></tr></table></div>
-            </details>
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h5 id="owui_client.routers.utils.UtilsClient.download_db" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">download_db</span>
-
-
-</h5>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">download_db</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n"><span title="bytes">bytes</span></span>
-</span></code></pre></div>
-
-    <div class="doc doc-contents ">
-
-        <p>Download the database file.</p>
-<p>Note: Requires admin privileges and <code>ENABLE_ADMIN_EXPORT</code> must be True.
-Only supported for SQLite databases.</p>
-
-
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                  <code><span title="bytes">bytes</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>The database file content as bytes.</p>
+                <p><code>EventWebhook</code>: The updated webhook.</p>
               </div>
             </td>
           </tr>
@@ -3534,11 +3248,12 @@ Only supported for SQLite databases.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="HTTPException">HTTPException</span></code>
+                  <code><span title="httpx.HTTPStatusError">HTTPStatusError</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>If access is prohibited or the database is not SQLite.</p>
+                <p><code>404</code> if no webhook exists with <code>webhook_id</code>,
+or <code>400</code> if the URL or event filters are invalid.</p>
               </div>
             </td>
           </tr>
@@ -3548,8 +3263,18 @@ Only supported for SQLite databases.</p>
           
 
             <details class="mkdocstrings-source">
-              <summary>Source code in <code>src/owui_client/routers/utils.py</code></summary>
-              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-78">78</a></span>
+              <summary>Source code in <code>src/owui_client/routers/events.py</code></summary>
+              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-68">68</a></span>
+<span class="normal"><a href="#__codelineno-0-69">69</a></span>
+<span class="normal"><a href="#__codelineno-0-70">70</a></span>
+<span class="normal"><a href="#__codelineno-0-71">71</a></span>
+<span class="normal"><a href="#__codelineno-0-72">72</a></span>
+<span class="normal"><a href="#__codelineno-0-73">73</a></span>
+<span class="normal"><a href="#__codelineno-0-74">74</a></span>
+<span class="normal"><a href="#__codelineno-0-75">75</a></span>
+<span class="normal"><a href="#__codelineno-0-76">76</a></span>
+<span class="normal"><a href="#__codelineno-0-77">77</a></span>
+<span class="normal"><a href="#__codelineno-0-78">78</a></span>
 <span class="normal"><a href="#__codelineno-0-79">79</a></span>
 <span class="normal"><a href="#__codelineno-0-80">80</a></span>
 <span class="normal"><a href="#__codelineno-0-81">81</a></span>
@@ -3562,20 +3287,176 @@ Only supported for SQLite databases.</p>
 <span class="normal"><a href="#__codelineno-0-88">88</a></span>
 <span class="normal"><a href="#__codelineno-0-89">89</a></span>
 <span class="normal"><a href="#__codelineno-0-90">90</a></span>
-<span class="normal"><a href="#__codelineno-0-91">91</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-78"><a id="__codelineno-0-78" name="__codelineno-0-78"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">download_db</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-</span><span id="__span-0-79"><a id="__codelineno-0-79" name="__codelineno-0-79"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="__span-0-80"><a id="__codelineno-0-80" name="__codelineno-0-80"></a><span class="sd">    Download the database file.</span>
+<span class="normal"><a href="#__codelineno-0-91">91</a></span>
+<span class="normal"><a href="#__codelineno-0-92">92</a></span>
+<span class="normal"><a href="#__codelineno-0-93">93</a></span>
+<span class="normal"><a href="#__codelineno-0-94">94</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-68"><a id="__codelineno-0-68" name="__codelineno-0-68"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">update_event_webhook</span><span class="p">(</span>
+</span><span id="__span-0-69"><a id="__codelineno-0-69" name="__codelineno-0-69"></a>    <span class="bp">self</span><span class="p">,</span>
+</span><span id="__span-0-70"><a id="__codelineno-0-70" name="__codelineno-0-70"></a>    <span class="n">webhook_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="__span-0-71"><a id="__codelineno-0-71" name="__codelineno-0-71"></a>    <span class="n">form_data</span><span class="p">:</span> <span class="n">EventWebhookUpdateForm</span><span class="p">,</span>
+</span><span id="__span-0-72"><a id="__codelineno-0-72" name="__codelineno-0-72"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EventWebhook</span><span class="p">:</span>
+</span><span id="__span-0-73"><a id="__codelineno-0-73" name="__codelineno-0-73"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Update an existing event webhook by id.</span>
+</span><span id="__span-0-74"><a id="__codelineno-0-74" name="__codelineno-0-74"></a>
+</span><span id="__span-0-75"><a id="__codelineno-0-75" name="__codelineno-0-75"></a><span class="sd">    Only the non-`None` fields on `form_data` are merged onto the stored</span>
+</span><span id="__span-0-76"><a id="__codelineno-0-76" name="__codelineno-0-76"></a><span class="sd">    webhook. The URL (if provided) and event filters are re-validated.</span>
+</span><span id="__span-0-77"><a id="__codelineno-0-77" name="__codelineno-0-77"></a>
+</span><span id="__span-0-78"><a id="__codelineno-0-78" name="__codelineno-0-78"></a><span class="sd">    Args:</span>
+</span><span id="__span-0-79"><a id="__codelineno-0-79" name="__codelineno-0-79"></a><span class="sd">        webhook_id: The id of the webhook to update.</span>
+</span><span id="__span-0-80"><a id="__codelineno-0-80" name="__codelineno-0-80"></a><span class="sd">        form_data: Partial update body.</span>
 </span><span id="__span-0-81"><a id="__codelineno-0-81" name="__codelineno-0-81"></a>
-</span><span id="__span-0-82"><a id="__codelineno-0-82" name="__codelineno-0-82"></a><span class="sd">    Note: Requires admin privileges and `ENABLE_ADMIN_EXPORT` must be True.</span>
-</span><span id="__span-0-83"><a id="__codelineno-0-83" name="__codelineno-0-83"></a><span class="sd">    Only supported for SQLite databases.</span>
+</span><span id="__span-0-82"><a id="__codelineno-0-82" name="__codelineno-0-82"></a><span class="sd">    Returns:</span>
+</span><span id="__span-0-83"><a id="__codelineno-0-83" name="__codelineno-0-83"></a><span class="sd">        `EventWebhook`: The updated webhook.</span>
 </span><span id="__span-0-84"><a id="__codelineno-0-84" name="__codelineno-0-84"></a>
-</span><span id="__span-0-85"><a id="__codelineno-0-85" name="__codelineno-0-85"></a><span class="sd">    Returns:</span>
-</span><span id="__span-0-86"><a id="__codelineno-0-86" name="__codelineno-0-86"></a><span class="sd">        The database file content as bytes.</span>
-</span><span id="__span-0-87"><a id="__codelineno-0-87" name="__codelineno-0-87"></a>
-</span><span id="__span-0-88"><a id="__codelineno-0-88" name="__codelineno-0-88"></a><span class="sd">    Raises:</span>
-</span><span id="__span-0-89"><a id="__codelineno-0-89" name="__codelineno-0-89"></a><span class="sd">        HTTPException: If access is prohibited or the database is not SQLite.</span>
-</span><span id="__span-0-90"><a id="__codelineno-0-90" name="__codelineno-0-90"></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="__span-0-91"><a id="__codelineno-0-91" name="__codelineno-0-91"></a>    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;/v1/utils/db/download&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="nb">bytes</span><span class="p">)</span>
+</span><span id="__span-0-85"><a id="__codelineno-0-85" name="__codelineno-0-85"></a><span class="sd">    Raises:</span>
+</span><span id="__span-0-86"><a id="__codelineno-0-86" name="__codelineno-0-86"></a><span class="sd">        httpx.HTTPStatusError: `404` if no webhook exists with `webhook_id`,</span>
+</span><span id="__span-0-87"><a id="__codelineno-0-87" name="__codelineno-0-87"></a><span class="sd">            or `400` if the URL or event filters are invalid.</span>
+</span><span id="__span-0-88"><a id="__codelineno-0-88" name="__codelineno-0-88"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-0-89"><a id="__codelineno-0-89" name="__codelineno-0-89"></a>    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span>
+</span><span id="__span-0-90"><a id="__codelineno-0-90" name="__codelineno-0-90"></a>        <span class="s2">&quot;PUT&quot;</span><span class="p">,</span>
+</span><span id="__span-0-91"><a id="__codelineno-0-91" name="__codelineno-0-91"></a>        <span class="sa">f</span><span class="s2">&quot;/events/webhooks/</span><span class="si">{</span><span class="n">webhook_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span id="__span-0-92"><a id="__codelineno-0-92" name="__codelineno-0-92"></a>        <span class="n">json</span><span class="o">=</span><span class="n">form_data</span><span class="o">.</span><span class="n">to_payload</span><span class="p">(),</span>
+</span><span id="__span-0-93"><a id="__codelineno-0-93" name="__codelineno-0-93"></a>        <span class="n">model</span><span class="o">=</span><span class="n">EventWebhook</span><span class="p">,</span>
+</span><span id="__span-0-94"><a id="__codelineno-0-94" name="__codelineno-0-94"></a>    <span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="owui_client.routers.events.EventsClient.delete_event_webhook" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">delete_event_webhook</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">delete_event_webhook</span><span class="p">(</span><span class="n">webhook_id</span><span class="p">:</span> <span class="n"><span title="str">str</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="bool">bool</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Delete an event webhook by id.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>webhook_id</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The id of the webhook to delete. Deleting the special
+<code>'default'</code> webhook also clears the legacy <code>webhook_url</code> config.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p><code>True</code> on success. (The backend response body is <code>{"status": true}</code>.)</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="httpx.HTTPStatusError">HTTPStatusError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p><code>404</code> if no webhook exists with <code>webhook_id</code>.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+          
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/owui_client/routers/events.py</code></summary>
+              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-96"> 96</a></span>
+<span class="normal"><a href="#__codelineno-0-97"> 97</a></span>
+<span class="normal"><a href="#__codelineno-0-98"> 98</a></span>
+<span class="normal"><a href="#__codelineno-0-99"> 99</a></span>
+<span class="normal"><a href="#__codelineno-0-100">100</a></span>
+<span class="normal"><a href="#__codelineno-0-101">101</a></span>
+<span class="normal"><a href="#__codelineno-0-102">102</a></span>
+<span class="normal"><a href="#__codelineno-0-103">103</a></span>
+<span class="normal"><a href="#__codelineno-0-104">104</a></span>
+<span class="normal"><a href="#__codelineno-0-105">105</a></span>
+<span class="normal"><a href="#__codelineno-0-106">106</a></span>
+<span class="normal"><a href="#__codelineno-0-107">107</a></span>
+<span class="normal"><a href="#__codelineno-0-108">108</a></span>
+<span class="normal"><a href="#__codelineno-0-109">109</a></span>
+<span class="normal"><a href="#__codelineno-0-110">110</a></span>
+<span class="normal"><a href="#__codelineno-0-111">111</a></span>
+<span class="normal"><a href="#__codelineno-0-112">112</a></span>
+<span class="normal"><a href="#__codelineno-0-113">113</a></span>
+<span class="normal"><a href="#__codelineno-0-114">114</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-96"><a id="__codelineno-0-96" name="__codelineno-0-96"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">delete_event_webhook</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">webhook_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="__span-0-97"><a id="__codelineno-0-97" name="__codelineno-0-97"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Delete an event webhook by id.</span>
+</span><span id="__span-0-98"><a id="__codelineno-0-98" name="__codelineno-0-98"></a>
+</span><span id="__span-0-99"><a id="__codelineno-0-99" name="__codelineno-0-99"></a><span class="sd">    Args:</span>
+</span><span id="__span-0-100"><a id="__codelineno-0-100" name="__codelineno-0-100"></a><span class="sd">        webhook_id: The id of the webhook to delete. Deleting the special</span>
+</span><span id="__span-0-101"><a id="__codelineno-0-101" name="__codelineno-0-101"></a><span class="sd">            `&#39;default&#39;` webhook also clears the legacy `webhook_url` config.</span>
+</span><span id="__span-0-102"><a id="__codelineno-0-102" name="__codelineno-0-102"></a>
+</span><span id="__span-0-103"><a id="__codelineno-0-103" name="__codelineno-0-103"></a><span class="sd">    Returns:</span>
+</span><span id="__span-0-104"><a id="__codelineno-0-104" name="__codelineno-0-104"></a><span class="sd">        `True` on success. (The backend response body is `{&quot;status&quot;: true}`.)</span>
+</span><span id="__span-0-105"><a id="__codelineno-0-105" name="__codelineno-0-105"></a>
+</span><span id="__span-0-106"><a id="__codelineno-0-106" name="__codelineno-0-106"></a><span class="sd">    Raises:</span>
+</span><span id="__span-0-107"><a id="__codelineno-0-107" name="__codelineno-0-107"></a><span class="sd">        httpx.HTTPStatusError: `404` if no webhook exists with `webhook_id`.</span>
+</span><span id="__span-0-108"><a id="__codelineno-0-108" name="__codelineno-0-108"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-0-109"><a id="__codelineno-0-109" name="__codelineno-0-109"></a>    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span>
+</span><span id="__span-0-110"><a id="__codelineno-0-110" name="__codelineno-0-110"></a>        <span class="s2">&quot;DELETE&quot;</span><span class="p">,</span>
+</span><span id="__span-0-111"><a id="__codelineno-0-111" name="__codelineno-0-111"></a>        <span class="sa">f</span><span class="s2">&quot;/events/webhooks/</span><span class="si">{</span><span class="n">webhook_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span id="__span-0-112"><a id="__codelineno-0-112" name="__codelineno-0-112"></a>        <span class="n">model</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span>
+</span><span id="__span-0-113"><a id="__codelineno-0-113" name="__codelineno-0-113"></a>    <span class="p">)</span>
+</span><span id="__span-0-114"><a id="__codelineno-0-114" name="__codelineno-0-114"></a>    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">))</span>
 </span></code></pre></div></td></tr></table></div>
             </details>
     </div>

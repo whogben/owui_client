@@ -18,6 +18,14 @@ from owui_client.models.knowledge import (
     SyncDiffForm,
     SyncDiffResponse,
     SyncCleanupForm,
+    ExternalKnowledgeConnectionForm,
+    ExternalKnowledgeSourceForm,
+    ExternalKnowledgeCreateForm,
+    ExternalKnowledgeSourceCreateForm,
+    ExternalKnowledgeSourceUpdateForm,
+    ExternalKnowledgeSourceTestForm,
+    ExternalKnowledgeRetrieveTestForm,
+    ExternalKnowledgeConnectionListResponse,
 )
 
 
@@ -419,7 +427,7 @@ class KnowledgeClient(ResourceBase):
 
     # ── Pending files ────────────────────────────────────────────────
 
-    async def get_pending_knowledge_files(self, id: str) -> list:
+    async def get_pending_knowledge_files(self, id: str) -> list[dict]:
         """
         Get files that are still being processed for a knowledge base.
 
@@ -432,12 +440,13 @@ class KnowledgeClient(ResourceBase):
             id: The ID of the knowledge base.
 
         Returns:
-            list: List of pending file objects.
+            list[dict]: List of pending file objects (each a file dict as
+            returned by the backend).
         """
         return await self._request(
             "GET",
             f"/v1/knowledge/{id}/files/pending",
-            model=list,
+            model=list[dict],
         )
 
     # ── Sync endpoints ───────────────────────────────────────────────
@@ -513,3 +522,296 @@ class KnowledgeClient(ResourceBase):
             bytes: The zip file content.
         """
         return await self._request("GET", f"/v1/knowledge/{id}/export", model=bytes)
+
+    # ── External knowledge connections & sources ─────────────────────
+    # External knowledge bases are backed by an external vector DB
+    # (qdrant / milvus / pgvector) instead of Open WebUI's built-in store.
+    # A "connection" is the reusable endpoint+credentials; a "source" is a
+    # specific collection inside it. All endpoints here are admin-only.
+
+    async def get_external_knowledge_connections(
+        self,
+    ) -> ExternalKnowledgeConnectionListResponse:
+        """
+        List all external knowledge connections.
+
+        Returns connections with their secret `auth_config` stripped (replaced
+        by an `auth_configured` boolean). Admin only.
+
+        Returns:
+            `ExternalKnowledgeConnectionListResponse`: Sanitized connections and total count.
+        """
+        return await self._request(
+            "GET",
+            "/v1/knowledge/external/connections",
+            model=ExternalKnowledgeConnectionListResponse,
+        )
+
+    async def create_external_knowledge_connection(
+        self, form_data: ExternalKnowledgeConnectionForm
+    ) -> dict:
+        """
+        Create a new external knowledge connection.
+
+        Stores the connection under the `external_knowledge.connections` config
+        key. `provider` must be `qdrant`, `milvus`, or `pgvector`. Admin only.
+
+        Args:
+            form_data: Connection definition (`provider`, `endpoint`, `name`,
+                optional `auth_config`, `config`, `capabilities`, `enabled`).
+
+        Returns:
+            dict: The created connection, sanitized (`auth_config` removed,
+                `auth_configured` flag added). Keys: `id`, `name`, `provider`,
+                `endpoint`, `config`, `capabilities`, `health`, `enabled`,
+                `created_by`, `created_at`, `updated_at`, `auth_configured`.
+
+        Raises:
+            HTTPException: 400 if `provider` is unsupported or name/endpoint empty.
+        """
+        return await self._request(
+            "POST",
+            "/v1/knowledge/external/connections",
+            model=dict,
+            json=form_data.model_dump(exclude_none=True),
+        )
+
+    async def get_external_knowledge_connection(self, id: str) -> dict:
+        """
+        Get a single external knowledge connection by id.
+
+        Admin only.
+
+        Args:
+            id: The connection id.
+
+        Returns:
+            dict: The sanitized connection (same shape as
+                `create_external_knowledge_connection`).
+
+        Raises:
+            HTTPException: 404 if the connection does not exist.
+        """
+        return await self._request(
+            "GET",
+            f"/v1/knowledge/external/connections/{id}",
+            model=dict,
+        )
+
+    async def update_external_knowledge_connection(
+        self, id: str, form_data: ExternalKnowledgeConnectionForm
+    ) -> dict:
+        """
+        Update an existing external knowledge connection.
+
+        Fully replaces name/provider/endpoint/config/capabilities/enabled.
+        Pass `auth_config=None` to preserve the existing stored credentials, or
+        a dict to overwrite them. Admin only.
+
+        Args:
+            id: The connection id.
+            form_data: New connection definition.
+
+        Returns:
+            dict: The updated sanitized connection.
+
+        Raises:
+            HTTPException: 404 if the connection does not exist; 400 on invalid provider/fields.
+        """
+        return await self._request(
+            "PATCH",
+            f"/v1/knowledge/external/connections/{id}",
+            model=dict,
+            json=form_data.model_dump(exclude_none=True),
+        )
+
+    async def delete_external_knowledge_connection(self, id: str) -> bool:
+        """
+        Delete an external knowledge connection.
+
+        Refuses deletion while any knowledge base still references it. Admin only.
+
+        Args:
+            id: The connection id.
+
+        Returns:
+            bool: True if deleted.
+
+        Raises:
+            HTTPException: 404 if not found; 400 if still mapped to a knowledge base.
+        """
+        return await self._request(
+            "DELETE",
+            f"/v1/knowledge/external/connections/{id}",
+            model=bool,
+        )
+
+    async def test_external_knowledge_connection(self, id: str) -> dict:
+        """
+        Record a health check for a connection.
+
+        Note: this does NOT actually connect to the external system. It records
+        `ok = enabled and endpoint present`, stamps `checked_at`, persists the
+        `health` dict on the connection, and returns it. Admin only.
+
+        Args:
+            id: The connection id.
+
+        Returns:
+            dict: Health record. Keys: `ok` (bool), `provider` (str),
+                `checked_at` (int, epoch).
+
+        Raises:
+            HTTPException: 404 if the connection does not exist.
+        """
+        return await self._request(
+            "POST",
+            f"/v1/knowledge/external/connections/{id}/test",
+            model=dict,
+        )
+
+    async def test_external_knowledge_source(
+        self, form_data: ExternalKnowledgeSourceTestForm
+    ) -> dict:
+        """
+        Run an ad-hoc retrieval test against a connection+source definition.
+
+        Does not persist anything. If `connection_id` is set, the stored
+        connection is loaded and merged with the supplied `connection`. The
+        backend embeds `query`, queries the external system, and normalizes the
+        results. Requires a working RAG embedding function. Admin only.
+
+        Args:
+            form_data: `connection_id` (optional), `connection`, `source`,
+                `query`, `count`.
+
+        Returns:
+            dict: Normalized retrieval result. Keys: `documents` (list[str]),
+                `metadatas` (list[dict]), `distances` (list[float]).
+
+        Raises:
+            HTTPException: 400 on bad source mapping or empty query; 404 if a
+                given `connection_id` is not found.
+        """
+        return await self._request(
+            "POST",
+            "/v1/knowledge/external/source/test",
+            model=dict,
+            json=form_data.model_dump(exclude_none=True),
+        )
+
+    async def test_external_knowledge_retrieval(
+        self, id: str, form_data: ExternalKnowledgeRetrieveTestForm
+    ) -> dict:
+        """
+        Run an ad-hoc retrieval test against an existing connection by id.
+
+        Like `test_external_knowledge_source` but resolves the connection from
+        `id` instead of an inline definition. `source` is optional (defaults to
+        a `test`/`payload.text` source). Requires a working RAG embedding
+        function. Admin only.
+
+        Args:
+            id: The connection id.
+            form_data: `query`, optional `source`, `count`.
+
+        Returns:
+            dict: Normalized retrieval result (`documents`, `metadatas`, `distances`).
+
+        Raises:
+            HTTPException: 404 if the connection does not exist; 400 on empty query / bad source.
+        """
+        return await self._request(
+            "POST",
+            f"/v1/knowledge/external/connections/{id}/retrieve-test",
+            model=dict,
+            json=form_data.model_dump(exclude_none=True),
+        )
+
+    async def create_external_knowledge(
+        self, form_data: ExternalKnowledgeCreateForm
+    ) -> Optional[KnowledgeResponse]:
+        """
+        Create a read-only knowledge base backed by an EXISTING connection.
+
+        `connection_id` must already exist. Does not run a retrieval test. The
+        resulting knowledge base has `meta.source == 'external'` and
+        `meta.read_only == True`; local file operations are rejected. Note:
+        deleting this knowledge base also removes the referenced connection
+        (cascade). Admin only.
+
+        Args:
+            form_data: `name`, `description`, `connection_id`, `source`,
+                optional `access_grants`.
+
+        Returns:
+            Optional[KnowledgeResponse]: The created (read-only, external-backed) knowledge base.
+
+        Raises:
+            HTTPException: 404 if `connection_id` is unknown; 400 if the name is empty or a KB already exists.
+        """
+        return await self._request(
+            "POST",
+            "/v1/knowledge/external/knowledge/create",
+            model=KnowledgeResponse,
+            json=form_data.model_dump(exclude_none=True),
+        )
+
+    async def create_external_knowledge_source(
+        self, form_data: ExternalKnowledgeSourceCreateForm
+    ) -> Optional[KnowledgeResponse]:
+        """
+        Create a connection AND a read-only external knowledge base in one step.
+
+        Before persisting, the backend runs a retrieval `test` using `test_query`
+        / `test_count`; if it returns no documents the request fails with 400.
+        On success a new connection is stored and a read-only knowledge base is
+        created referencing it. Deleting the resulting knowledge base also
+        removes that connection (cascade). Requires a working RAG embedding
+        function. Admin only.
+
+        Args:
+            form_data: `name`, `description`, `connection`, `source`,
+                optional `access_grants`, `test_query`, `test_count`.
+
+        Returns:
+            Optional[KnowledgeResponse]: The created read-only external knowledge base.
+
+        Raises:
+            HTTPException: 400 if name is empty, the test returns no results, or a KB already exists.
+        """
+        return await self._request(
+            "POST",
+            "/v1/knowledge/external/source/create",
+            model=KnowledgeResponse,
+            json=form_data.model_dump(exclude_none=True),
+        )
+
+    async def update_external_knowledge_source(
+        self, id: str, form_data: ExternalKnowledgeSourceUpdateForm
+    ) -> Optional[KnowledgeResponse]:
+        """
+        Replace the connection+source backing an existing external knowledge base.
+
+        Resolves the knowledge base by `id` (must be external / read-only), then
+        re-runs a retrieval `test` (`test_query` / `test_count`); no documents =>
+        400. Updates the stored connection (same id, in place) and the knowledge
+        base meta. Requires a working RAG embedding function. Admin only.
+
+        Args:
+            id: The external knowledge base id.
+            form_data: Full `connection` + `source` + `test_query` (+ optional
+                `test_count`, `access_grants`, `name`, `description`).
+
+        Returns:
+            Optional[KnowledgeResponse]: The updated external knowledge base.
+
+        Raises:
+            HTTPException: 404 if the knowledge base or its connection is missing; 400 if the test returns no results.
+        """
+        return await self._request(
+            "PATCH",
+            f"/v1/knowledge/external/source/{id}",
+            model=KnowledgeResponse,
+            json=form_data.model_dump(exclude_none=True),
+        )

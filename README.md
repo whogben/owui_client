@@ -10,14 +10,14 @@ A fully typed, async Python client that mirrors the backend structure of Open We
 
 ### Target Open WebUI Version
 
-This package currently targets Open WebUI `0.9.6` (derived from package version `9.6.0`).
+This package currently targets Open WebUI `0.10.1` (derived from package version `10.1.0`).
 
 Version mapping policy:
 - `client.major` -> `openwebui.minor`
 - `client.minor` -> `openwebui.patch`
 - `client.patch` -> client-only fixes while targeting the same Open WebUI version
 
-Example: `9.6.0` means this package targets Open WebUI `0.9.6`.
+Example: `10.1.0` means this package targets Open WebUI `0.10.1`.
 
 ### Installation
 
@@ -72,6 +72,7 @@ The client structure matches the Open WebUI backend router structure exactly. If
 | | `client.models` | Model management (delete, update, import) |
 | | `client.tools` | Tool management |
 | | `client.functions`| Function management |
+| | `client.events` | Event webhooks (outbound webhook delivery) |
 
 *Tip: Use your IDE's autocomplete on the `client` object to explore all available resources.*
 

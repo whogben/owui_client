@@ -97,6 +97,14 @@ class WebConfig(BaseModel):
 
     ENABLE_WEB_SEARCH: Optional[bool] = None
     """Whether to enable web search."""
+    ENABLE_WEB_SEARCH_CONFIRMATION: Optional[bool] = None
+    """Whether users must confirm before a web search runs. When enabled, the client
+    UI shows the `WEB_SEARCH_CONFIRMATION_CONTENT` message and requires acknowledgement
+    before the search proceeds."""
+    WEB_SEARCH_CONFIRMATION_CONTENT: Optional[str] = None
+    """Confirmation message shown to users before a web search runs, when
+    `ENABLE_WEB_SEARCH_CONFIRMATION` is enabled. Defaults to
+    'Your query will be sent to the configured web search provider.'."""
     WEB_SEARCH_ENGINE: Optional[str] = None
     """The web search engine to use."""
     WEB_SEARCH_TRUST_ENV: Optional[bool] = None
@@ -149,6 +157,11 @@ class WebConfig(BaseModel):
     """Whether to use HTTPS for Serpstack."""
     SERPER_API_KEY: Optional[str] = None
     """API key for Serper."""
+    SERPHOUSE_API_KEY: Optional[str] = None
+    """API key for SERPHouse Search (used when `WEB_SEARCH_ENGINE == 'serphouse'`)."""
+    SERPHOUSE_DOMAIN: Optional[str] = None
+    """Search domain passed to SERPHouse as the `domain` query parameter, e.g.
+    'google.com' or 'bing.com'. Defaults to 'google.com' if empty."""
     SERPLY_API_KEY: Optional[str] = None
     """API key for Serply."""
     TAVILY_API_KEY: Optional[str] = None
@@ -179,6 +192,15 @@ class WebConfig(BaseModel):
     """The search context usage for Perplexity."""
     PERPLEXITY_SEARCH_API_URL: Optional[str] = None
     """The search API URL for Perplexity."""
+    MICROSOFT_WEB_IQ_API_BASE_URL: Optional[str] = None
+    """Base URL for the Microsoft Web IQ API (used for both search and page browsing),
+    selected when `WEB_SEARCH_ENGINE == 'microsoft_web_iq'` or
+    `WEB_LOADER_ENGINE == 'microsoft_web_iq'`. Defaults to 'https://api.microsoft.ai/v3'."""
+    MICROSOFT_WEB_IQ_API_KEY: Optional[str] = None
+    """API key for the Microsoft Web IQ API (sent as the `x-apikey` header)."""
+    MICROSOFT_WEB_IQ_LANGUAGE: Optional[str] = None
+    """Language code forwarded to the Microsoft Web IQ API as the `language` field, e.g.
+    'en'. Defaults to 'en'."""
     SOUGOU_API_SID: Optional[str] = None
     """The SID for Sougou API."""
     SOUGOU_API_SK: Optional[str] = None
@@ -310,6 +332,28 @@ class ConfigForm(BaseModel):
     """URL for external document loader."""
     EXTERNAL_DOCUMENT_LOADER_API_KEY: Optional[str] = None
     """API key for external document loader."""
+    EXTERNAL_DOCUMENT_LOADER_HEADERS: Optional[Dict[str, str]] = None
+    """Extra HTTP headers appended to requests sent to the external document loader
+    server, in addition to the auto-injected `Content-Type`, `Authorization` (built
+    from `EXTERNAL_DOCUMENT_LOADER_API_KEY`), and `X-Filename`. Only used when
+    `CONTENT_EXTRACTION_ENGINE == 'external'`.
+
+    Values are strings (any non-string value is coerced to a string at request time)
+    and may contain template tokens that are substituted per uploaded file before the
+    request is sent.
+
+    Dict Fields:
+        - `<header-name>` (str, optional): Any HTTP header name mapped to a string
+          value. Values support case-sensitive template tokens that are replaced at
+          request time, including `{{FILE_ID}}`, `{{FILE_NAME}}`,
+          `{{FILE_CONTENT_TYPE}}`, `{{CHAT_ID}}`, `{{MESSAGE_ID}}`,
+          `{{USER_MESSAGE_ID}}`, `{{USER_MESSAGE_PARENT_ID}}`, `{{USER_ID}}`,
+          `{{USER_NAME}}`, `{{USER_EMAIL}}`, `{{USER_ROLE}}`, `{{USER_AGENT}}`, and
+          `{{TASK}}`.
+
+    Defaults to `{}` when unset. Example:
+    `{"X-OpenWebUI-File-Id": "{{FILE_ID}}"}`.
+    """
 
     TIKA_SERVER_URL: Optional[str] = None
     """URL for Tika server."""
@@ -337,6 +381,10 @@ class ConfigForm(BaseModel):
     """Base URL for Mistral OCR API."""
     MISTRAL_OCR_API_KEY: Optional[str] = None
     """API key for Mistral OCR."""
+    MISTRAL_OCR_USE_BASE64: Optional[bool] = None
+    """When True (and `CONTENT_EXTRACTION_ENGINE == 'mistral_ocr'`), send the PDF as a
+    base64 data URL inline instead of first uploading it to Mistral and referencing
+    the uploaded file. Defaults to False."""
     PADDLEOCR_VL_BASE_URL: Optional[str] = None
     """Base URL for PaddleOCR VL service. Defaults to 'http://localhost:8080'."""
     PADDLEOCR_VL_TOKEN: Optional[str] = None
@@ -390,6 +438,12 @@ class ConfigForm(BaseModel):
     # Chunking settings
     TEXT_SPLITTER: Optional[str] = None
     """Text splitter to use."""
+    RAG_TOKENIZER_MODEL: Optional[str] = None
+    """HuggingFace tokenizer model id (or local path) used by the 'token_transformers'
+    text splitter (`TEXT_SPLITTER == 'token_transformers'`) for token-based chunking.
+    A bare name with no path/slash is prefixed with 'sentence-transformers/'. When
+    empty, the backend falls back to the configured embedding model's tokenizer and
+    raises if none is available."""
     ENABLE_MARKDOWN_HEADER_TEXT_SPLITTER: Optional[bool] = None
     """Whether to enable markdown header text splitter."""
     CHUNK_SIZE: Optional[int] = None

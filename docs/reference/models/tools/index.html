@@ -739,6 +739,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../feedbacks/" class="md-nav__link">
         
   
@@ -1445,6 +1473,17 @@
     <span class="md-ellipsis">
       
         manifest
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.tools.ToolMeta.has_user_valves" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        has_user_valves
       
     </span>
   </a>
@@ -2462,6 +2501,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../routers/events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../routers/files/" class="md-nav__link">
         
   
@@ -3266,6 +3333,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#owui_client.models.tools.ToolMeta.has_user_valves" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        has_user_valves
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3958,6 +4036,8 @@
 
 
         <p>Metadata for a tool.</p>
+<p><code>has_user_valves</code> is server-computed (on tool create/update) and is not set
+by clients; the other fields come from the tool's frontmatter.</p>
 
           
 
@@ -4097,6 +4177,29 @@
 <li><code>required_open_webui_version</code> (str, optional): Minimum required Open WebUI version for this tool</li>
 </ul>
 </details>
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h5 id="owui_client.models.tools.ToolMeta.has_user_valves" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">has_user_valves</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">has_user_valves</span><span class="p">:</span> <span class="n"><span title="bool">bool</span></span> <span class="o">=</span> <span class="kc">False</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Whether the tool exposes user-configurable valves. Computed by the backend
+as <code>hasattr(tool_module, 'UserValves')</code> and set on tool create/update;
+clients should treat this as read-only.</p>
+
           
     </div>
 

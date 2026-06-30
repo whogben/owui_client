@@ -21,7 +21,7 @@ class AccessGrantModel(BaseModel):
     """Unique identifier for the grant."""
 
     resource_type: str
-    """Type of resource: 'knowledge', 'model', 'prompt', 'tool', 'note', 'channel', or 'file'."""
+    """Type of resource: 'knowledge', 'model', 'prompt', 'tool', 'note', 'channel', 'file', 'folder', or 'skill'."""
 
     resource_id: str
     """ID of the resource this grant applies to."""

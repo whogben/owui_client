@@ -6,10 +6,8 @@ from owui_client.models.evaluations import (
 )
 from owui_client.models.feedbacks import (
     FeedbackModel,
-    FeedbackResponse,
     FeedbackIdResponse,
     FeedbackForm,
-    FeedbackUserResponse,
     FeedbackListResponse,
     ModelHistoryResponse,
 )
@@ -101,19 +99,6 @@ class EvaluationsClient(ResourceBase):
             "/v1/evaluations/feedbacks/models",
         )
 
-    async def get_all_feedbacks(self) -> List[FeedbackResponse]:
-        """
-        Get all feedbacks (admin only).
-
-        Returns:
-            List[FeedbackResponse]: A list of all feedback entries in the system.
-        """
-        return await self._request(
-            "GET",
-            "/v1/evaluations/feedbacks/all",
-            model=FeedbackResponse,
-        )
-
     async def get_all_feedback_ids(self) -> List[FeedbackIdResponse]:
         """
         Get all feedback IDs (admin only).
@@ -153,17 +138,19 @@ class EvaluationsClient(ResourceBase):
             model=FeedbackModel,
         )
 
-    async def get_feedbacks_by_user(self) -> List[FeedbackUserResponse]:
+    async def get_feedbacks_by_user(self) -> FeedbackListResponse:
         """
-        Get feedbacks submitted by the current user.
+        Get a paginated list of feedbacks submitted by the current user.
 
         Returns:
-            List[FeedbackUserResponse]: A list of feedbacks submitted by the user.
+            `FeedbackListResponse`: A response containing the user's feedback items
+            (`items`) and the total count (`total`). Items are paginated server-side
+            (30 per page, page 1).
         """
         return await self._request(
             "GET",
             "/v1/evaluations/feedbacks/user",
-            model=FeedbackUserResponse,
+            model=FeedbackListResponse,
         )
 
     async def delete_feedbacks_by_user(self) -> bool:

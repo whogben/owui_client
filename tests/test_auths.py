@@ -9,6 +9,7 @@ from owui_client.models.auths import (
     LdapServerConfig,
     LdapConfigForm,
     TokenExchangeForm,
+    OAuthConfigForm,
 )
 from owui_client.models.users import UpdateProfileForm
 import uuid
@@ -315,6 +316,40 @@ async def test_ldap_config(client):
 
     # 5. Revert
     await client.auths.update_ldap_config(LdapConfigForm(enable_ldap=not new_state))
+
+
+async def test_oauth_config(client):
+    """
+    Test GET/POST /admin/config/oauth for the OAuth/OIDC admin configuration.
+
+    The test container does not set ENABLE_OAUTH_PERSISTENT_CONFIG, so by default
+    `oauth.*` reads return compiled/env defaults rather than DB-stored values
+    (see AuthsClient.get_oauth_config). We therefore verify the endpoints work
+    and the OAuthConfigForm round-trips, but do NOT assert a custom value
+    persists on read.
+
+    No explicit signin is performed: the `client` fixture already authenticates
+    as the admin via API key, and the backend rate-limits signin to 15 per email
+    per 180s (adding another signin would push the suite over that limit).
+    """
+    # 1. GET returns a valid OAuthConfigForm; OAUTH_SCOPES defaults to
+    #    'openid email profile' in the reference backend.
+    oauth_config = await client.auths.get_oauth_config()
+    assert oauth_config is not None
+    assert isinstance(oauth_config, OAuthConfigForm)
+    assert oauth_config.OAUTH_SCOPES == "openid email profile"
+
+    # 2. POST a partial update (only the field to change). The endpoint must
+    #    accept the body and return an OAuthConfigForm.
+    original_scopes = oauth_config.OAUTH_SCOPES
+    update_form = OAuthConfigForm(OAUTH_SCOPES="openid email profile test")
+    updated_config = await client.auths.update_oauth_config(update_form)
+    assert isinstance(updated_config, OAuthConfigForm)
+
+    # 3. Revert the DB row (no-op for reads without persistent oauth config,
+    #    but keeps the store clean if persistence is later enabled).
+    revert_form = OAuthConfigForm(OAUTH_SCOPES=original_scopes or "")
+    await client.auths.update_oauth_config(revert_form)
 
 
 async def test_api_key_lifecycle(client):

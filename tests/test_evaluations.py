@@ -29,13 +29,6 @@ async def test_evaluations_config(client):
     await client.evaluations.update_config(form)
 
 
-@pytest.mark.xfail(
-    reason="OWUI 0.9.6 backend compatibility: the /v1/evaluations/feedbacks/all "
-           "endpoint behavior changed and the response shape is no longer directly "
-           "iterable as List[FeedbackResponse]. Likely the endpoint was renamed or "
-           "its response wrapper changed. Investigate in a follow-up release.",
-    strict=False,
-)
 async def test_feedback_lifecycle(client):
     # 1. Create feedback
     feedback_form = FeedbackForm(
@@ -52,10 +45,7 @@ async def test_feedback_lifecycle(client):
     # 2. Get feedback by ID
     feedback = await client.evaluations.get_feedback(feedback_id)
     assert feedback.id == feedback_id
-    # Rating might be returned as dict or obj depending on how backend stores it in JSON column
-    # The model says data is Optional[dict]. The client model parses it.
-    # But RatingData is a pydantic model.
-    # FeedbackModel.data is dict.
+    # FeedbackModel.data is dict; RatingData was stored as a dict in the JSON column.
     assert feedback.data["rating"] == 5
 
     # 3. Update feedback
@@ -68,19 +58,20 @@ async def test_feedback_lifecycle(client):
     )
     assert updated_feedback.data["rating"] == 4
 
-    # 4. Get all feedbacks (admin)
-    all_feedbacks = await client.evaluations.get_all_feedbacks()
-    assert len(all_feedbacks) > 0
-    found = any(f.id == feedback_id for f in all_feedbacks)
+    # 4. Get all feedback IDs (admin). In 0.10.1 GET /feedbacks/all was removed;
+    # /feedbacks/all/ids returns FeedbackIdResponse items.
+    all_ids = await client.evaluations.get_all_feedback_ids()
+    assert len(all_ids) > 0
+    found = any(f.id == feedback_id for f in all_ids)
     assert found
 
-    # 5. Get user feedbacks
+    # 5. Get user feedbacks (returns FeedbackListResponse: items + total)
     user_feedbacks = await client.evaluations.get_feedbacks_by_user()
-    assert len(user_feedbacks) > 0
-    found_user = any(f.id == feedback_id for f in user_feedbacks)
+    assert user_feedbacks.total > 0
+    found_user = any(f.id == feedback_id for f in user_feedbacks.items)
     assert found_user
 
-    # 6. Export feedbacks
+    # 6. Export feedbacks (GET /feedbacks/all/export -> list[FeedbackModel])
     export = await client.evaluations.export_all_feedbacks()
     assert len(export) > 0
 
@@ -92,12 +83,14 @@ async def test_feedback_lifecycle(client):
     success = await client.evaluations.delete_feedback(feedback_id)
     assert success is True
 
-    # Verify deletion
+    # Verify deletion (404 on subsequent get)
+    from httpx import HTTPStatusError
+
     try:
         await client.evaluations.get_feedback(feedback_id)
         assert False, "Should have raised 404"
-    except Exception:
-        pass
+    except HTTPStatusError as e:
+        assert e.response.status_code == 404
 
 
 async def test_get_leaderboard(client):

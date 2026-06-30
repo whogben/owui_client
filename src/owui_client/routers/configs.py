@@ -15,6 +15,8 @@ from owui_client.models.configs import (
     TerminalServersConfigForm,
     TerminalServerConnection,
     TerminalServerPolicyForm,
+    TerminalServerLifecycleForm,
+    TerminalServerRefreshForm,
 )
 
 class ConfigsClient(ResourceBase):
@@ -363,4 +365,85 @@ class ConfigsClient(ResourceBase):
             "GET",
             "/v1/configs/models/defaults",
             model=dict,
+        )
+
+    async def get_config_namespace(self, namespace: str) -> Dict[str, Any]:
+        """Get all configuration key/value pairs under a dotted namespace.
+
+        Returns every config storage key that starts with ``{namespace}.``
+        (e.g. namespace ``"ui"`` returns ``ui.prompt_suggestions``,
+        ``ui.banners``, etc.) along with its current value. Values come from
+        both persisted DB overrides and built-in defaults.
+
+        Args:
+            namespace: Top-level config namespace (e.g. ``"ui"``, ``"models"``,
+                ``"code_execution"``, ``"oauth"``, ``"terminal_server"``).
+
+        Returns:
+            Dictionary mapping full storage keys (``{namespace}.{rest}``) to
+            their values.
+        """
+        return await self._request(
+            "GET",
+            f"/v1/configs/namespace/{namespace}",
+            model=dict,
+        )
+
+    async def put_terminal_server_lifecycle(
+        self, form_data: TerminalServerLifecycleForm
+    ) -> Dict[str, Any]:
+        """Push a session-lifecycle policy update to an orchestrator terminal server.
+
+        Proxies a PUT to the orchestrator's
+        ``/api/v1/policies/{policy_id}/lifecycle`` endpoint with the supplied
+        ``lifecycle_data``. Used to configure how running terminal sessions are
+        managed (e.g. idle timeouts, max lifetime) for a policy.
+
+        Args:
+            form_data: `TerminalServerLifecycleForm` carrying the orchestrator
+                URL, credentials, target policy ID, and the opaque lifecycle body.
+
+        Returns:
+            The JSON response returned by the orchestrator (shape defined by the
+            orchestrator's API).
+
+        Raises:
+            HTTPStatusError: 400 if the URL is empty or the orchestrator is
+                unreachable / returns an error.
+        """
+        return await self._request(
+            "POST",
+            "/v1/configs/terminal_servers/lifecycle",
+            model=dict,
+            json=form_data.model_dump(),
+        )
+
+    async def refresh_terminal_server_terminals(
+        self, form_data: TerminalServerRefreshForm
+    ) -> Dict[str, Any]:
+        """Refresh or reset running terminal sessions on an orchestrator terminal server.
+
+        Proxies a POST to the orchestrator's ``/api/v1/terminals/refresh``
+        endpoint. Optionally restricts the operation to idle sessions, a
+        specific user, or a specific policy, and can reset sessions instead of
+        just refreshing them.
+
+        Args:
+            form_data: `TerminalServerRefreshForm` carrying the orchestrator URL,
+                credentials, and targeting options (``only_idle``, ``reset``,
+                ``user_id``, ``policy_id``).
+
+        Returns:
+            The JSON response returned by the orchestrator (shape defined by the
+            orchestrator's API).
+
+        Raises:
+            HTTPStatusError: 400 if the URL is empty or the orchestrator is
+                unreachable / returns an error.
+        """
+        return await self._request(
+            "POST",
+            "/v1/configs/terminal_servers/refresh",
+            model=dict,
+            json=form_data.model_dump(),
         )

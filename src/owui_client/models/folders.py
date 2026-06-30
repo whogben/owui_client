@@ -1,6 +1,8 @@
 from typing import Optional
 from pydantic import BaseModel, ConfigDict
 
+from owui_client.models.access_grants import AccessGrantModel
+
 
 class FolderMetadataResponse(BaseModel):
     """
@@ -72,6 +74,11 @@ class FolderModel(BaseModel):
     updated_at: int
     """Timestamp of last update (Unix epoch)."""
 
+    access_grants: list[AccessGrantModel] = []
+    """Access grants on the folder. Populated by the backend on `get_folder_by_id`
+    and `update_folder_access_by_id`; empty for endpoints that do not surface grants.
+    See `AccessGrantModel` for the entry shape."""
+
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -94,6 +101,63 @@ class FolderNameIdResponse(BaseModel):
 
     is_expanded: bool = False
     """Whether the folder is expanded in the UI."""
+
+    created_at: int
+    """Timestamp of creation (Unix epoch)."""
+
+    updated_at: int
+    """Timestamp of last update (Unix epoch)."""
+
+
+class SharedFolderResponse(BaseModel):
+    """
+    Response model for a folder shared with the current user (the "shared with me" view).
+
+    Returned by `GET /folders/shared`. The backend builds each entry from the folder's
+    full model dump plus `owner_name` (display name of the owning user) and `permission`
+    (the highest access level the current user holds on that folder). Child folders of a
+    shared root inherit the root's permission.
+
+    Note: `permission` is always 'read' or 'write'. Entries the current user owns are
+    excluded by the backend, so this model only describes folders owned by others.
+    The raw API payload also includes the full folder fields (such as `items` and `data`),
+    which are dropped when parsing into this model.
+    """
+
+    id: str
+    """Unique identifier for the folder."""
+
+    name: str
+    """Name of the folder."""
+
+    parent_id: Optional[str] = None
+    """ID of the parent folder, or None for a root folder."""
+
+    user_id: str
+    """ID of the user who owns the folder."""
+
+    owner_name: Optional[str] = None
+    """Display name of the folder owner, resolved by the backend for display."""
+
+    permission: str = "read"
+    """Highest access level the current user has on this folder: 'read' or 'write'."""
+
+    access_grants: list[AccessGrantModel] = []
+    """Access grants on the folder.
+
+    Always an empty list in `GET /folders/shared` responses (the backend does not populate
+    it for the shared listing). Grants are fetched separately via `get_folder_by_id` or
+    `update_folder_access_by_id`. See `AccessGrantModel` for the entry shape."""
+
+    is_expanded: bool = False
+    """Whether the folder is expanded in the UI."""
+
+    meta: Optional[dict] = None
+    """Folder metadata for display.
+
+    Dict Fields:
+        - `icon` (str, optional): Emoji icon for the folder (e.g. "📁", "🗂️"). When absent, the UI shows a default folder icon.
+    """
 
     created_at: int
     """Timestamp of creation (Unix epoch)."""
@@ -175,3 +239,24 @@ class FolderIsExpandedForm(BaseModel):
 
     is_expanded: bool
     """Whether the folder should be expanded."""
+
+
+class FolderAccessGrantsForm(BaseModel):
+    """
+    Form for updating access grants on a folder (folder sharing).
+
+    Replaces all existing grants on the folder with the supplied list. Used by
+    `POST /folders/{id}/access/update` to share a folder with specific users, groups,
+    or everyone, with read or write access. Only the folder owner, an admin, or a user
+    with write access may call it; non-admins are subject to sharing permission filters
+    (public/individual user grants may be stripped)."""
+
+    access_grants: list[dict]
+    """List of access grants to set on the folder, replacing all existing grants.
+
+    Dict Fields:
+        - `id` (str, optional): Unique identifier for the grant. If omitted the backend generates one.
+        - `principal_type` (str, required): 'user' or 'group'
+        - `principal_id` (str, required): User ID, group ID, or '*' for public (everyone)
+        - `permission` (str, required): 'read' or 'write'
+    """

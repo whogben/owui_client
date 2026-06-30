@@ -12,14 +12,6 @@ from owui_client.models.auths import SigninForm
 pytestmark = pytest.mark.asyncio
 
 
-@pytest.mark.xfail(
-    reason="OWUI 0.9.6 backend compatibility: POST /v1/models/model/update "
-           "returns 500 Internal Server Error on partial ModelForm submissions "
-           "with empty params and meta. This appears to be a 0.9.6 backend bug "
-           "(or behavior change) when updating a model that was created with "
-           "empty ModelParams(). Investigate in a follow-up release.",
-    strict=False,
-)
 async def test_model_lifecycle(client):
     """
     Test creating, retrieving, updating, and deleting a model.
@@ -88,6 +80,37 @@ async def test_model_lifecycle(client):
         assert e.response.status_code == 404
 
 
+async def test_get_base_model_tags(client):
+    """
+    Test the admin-only GET /base/tags endpoint.
+
+    Creates a base model with a tag in its meta, asserts the tag is returned,
+    then asserts the empty-list shape is also valid.
+    """
+    import time
+
+    tag_name = f"base_tag_{int(time.time())}"
+    model_id = f"test_base_tags_{int(time.time())}"
+
+    form_data = ModelForm(
+        id=model_id,
+        name="Base Tags Test Model",
+        meta=ModelMeta(description="base tags test", tags=[{"name": tag_name}]),
+        params=ModelParams(),
+    )
+
+    created_model = await client.models.create_new_model(form_data)
+    assert created_model is not None
+
+    try:
+        # The created model has no base_model_id, so it is a base model.
+        tags = await client.models.get_base_model_tags()
+        assert isinstance(tags, list)
+        assert tag_name in tags
+    finally:
+        assert await client.models.delete_model_by_id(model_id) is True
+
+
 async def test_update_model_access(client):
     """
     Test updating model access grants.
@@ -105,23 +128,92 @@ async def test_update_model_access(client):
     assert created_model is not None
     assert created_model.id == model_id
 
-    # Update access grants - grant public read access
-    access_form = ModelAccessGrantsForm(
+    try:
+        # Update access grants - grant public read access
+        access_form = ModelAccessGrantsForm(
+            id=model_id,
+            access_grants=[
+                {"principal_type": "user", "principal_id": "*", "permission": "read"}
+            ],
+        )
+
+        updated_model = await client.models.update_model_access(access_form)
+        assert updated_model is not None
+        assert updated_model.id == model_id
+        # Verify access_grants are present
+        assert len(updated_model.access_grants) == 1
+        assert updated_model.access_grants[0].principal_type == "user"
+        assert updated_model.access_grants[0].principal_id == "*"
+        assert updated_model.access_grants[0].permission == "read"
+    finally:
+        assert await client.models.delete_model_by_id(model_id) is True
+
+async def test_update_model_preserves_access_grants(client):
+    """
+    Regression test: updating a model without specifying `access_grants` must
+    preserve the model's existing sharing grants rather than silently wiping them.
+
+    The backend's `set_access_grants` deletes and re-inserts grants from whatever
+    non-None list it receives, so sending `[]` clears them. `update_model_by_id`
+    must therefore re-send the model's current grants when the caller omits them.
+    """
+    model_id = f"test_model_preserve_{int(time.time())}"
+    form_data = ModelForm(
         id=model_id,
-        access_grants=[
-            {"principal_type": "user", "principal_id": "*", "permission": "read"}
-        ],
+        name="Preserve Grants Test",
+        meta=ModelMeta(description="model whose grants must survive an update"),
+        params=ModelParams(),
     )
 
-    updated_model = await client.models.update_model_access(access_form)
-    assert updated_model is not None
-    assert updated_model.id == model_id
-    # Verify access_grants are present
-    assert len(updated_model.access_grants) == 1
-    assert updated_model.access_grants[0].principal_type == "user"
-    assert updated_model.access_grants[0].principal_id == "*"
-    assert updated_model.access_grants[0].permission == "read"
+    created_model = await client.models.create_new_model(form_data)
+    assert created_model is not None
 
-    # Clean up
-    deleted = await client.models.delete_model_by_id(model_id)
-    assert deleted is True
+    try:
+        # Grant the model public read access so it has a non-empty grant list.
+        access_form = ModelAccessGrantsForm(
+            id=model_id,
+            access_grants=[
+                {"principal_type": "user", "principal_id": "*", "permission": "read"}
+            ],
+        )
+        granted = await client.models.update_model_access(access_form)
+        assert granted is not None
+        assert len(granted.access_grants) == 1
+
+        # Update the model's name WITHOUT specifying access_grants. A naive client
+        # would send access_grants=[] here and wipe the public-read grant.
+        update_form = ModelForm(
+            id=model_id,
+            name="Preserve Grants Test (renamed)",
+            meta=ModelMeta(description="updated description"),
+            params=ModelParams(),
+        )
+        updated_model = await client.models.update_model_by_id(update_form)
+        assert updated_model is not None
+        assert updated_model.name == "Preserve Grants Test (renamed)"
+
+        # Re-fetch and confirm the public-read grant survived the update.
+        fetched = await client.models.get_model_by_id(model_id)
+        assert fetched is not None
+        assert len(fetched.access_grants) == 1, (
+            f"access_grants were wiped on update; got {fetched.access_grants!r}"
+        )
+        assert fetched.access_grants[0].principal_type == "user"
+        assert fetched.access_grants[0].principal_id == "*"
+        assert fetched.access_grants[0].permission == "read"
+
+        # Sanity check the contrasting behavior: an explicit [] DOES clear grants.
+        clear_form = ModelForm(
+            id=model_id,
+            name="Preserve Grants Test (renamed)",
+            meta=ModelMeta(description="updated description"),
+            params=ModelParams(),
+            access_grants=[],
+        )
+        cleared = await client.models.update_model_by_id(clear_form)
+        assert cleared is not None
+        fetched_after_clear = await client.models.get_model_by_id(model_id)
+        assert fetched_after_clear is not None
+        assert fetched_after_clear.access_grants == []
+    finally:
+        assert await client.models.delete_model_by_id(model_id) is True

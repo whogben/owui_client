@@ -35,6 +35,9 @@ async def test_tasks_config(client):
         AUTOCOMPLETE_GENERATION_INPUT_MAX_LENGTH=config.get(
             "AUTOCOMPLETE_GENERATION_INPUT_MAX_LENGTH", 50
         ),
+        AUTOCOMPLETE_GENERATION_PROMPT_TEMPLATE=config.get(
+            "AUTOCOMPLETE_GENERATION_PROMPT_TEMPLATE", ""
+        ),
         TAGS_GENERATION_PROMPT_TEMPLATE=config.get(
             "TAGS_GENERATION_PROMPT_TEMPLATE", ""
         ),
@@ -114,6 +117,9 @@ async def test_title_generation(client, mock_openai_server):
         ),
         AUTOCOMPLETE_GENERATION_INPUT_MAX_LENGTH=config.get(
             "AUTOCOMPLETE_GENERATION_INPUT_MAX_LENGTH", 50
+        ),
+        AUTOCOMPLETE_GENERATION_PROMPT_TEMPLATE=config.get(
+            "AUTOCOMPLETE_GENERATION_PROMPT_TEMPLATE", ""
         ),
         TAGS_GENERATION_PROMPT_TEMPLATE=config.get(
             "TAGS_GENERATION_PROMPT_TEMPLATE", ""

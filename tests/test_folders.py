@@ -1,9 +1,14 @@
+import uuid
+
 import pytest
+from owui_client.client import OpenWebUI
+from owui_client.models.auths import AddUserForm
 from owui_client.models.folders import (
     FolderForm,
     FolderUpdateForm,
     FolderParentIdForm,
     FolderIsExpandedForm,
+    FolderAccessGrantsForm,
 )
 
 
@@ -63,4 +68,89 @@ async def test_folders_crud(client):
     # Cleanup parent folder
     deleted_parent = await client.folders.delete_folder_by_id(parent_folder.id)
     assert deleted_parent is True
+
+
+@pytest.mark.asyncio
+async def test_update_folder_access_by_id(client):
+    """Share a folder with everyone (public read) via the access/update endpoint."""
+    folder = await client.folders.create_folder(FolderForm(name="Shared Folder"))
+
+    try:
+        # Admin can grant any access (sharing permission filters are bypassed for admins).
+        grants = [
+            {"principal_type": "user", "principal_id": "*", "permission": "read"}
+        ]
+        updated = await client.folders.update_folder_access_by_id(
+            folder.id, FolderAccessGrantsForm(access_grants=grants)
+        )
+        assert updated.id == folder.id
+        assert updated.name == "Shared Folder"
+        # The returned FolderModel surfaces access_grants (not silently dropped).
+        assert isinstance(updated.access_grants, list)
+        assert len(updated.access_grants) == 1
+        assert updated.access_grants[0].principal_id == "*"
+        assert updated.access_grants[0].permission == "read"
+
+        # get_folder_by_id also returns the grants.
+        fetched = await client.folders.get_folder_by_id(folder.id)
+        assert isinstance(fetched.access_grants, list)
+        assert len(fetched.access_grants) == 1
+        assert fetched.access_grants[0].principal_id == "*"
+    finally:
+        await client.folders.delete_folder_by_id(folder.id)
+
+
+@pytest.mark.asyncio
+async def test_get_shared_folders(client):
+    """A non-owner user sees an admin-shared (public) folder in their shared list."""
+    folder = await client.folders.create_folder(FolderForm(name="Owner Shared Folder"))
+
+    # Create a second, non-admin user to act as the share recipient.
+    user_email = f"shared-folders-{uuid.uuid4().hex[:8]}@example.com"
+    added = await client.auths.add_user(
+        AddUserForm(name="Shared Viewer", email=user_email, password="pw", role="user")
+    )
+    viewer = OpenWebUI(api_url=client.api_url, api_key=added.token)
+
+    try:
+        # Owner shares the folder with everyone (public read).
+        await client.folders.update_folder_access_by_id(
+            folder.id,
+            FolderAccessGrantsForm(
+                access_grants=[
+                    {"principal_type": "user", "principal_id": "*", "permission": "read"}
+                ]
+            ),
+        )
+
+        shared = await viewer.folders.get_shared_folders()
+        assert isinstance(shared, list)
+        matched = [s for s in shared if s.id == folder.id]
+        assert matched, "shared folder not visible to non-owner"
+        assert matched[0].permission == "read"
+        # The folder is owned by the admin, not by the viewer.
+        assert matched[0].user_id != added.id
+
+        # The owner themselves does not see their own folder in the shared list.
+        owner_shared = await client.folders.get_shared_folders()
+        assert isinstance(owner_shared, list)
+        assert not any(s.id == folder.id for s in owner_shared)
+    finally:
+        await client.folders.delete_folder_by_id(folder.id)
+        await client.users.delete_user_by_id(added.id)
+
+
+@pytest.mark.asyncio
+async def test_get_shared_folder_chats(client):
+    """Owner view of a shared folder's chats returns the chats payload and permission."""
+    folder = await client.folders.create_folder(FolderForm(name="Chats Shared Folder"))
+
+    try:
+        result = await client.folders.get_shared_folder_chats(folder.id)
+        assert isinstance(result, dict)
+        assert "chats" in result and isinstance(result["chats"], list)
+        # Owner has write access to their own folder.
+        assert result["folder_permission"] == "write"
+    finally:
+        await client.folders.delete_folder_by_id(folder.id)
 

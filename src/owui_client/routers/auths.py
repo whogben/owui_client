@@ -15,6 +15,7 @@ from owui_client.models.auths import (
     LdapServerConfig,
     LdapConfigForm,
     LdapConfigResponse,
+    OAuthConfigForm,
     ApiKey,
     TokenExchangeForm,
 )
@@ -343,6 +344,59 @@ class AuthsClient(ResourceBase):
             "POST",
             "/v1/auths/admin/config/ldap",
             model=LdapConfigResponse,
+            json=form_data.model_dump(exclude_none=True),
+        )
+
+    async def get_oauth_config(self) -> OAuthConfigForm:
+        """
+        Get the OAuth/OIDC provider configuration.
+
+        Returns all OAuth/OIDC settings shown on the admin Authentication page
+        (signup toggles, provider credentials, claims, role/group mapping). Requires
+        admin privileges.
+
+        Note: unless the backend is started with
+        ``ENABLE_OAUTH_PERSISTENT_CONFIG=true``, ``oauth.*`` keys are read from
+        compiled-in defaults / environment rather than the DB, so this returns
+        the effective (default/env) values and writes via
+        `update_oauth_config` will not be reflected on read.
+
+        Returns:
+            `OAuthConfigForm`: Current effective OAuth/OIDC configuration. Every
+            `oauth.*` key has a compiled default, so all fields are populated
+            (from the DB, env, or built-in defaults).
+        """
+        return await self._request(
+            "GET",
+            "/v1/auths/admin/config/oauth",
+            model=OAuthConfigForm,
+        )
+
+    async def update_oauth_config(self, form_data: OAuthConfigForm) -> OAuthConfigForm:
+        """
+        Update the OAuth/OIDC provider configuration.
+
+        Persists the supplied OAuth/OIDC settings under the ``oauth.*`` config
+        namespace. All fields are optional, so a partial update (only the keys to
+        change) is accepted; ``None`` fields are excluded. Requires admin
+        privileges.
+
+        Note: unless ``ENABLE_OAUTH_PERSISTENT_CONFIG=true`` is set on the
+        backend, subsequent `get_oauth_config` reads return compiled/env defaults
+        and will NOT reflect values written here (the write itself still
+        succeeds).
+
+        Args:
+            form_data: `OAuthConfigForm` with the fields to update.
+
+        Returns:
+            `OAuthConfigForm`: The OAuth/OIDC configuration as read back after
+            the update (see the persistence note above).
+        """
+        return await self._request(
+            "POST",
+            "/v1/auths/admin/config/oauth",
+            model=OAuthConfigForm,
             json=form_data.model_dump(exclude_none=True),
         )
 

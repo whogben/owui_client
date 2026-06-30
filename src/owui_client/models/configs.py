@@ -63,6 +63,16 @@ class OAuthClientRegistrationForm(BaseModel):
     oauth_server_url: Optional[str] = None
     """Override for the OAuth server URL. Defaults to the url field if not provided."""
 
+    oauth_scope: Optional[str] = None
+    """OAuth scope(s) to request during client registration.
+
+    A single string of whitespace- and/or comma-separated scope tokens
+    (e.g. ``"openid email profile"`` or ``"openid,email,profile"``); the
+    backend normalizes both separators. When omitted/None the backend falls
+    back to the scopes advertised by the resource's Protected Resource
+    Metadata (RFC 9728) during dynamic client registration.
+    """
+
 
 class ToolServerConnection(BaseModel):
     """
@@ -359,3 +369,65 @@ class TerminalServerPolicyForm(BaseModel):
         Policy structure is defined by the orchestrator terminal server's API.
         See the orchestrator's /api/v1/policies endpoint for details.
     """
+
+
+class TerminalServerLifecycleForm(BaseModel):
+    """Form for pushing a session-lifecycle policy to an orchestrator terminal server.
+
+    Open WebUI proxies this verbatim to the orchestrator; only ``bearer`` auth
+    is wired into the proxy (any other ``auth_type`` sends no Authorization
+    header).
+    """
+
+    url: str
+    """Base URL of the orchestrator terminal server. Trailing slash is stripped by the backend."""
+
+    key: Optional[str] = ""
+    """Bearer token for orchestrator auth. Only applied when auth_type is 'bearer'."""
+
+    auth_type: Optional[str] = "bearer"
+    """Auth scheme. Only 'bearer' is honored by the proxy; other values send no auth header."""
+
+    policy_id: str
+    """ID of the policy whose lifecycle should be updated on the orchestrator."""
+
+    lifecycle_data: Dict[str, Any]
+    """Opaque lifecycle policy body forwarded verbatim to the orchestrator.
+
+    Dict Fields:
+        Structure is defined entirely by the orchestrator terminal server's
+        ``/api/v1/policies/{policy_id}/lifecycle`` endpoint. The frontend sends
+        an arbitrary JSON object (default ``{}``) entered by an admin; Open WebUI
+        does not interpret or validate its contents.
+    """
+
+
+class TerminalServerRefreshForm(BaseModel):
+    """Form for refreshing or resetting running terminal sessions on an orchestrator.
+
+    Proxied to the orchestrator's ``/api/v1/terminals/refresh`` endpoint.
+    ``only_idle`` and ``reset`` are always forwarded; ``user_id`` and
+    ``policy_id`` are forwarded only when set, narrowing the targeted sessions.
+    Only ``bearer`` auth is wired into the proxy.
+    """
+
+    url: str
+    """Base URL of the orchestrator terminal server. Trailing slash is stripped by the backend."""
+
+    key: Optional[str] = ""
+    """Bearer token for orchestrator auth. Only applied when auth_type is 'bearer'."""
+
+    auth_type: Optional[str] = "bearer"
+    """Auth scheme. Only 'bearer' is honored by the proxy; other values send no auth header."""
+
+    user_id: Optional[str] = None
+    """Optional user ID. When set, restrict the operation to terminals owned by this user."""
+
+    policy_id: Optional[str] = None
+    """Optional policy ID. When set, restrict the operation to terminals under this policy."""
+
+    only_idle: bool = True
+    """When True (default), only refresh/reset idle terminal sessions."""
+
+    reset: bool = False
+    """When True, reset sessions (tear down and recreate) instead of just refreshing them."""

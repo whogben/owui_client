@@ -95,6 +95,35 @@ async def test_files_crud(client: OpenWebUI):
 
 
 @pytest.mark.asyncio
+async def test_count_files(client: OpenWebUI):
+    """Test the file count endpoint."""
+    # Establish a baseline count.
+    baseline = await client.files.count_files()
+    assert isinstance(baseline, int)
+    assert baseline >= 0
+
+    file_ids = []
+    try:
+        # Upload three files; the count should reflect them.
+        for i in range(3):
+            uploaded = await client.files.upload_file(
+                file=(f"count_test_{uuid.uuid4().hex[:8]}.txt", b"x", "text/plain"),
+                process=False,
+            )
+            file_ids.append(uploaded.id)
+
+        after = await client.files.count_files()
+        assert isinstance(after, int)
+        assert after == baseline + 3
+    finally:
+        for fid in file_ids:
+            try:
+                await client.files.delete_file_by_id(fid)
+            except Exception:
+                pass
+
+
+@pytest.mark.asyncio
 async def test_rename_file_by_id(client: OpenWebUI):
     """Test renaming an uploaded file."""
     # Upload a file to rename

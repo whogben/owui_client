@@ -99,6 +99,19 @@ class FilesClient(ResourceBase):
             params={"filename": filename, "content": content},
         )
 
+    async def count_files(self) -> int:
+        """
+        Get the count of files accessible to the current user.
+
+        Admins (when `BYPASS_ADMIN_ACCESS_CONTROL` is enabled) see the total
+        file count; other users see only their own files. Mirrors the
+        "Chat and file counts in their dialogs" UI feature.
+
+        Returns:
+            int: The number of accessible files.
+        """
+        return await self._request("GET", "/v1/files/count", model=int)
+
     async def delete_all_files(self) -> dict:
         """
         Delete ALL files in the system.

@@ -62,6 +62,22 @@ class ModelsClient(ResourceBase):
             "GET", "/v1/models/list", model=ModelListResponse, params=params
         )
 
+    async def get_base_model_tags(self) -> list[str]:
+        """
+        Get the distinct set of tags used across base models.
+
+        Base models are models with no `base_model_id` (i.e. the underlying
+        connected models, as opposed to workspace/derived models). Tags are
+        collected from each base model's `meta.tags` entries. Requires admin
+        privileges.
+
+        Returns:
+            list[str]: Sorted, de-duplicated list of base-model tag names.
+        """
+        return await self._request(
+            "GET", "/v1/models/base/tags", model=list[str]
+        )
+
     async def get_base_models(self) -> list[ModelResponse]:
         """
         Get all base models.
@@ -205,12 +221,45 @@ class ModelsClient(ResourceBase):
 
         Returns:
             Optional[ModelModel]: The updated model.
+
+        Note:
+            How `access_grants` is handled depends on whether the caller specifies it:
+
+            - **Caller omits `access_grants` (or passes `None`):** the model's existing grants
+              are preserved by fetching them via `get_model_by_id` and re-sending them. This
+              mirrors the frontend, which always re-sends the current grant list on update.
+            - **Caller passes a populated list:** the grants are replaced with that list.
+            - **Caller passes `[]`:** the grants are cleared (intentional).
+
+            A list must always be sent (never `None` or omitted from the JSON body): the
+            backend handler re-validates the body as `ModelForm(**form_data.model_dump())`,
+            and `ModelForm.access_grants` is typed `list[dict | None] = None` (a pydantic v2
+            gotcha that rejects an explicit `None`), so sending `None` raises an unhandled
+            ValidationError -> HTTP 500 (present in Open WebUI 0.9.6-0.10.1). On the DB side,
+            a non-`None` list is passed to `AccessGrants.set_access_grants`, which deletes all
+            existing grants and re-inserts the provided ones — so an unconditional `[]` would
+            silently wipe any sharing grants. Preserving the current list avoids both pitfalls.
+            If the current model cannot be fetched, `[]` is used as a last-resort fallback.
+            Note: when grants are omitted they are fetched then re-sent in a separate GET
+            followed by the POST, so a concurrent writer could change grants between the
+            two calls; this matches the frontend's behavior.
         """
+        payload = form_data.model_dump(exclude_none=True)
+        if "access_grants" not in payload:
+            # Caller did not specify access_grants (it was omitted or None). Preserve the
+            # model's existing grants rather than wiping them: fetch the current list and
+            # re-send it. We must still send a list (not None) to dodge the backend 500.
+            current = await self.get_model_by_id(form_data.id)
+            payload["access_grants"] = (
+                [g.model_dump() for g in current.access_grants]
+                if current is not None
+                else []
+            )
         return await self._request(
             "POST",
             "/v1/models/model/update",
             model=Optional[ModelModel],
-            json=form_data.model_dump(exclude_none=True),
+            json=payload,
         )
 
     async def delete_model_by_id(self, id: str) -> bool:

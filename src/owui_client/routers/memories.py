@@ -5,6 +5,8 @@ from owui_client.models.memories import (
     AddMemoryForm,
     MemoryUpdateModel,
     QueryMemoryForm,
+    ListMemoryPathsForm,
+    ReadMemoryPathForm,
 )
 
 
@@ -56,6 +58,54 @@ class MemoriesClient(ResourceBase):
         return await self._request(
             "POST",
             "/v1/memories/query",
+            json=form_data.model_dump(exclude_none=True),
+        )
+
+    async def list_memory_paths(self, form_data: ListMemoryPathsForm) -> dict:
+        """
+        List the user's memories grouped into a path/type tree.
+
+        Groups memories by `(path, type)` and returns one summary entry per
+        group (with member count, most-recent `updated_at`, and up to 20
+        immediate child paths). Useful for browsing/navigating scoped
+        memories; counterpart to `read_memory_path`, which returns the actual
+        memory rows at a single path.
+
+        Args:
+            form_data: Filtering/grouping options (`query`, `type`, `limit`).
+
+        Returns:
+            A dict shaped as `{'paths': [ {path, type, count, updated_at,
+            children: [str, ...]}, ...], 'count': int}`. `path` may be `None`
+            for unscoped memories.
+        """
+        return await self._request(
+            "POST",
+            "/v1/memories/paths",
+            json=form_data.model_dump(exclude_none=True),
+        )
+
+    async def read_memory_path(self, form_data: ReadMemoryPathForm) -> dict:
+        """
+        Read the memories located at a specific path.
+
+        Returns memories at exactly `path` plus ancestor-path memories and,
+        when `include_children=True`, memories in descendant paths. Also
+        returns the ancestor (`parents`) and immediate child paths for
+        navigation. Counterpart to `list_memory_paths`, which summarizes all
+        paths as groups rather than returning rows.
+
+        Args:
+            form_data: Read options (`path` required, plus `type`,
+                `include_children`, `limit`).
+
+        Returns:
+            A dict shaped as `{'path': str, 'parents': [str, ...],
+            'children': [str, ...], 'memories': [`MemoryModel` as dict, ...]}`.
+        """
+        return await self._request(
+            "POST",
+            "/v1/memories/path",
             json=form_data.model_dump(exclude_none=True),
         )
 

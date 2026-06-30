@@ -7,6 +7,9 @@ from owui_client.models.access_grants import AccessGrantModel
 class ToolMeta(BaseModel):
     """
     Metadata for a tool.
+
+    `has_user_valves` is server-computed (on tool create/update) and is not set
+    by clients; the other fields come from the tool's frontmatter.
     """
 
     description: Optional[str] = None
@@ -22,6 +25,12 @@ class ToolMeta(BaseModel):
         - `funding_url` (str, optional): URL for funding/supporting the tool
         - `icon_url` (str, optional): URL for the tool's icon
         - `required_open_webui_version` (str, optional): Minimum required Open WebUI version for this tool
+    """
+    has_user_valves: bool = False
+    """
+    Whether the tool exposes user-configurable valves. Computed by the backend
+    as `hasattr(tool_module, 'UserValves')` and set on tool create/update;
+    clients should treat this as read-only.
     """
 
 

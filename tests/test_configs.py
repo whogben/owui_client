@@ -1,4 +1,7 @@
 import pytest
+import json
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from owui_client.client import OpenWebUI
 from owui_client.models.configs import (
     ConnectionsConfigForm,
@@ -10,8 +13,67 @@ from owui_client.models.configs import (
     PromptSuggestion,
     SetDefaultSuggestionsForm,
     BannerModel,
-    SetBannersForm
+    SetBannersForm,
+    TerminalServerLifecycleForm,
+    TerminalServerRefreshForm,
 )
+
+
+class _MockOrchestratorHandler(BaseHTTPRequestHandler):
+    """Minimal stand-in for an orchestrator terminal server.
+
+    Implements just enough of the orchestrator API surface that the configs
+    proxy endpoints (lifecycle PUT, refresh POST) exercise their happy path:
+    it echoes canned JSON for the routes Open WebUI forwards to.
+    """
+
+    def log_message(self, format, *args):  # silence default logging
+        pass
+
+    def _send_json(self, status: int, payload):
+        body = json.dumps(payload).encode("utf-8")
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def do_GET(self):
+        # Orchestrator detection probe: GET /api/v1/policies
+        if self.path.startswith("/api/v1/policies"):
+            self._send_json(200, [])
+        else:
+            self._send_json(404, {"detail": "not found"})
+
+    def do_PUT(self):
+        # PUT /api/v1/policies/{policy_id}/lifecycle
+        length = int(self.headers.get("Content-Length", 0))
+        self.rfile.read(length)
+        if self.path.endswith("/lifecycle"):
+            self._send_json(200, {"status": True, "policy_id": "test-policy", "lifecycle": "updated"})
+        else:
+            self._send_json(200, {"status": True})
+
+    def do_POST(self):
+        length = int(self.headers.get("Content-Length", 0))
+        self.rfile.read(length)
+        # POST /api/v1/terminals/refresh
+        if self.path.startswith("/api/v1/terminals/refresh"):
+            self._send_json(200, {"status": True, "refreshed": 0, "reset": False})
+        else:
+            self._send_json(404, {"detail": "not found"})
+
+
+@pytest.fixture(scope="module")
+def mock_orchestrator_server():
+    """Starts a local mock orchestrator terminal server reachable from the OWUI container."""
+    server = HTTPServer(("0.0.0.0", 0), _MockOrchestratorHandler)
+    port = server.server_port
+    thread = threading.Thread(target=server.serve_forever)
+    thread.daemon = True
+    thread.start()
+    yield f"http://host.docker.internal:{port}"
+    server.shutdown()
 
 @pytest.mark.asyncio
 async def test_configs_client_initialization(client: OpenWebUI):
@@ -317,3 +379,48 @@ async def test_suggestions_banners_config(client: OpenWebUI):
         await client.configs.set_default_suggestions(
             SetDefaultSuggestionsForm(suggestions=original_suggestions)
         )
+
+
+@pytest.mark.asyncio
+async def test_get_config_namespace(client: OpenWebUI):
+    # "ui" is a default namespace (ui.prompt_suggestions, ui.banners, etc.)
+    result = await client.configs.get_config_namespace("ui")
+    assert isinstance(result, dict)
+    # Every key should be scoped under the requested namespace
+    assert len(result) > 0
+    assert all(k.startswith("ui.") for k in result.keys())
+
+
+@pytest.mark.asyncio
+async def test_put_terminal_server_lifecycle(
+    client: OpenWebUI, mock_orchestrator_server
+):
+    # The backend proxies a PUT to {url}/api/v1/policies/{policy_id}/lifecycle.
+    # A mock orchestrator is used because a real orchestrator terminal server
+    # cannot be stood up inside the test container.
+    form = TerminalServerLifecycleForm(
+        url=mock_orchestrator_server,
+        policy_id="test-policy",
+        lifecycle_data={"idle_timeout_seconds": 300, "max_lifetime_seconds": 3600},
+    )
+    result = await client.configs.put_terminal_server_lifecycle(form)
+    assert isinstance(result, dict)
+    assert result.get("status") is True
+    assert result.get("policy_id") == "test-policy"
+
+
+@pytest.mark.asyncio
+async def test_refresh_terminal_server_terminals(
+    client: OpenWebUI, mock_orchestrator_server
+):
+    # The backend proxies a POST to {url}/api/v1/terminals/refresh with
+    # only_idle/reset (and optional user_id/policy_id) targeting options.
+    form = TerminalServerRefreshForm(
+        url=mock_orchestrator_server,
+        only_idle=True,
+        reset=False,
+    )
+    result = await client.configs.refresh_terminal_server_terminals(form)
+    assert isinstance(result, dict)
+    assert result.get("status") is True
+    assert "refreshed" in result
