@@ -66,6 +66,7 @@ There is also a .venv at the root of the project: Always use this .venv, never u
     - Do not auto-bump major/minor independently of the targeted Open WebUI version. Major/minor should change only when the targeted Open WebUI minor/patch changes.
     - When changing package version and/or target Open WebUI version, update `README.md` so the `Target Open WebUI Version` section explicitly states the currently targeted Open WebUI version and matching client version example.
     - When changing package version for a release, add a dated `## [version] - YYYY-MM-DD` section to `CHANGELOG.md` (see **Changelog** below).
+    - Any version change is a release — always finish it by running **Release Readiness (Before Publishing)**.
 
 ### Changelog
 
@@ -115,6 +116,41 @@ When the task is to update the client to support the latest Open WebUI version:
     B. Select the next single issue (or closely related set of issues) to be resolved
     C. Task a sub-agent to resolve the issue
 3.  Be flexible - sub agent can fail, you may need to task sub-agents to do research, and then gather additional context to task sub-agents that succeed.
+4.  Before declaring the update done, run through **Release Readiness (Before Publishing)** below — do not wait to be asked.
+
+### Release Readiness (Before Publishing)
+
+"Publish-ready" means the artifacts, not just the source. A version bump or upgrade task is **not complete** until ALL of the following are done — run this checklist automatically at the end of any release/upgrade task, do not wait for the operator to ask for each step:
+
+1.  **Version sync (all 5 points must agree):**
+    - `pyproject.toml` `[project].version`
+    - `src/owui_client/__init__.py` `__version__`
+    - `README.md` (Target Open WebUI Version section mentions both the client version and the target OWUI version)
+    - `CHANGELOG.md` has a `## [<version>] - YYYY-MM-DD` section
+    - `refs/owui_source_main/package.json` is at the target Open WebUI version
+    - `tests/test_versions.py` enforces these — run it and confirm green.
+2.  **Tests green:** full `pytest tests/` passes with only the expected env-only `xfail`s (no new failures, no new unexpected `xpass`).
+3.  **Zero drift:** `python scripts/check_drift.py` reports no drift.
+4.  **Rebuild the docs site:** `mkdocs build --strict` succeeds with no warnings, and the built `docs/` is staged/committed (the docs site is checked into the repo, not built at publish time). Confirm the built pages reference the new version.
+5.  **Clear and rebuild `dist/`** (it is gitignored, so it is NOT touched by commits and goes stale silently — this step is mandatory every release):
+    ```bash
+    source <root>/.venv/bin/activate
+    rm -rf dist/*
+    python -m build        # produces wheel + sdist in dist/
+    ```
+6.  **Verify the built artifacts** (don't assume the build is correct):
+    - `dist/` contains exactly one `owui_client-<version>-py3-none-any.whl` and one `owui_client-<version>.tar.gz`, both at the new version.
+    - Wheel `METADATA` reports the new version and the package name `owui-client`.
+    - Spot-check the wheel contains any new modules added this release.
+    - Install the wheel into a throwaway target and confirm `owui_client.__version__` == new version, the client imports, and any new resource (e.g. `client.events`) is wired.
+7.  **Review pass:** a read-only reviewer has examined the diff against the backend source (and, for an upgrade, diffed the whole backend release range to confirm nothing was missed). Address or explicitly accept every finding.
+8.  **Clean tree:** `git status` is clean (the commit is the release commit), `dist/` is gitignored (not committed), no stray containers/throwaway scripts left behind.
+
+Only after all of the above is the release "good to go". The operator should then be able to publish with:
+```bash
+git push && git tag v<version> && git push origin v<version>
+twine upload dist/owui_client-<version>-*
+```
 
 ### Adding Endpoints
 
