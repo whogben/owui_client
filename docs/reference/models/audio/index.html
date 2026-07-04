@@ -817,6 +817,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#owui_client.models.audio.STTConfigForm.OPENAI_API_REQUEST_FORMAT" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OPENAI_API_REQUEST_FORMAT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#owui_client.models.audio.STTConfigForm.ENGINE" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3274,6 +3285,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#owui_client.models.audio.STTConfigForm.OPENAI_API_REQUEST_FORMAT" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OPENAI_API_REQUEST_FORMAT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#owui_client.models.audio.STTConfigForm.ENGINE" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4029,6 +4051,30 @@
     <div class="doc doc-contents ">
 
         <p>API Key for OpenAI-compatible STT API.</p>
+
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h5 id="owui_client.models.audio.STTConfigForm.OPENAI_API_REQUEST_FORMAT" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">OPENAI_API_REQUEST_FORMAT</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">OPENAI_API_REQUEST_FORMAT</span><span class="p">:</span> <span class="n"><span title="str">str</span></span> <span class="o">=</span> <span class="s1">&#39;multipart&#39;</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>How audio is sent to the OpenAI-compatible STT API.</p>
+<p><code>'multipart'</code> (default) uploads audio as a multipart form; <code>'json'</code> sends it
+as base64-encoded JSON (<code>{'input_audio': {'data': ..., 'format': ...}}</code>).
+Compared case-insensitively; any value other than <code>'json'</code> uses multipart.</p>
 
           
     </div>

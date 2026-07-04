@@ -254,6 +254,13 @@ class AdminConfig(BaseModel):
     ENABLE_MEMORIES: bool
     """Whether memories are enabled."""
 
+    ENABLE_MEMORY_SYSTEM_CONTEXT: bool
+    """Whether stored memories are injected into the system context.
+
+    When `False`, memory tools remain available but memories are not added to
+    the system prompt; when `True` (the env default) they are. Maps to the
+    `memories.system_context.enable` config key."""
+
     ENABLE_NOTES: bool
     """Whether notes are enabled."""
 

@@ -66,6 +66,13 @@ class STTConfigForm(BaseModel):
     OPENAI_API_KEY: str
     """API Key for OpenAI-compatible STT API."""
 
+    OPENAI_API_REQUEST_FORMAT: str = "multipart"
+    """How audio is sent to the OpenAI-compatible STT API.
+
+    `'multipart'` (default) uploads audio as a multipart form; `'json'` sends it
+    as base64-encoded JSON (`{'input_audio': {'data': ..., 'format': ...}}`).
+    Compared case-insensitively; any value other than `'json'` uses multipart."""
+
     ENGINE: str
     """The STT engine to use (e.g. 'openai', 'deepgram', 'azure', 'mistral', or empty for local Whisper)."""
 

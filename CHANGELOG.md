@@ -7,6 +7,22 @@ Package version numbers follow the Open WebUI mapping described in the README (t
 
 ## [Unreleased]
 
+## [10.2.0] - 2026-07-04
+
+Small patch tracking Open WebUI 0.10.2. No new endpoints or models; two configuration fields were added upstream.
+
+### Changed
+
+- Updated target Open WebUI version from 0.10.1 to 0.10.2.
+- Updated reference source (`refs/owui_source_main/`) and regenerated `refs/owui_openapi_main.json` from Open WebUI 0.10.2 (458 paths, unchanged from 0.10.1).
+
+### Added
+
+#### Models - New Fields
+
+- `AdminConfig`: `ENABLE_MEMORY_SYSTEM_CONTEXT` — admin toggle for the new "Memory System Context" setting. When `False`, memory tools remain available but stored memories are not injected into the system context; when `True` (the env default) they are. Maps to the `memories.system_context.enable` config key.
+- `STTConfigForm`: `OPENAI_API_REQUEST_FORMAT` (default `'multipart'`) — how audio is sent to the OpenAI-compatible speech-to-text API: `'multipart'` uploads audio as a multipart form (default), `'json'` sends it as base64-encoded JSON. Compared case-insensitively; any value other than `'json'` uses multipart.
+
 ## [10.1.0] - 2026-06-30
 
 Upgrades the target from Open WebUI 0.9.6 to **0.10.1**. Open WebUI 0.10.0 was a large release; this client version adds support for its headline features (event webhooks, external knowledge bases, shared folders, the reworked memory system, admin OAuth configuration, terminal-server orchestration, context compaction, and the new web-search providers) and resolves all detected drift against the 0.10.1 backend.
@@ -75,7 +91,7 @@ Upgrades the target from Open WebUI 0.9.6 to **0.10.1**. Open WebUI 0.10.0 was a
 ### Known Issues (OWUI 0.10.1 Backend / Test Environment)
 
 These tests are marked `xfail` due to upstream behavior unrelated to the client:
-- `tests/test_utils.py::test_markdown` — the `/v1/utils/markdown` endpoint was removed in Open WebUI 0.9.6 and remains absent through 0.10.1. The client method and `MarkdownForm` model are retained for forward compatibility but return 404/405 against current backends.
+- `tests/test_utils.py::test_markdown` — the `/v1/utils/markdown` endpoint was removed in Open WebUI 0.9.6 and remains absent through 0.10.2. The client method and `MarkdownForm` model are retained for forward compatibility but return 404/405 against current backends.
 - `tests/test_openai.py::test_speech` — `/audio/speech` hardcodes `https://api.openai.com/v1`, so it cannot be exercised against the mock inference provider in tests.
 
 ## [9.6.0] - 2026-06-02
