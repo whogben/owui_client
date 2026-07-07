@@ -63,6 +63,7 @@ plugins:
             
 nav:
   - Home: index.md
+  - CLI: cli.md
   - Changelog: changelog.md
   - Code Reference: reference/
 

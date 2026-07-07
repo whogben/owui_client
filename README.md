@@ -2,7 +2,7 @@
 
 [**📚 Full Documentation Site**](https://whogben.github.io/owui_client/)
 
-This project provides **both** a robust, async Python client for the complete [Open WebUI](https://github.com/open-webui/open-webui) API **and** comprehensive unofficial documentation for the Open WebUI API in general.
+This project provides a robust, async **Python client** for the complete [Open WebUI](https://github.com/open-webui/open-webui) API, an **`owui-client` CLI** for common workflows (such as syncing local skill files into Open WebUI), and comprehensive unofficial **documentation** for the Open WebUI API.
 
 ## Python Client
 
@@ -10,14 +10,14 @@ A fully typed, async Python client that mirrors the backend structure of Open We
 
 ### Target Open WebUI Version
 
-This package currently targets Open WebUI `0.10.2` (derived from package version `10.2.0`).
+This package currently targets Open WebUI `0.10.2` (derived from package version `10.2.1`).
 
 Version mapping policy:
 - `client.major` -> `openwebui.minor`
 - `client.minor` -> `openwebui.patch`
 - `client.patch` -> client-only fixes while targeting the same Open WebUI version
 
-Example: `10.2.0` means this package targets Open WebUI `0.10.2`.
+Example: `10.2.1` means this package targets Open WebUI `0.10.2`.
 
 ### Installation
 
@@ -75,6 +75,22 @@ The client structure matches the Open WebUI backend router structure exactly. If
 | | `client.events` | Event webhooks (outbound webhook delivery) |
 
 *Tip: Use your IDE's autocomplete on the `client` object to explore all available resources.*
+
+## Command-Line Interface
+
+Installing the package also installs an `owui-client` console script for common workflows. Connection defaults come from the `OWUI_SERVER` and `OWUI_API_KEY` environment variables (see `example.env`), overridable with `--server` / `--api-key`.
+
+```bash
+# Sync a single local skill Markdown file (YAML frontmatter with name + description)
+# into Open WebUI: creates if absent, updates if changed, no-op if unchanged.
+owui-client sync-skill ./skills/summarizer.md
+
+# Recursively sync every skill file under a directory (skill/SKILL.md or skill.md).
+# Valid skills are created/updated/left unchanged; non-skill files are skipped; nothing is deleted.
+owui-client sync-skills ./skills
+```
+
+`sync-skill` exposes `Shortcuts.sync_skill` (one file); `sync-skills` exposes `Shortcuts.sync_skills` (a whole directory). Both are one-way, idempotent upserts that never delete.
 
 ## API Documentation
 

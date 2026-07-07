@@ -7,6 +7,18 @@ Package version numbers follow the Open WebUI mapping described in the README (t
 
 ## [Unreleased]
 
+## [10.2.1] - 2026-07-06
+
+Client-only feature release (still targets Open WebUI 0.10.2).
+
+### Added
+
+- **Command-line interface.** The package now installs an `owui-client` console script (entry point `owui_client.cli:main`), built with Cyclopts. Connection defaults come from the `OWUI_SERVER` and `OWUI_API_KEY` environment variables (overridable with `--server` / `--api-key`); see `example.env`.
+- **`sync-skill` command** and the `Shortcuts.sync_skill` workflow it exposes: idempotently syncs a local skill Markdown file (YAML frontmatter with `name` and `description`) into Open WebUI — creates if absent, updates if `content` / `name` / `description` changed, and reports `unchanged` (no write) when nothing differs, so the server's `updated_at` is not bumped. One-way; never deletes. Matching is by id or name, with a create-to-update fallback on `ID_TAKEN`.
+- **`sync-skills` command** and `Shortcuts.sync_skills`: recursively sync every valid skill Markdown file under a directory (arbitrary depth — `skill/SKILL.md` or `skill.md`). Existing skills are fetched once per run; each file is created, left `unchanged` (no write), or `updated`. Non-skill files are `skipped` with a reason; duplicate skill names across files are detected and skipped; a server error on one file is recorded as `failed` and does not abort the rest. On update, the matched skill's existing `is_active` is preserved (a content change does not re-enable a skill disabled in the UI). One-way; never deletes.
+- **`owui_client.skillfiles`**: pure (no-network) parser for skill Markdown files into the fields used by the client, plus `discover_skill_files` for recursively scanning a directory (with duplicate-name detection).
+- New core dependencies: `cyclopts` and `pyyaml`.
+
 ## [10.2.0] - 2026-07-04
 
 Small patch tracking Open WebUI 0.10.2. No new endpoints or models; two configuration fields were added upstream.
