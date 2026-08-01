@@ -1,7 +1,7 @@
 import asyncio
 
 import pytest
-from owui_client.models.chats import ChatForm, MessageForm, TagForm, ChatCompletionForm, ChatCompletedForm, ChatActionForm, CompactChatForm
+from owui_client.models.chats import ChatForm, MessageForm, TagForm, ChatCompletionForm, ChatCompletedForm, ChatActionForm, CompactChatForm, ForkForm
 from owui_client.models.openai import OpenAIConfigForm
 
 pytestmark = pytest.mark.asyncio
@@ -480,5 +480,100 @@ async def test_chat_search_snippet(client):
         assert match is not None
         assert match.snippet is not None
         assert needle in match.snippet.lower()
+    finally:
+        await client.chats.delete(chat_id)
+
+
+async def test_mark_chats_read(client):
+    """
+    Test POST /chats/read marks the current user's chats as read.
+    """
+    form = ChatForm(chat={"title": "Read Test", "history": {"messages": {}, "currentId": None}})
+    created = await client.chats.create_new(form)
+    assert created is not None
+    chat_id = created.id
+
+    try:
+        result = await client.chats.mark_chats_read()
+        assert isinstance(result, dict)
+        assert isinstance(result.get("updated_count"), int)
+        assert result["updated_count"] >= 1
+        assert isinstance(result.get("folder_unread_counts"), dict)
+    finally:
+        await client.chats.delete(chat_id)
+
+
+async def test_fork_chat(client):
+    """
+    Test POST /chats/{id}/fork creates a new chat from a message.
+
+    Forking copies the conversation up to the source message into a new chat,
+    stamping `chat.originalChatId`/`chat.branchPointMessageId` and
+    `meta.forked_from`/`meta.forked_from_message_id`. The assistant message is
+    marked `done` so the backend does not reject the fork as in-progress.
+    """
+    chat_data = {
+        "title": "Fork Source",
+        "history": {
+            "messages": {
+                "msg_a": {
+                    "id": "msg_a",
+                    "role": "user",
+                    "content": "hello",
+                    "timestamp": 1600000000,
+                    "parentId": None,
+                    "childrenIds": ["msg_b"],
+                },
+                "msg_b": {
+                    "id": "msg_b",
+                    "role": "assistant",
+                    "content": "hi there",
+                    "timestamp": 1600000001,
+                    "parentId": "msg_a",
+                    "childrenIds": [],
+                    "done": True,
+                },
+            },
+            "currentId": "msg_b",
+        },
+    }
+    form = ChatForm(chat=chat_data)
+    created = await client.chats.create_new(form)
+    assert created is not None
+    source_id = created.id
+
+    fork = None
+    try:
+        fork = await client.chats.fork(source_id)
+        assert fork is not None
+        assert fork.id != source_id
+        assert fork.title.endswith("(fork)")
+        # Fork records its origin on the chat blob and meta.
+        assert fork.chat.get("originalChatId") == source_id
+        assert fork.chat.get("branchPointMessageId") == "msg_b"
+        assert fork.meta.get("forked_from") == source_id
+        assert fork.meta.get("forked_from_message_id") == "msg_b"
+    finally:
+        if fork is not None:
+            await client.chats.delete(fork.id)
+        await client.chats.delete(source_id)
+
+
+async def test_mark_chat_unread(client):
+    """
+    Test POST /chats/{id}/unread marks a chat as unread.
+    """
+    form = ChatForm(chat={"title": "Unread Test", "history": {"messages": {}, "currentId": None}})
+    created = await client.chats.create_new(form)
+    assert created is not None
+    chat_id = created.id
+
+    try:
+        result = await client.chats.mark_chat_unread(chat_id)
+        assert isinstance(result, dict)
+        assert result.get("chat_id") == chat_id
+        assert result.get("last_read_at") == 0
+        assert "folder_id" in result
+        assert isinstance(result.get("folder_unread_counts"), dict)
     finally:
         await client.chats.delete(chat_id)

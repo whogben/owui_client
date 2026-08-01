@@ -2,7 +2,7 @@
 
 import datetime
 from typing import List, Optional
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class UpdateProfileForm(BaseModel):
@@ -169,6 +169,17 @@ class UserModel(BaseModel):
         - Additional arbitrary key-value pairs may be stored as needed. This field is a flexible JSON storage that can contain any user-specific metadata.
     """
 
+    variables: dict = Field(default_factory=dict, exclude=True)
+    """Per-user template variables, substitutable in system prompts via `{{ user.variables.KEY }}`.
+
+    Excluded from `UserModel` serialization (matches the backend `exclude=True`);
+    read and written through the dedicated user-variables endpoints which expose
+    it normalized to `dict[str, str]`.
+
+    Dict Fields:
+        - `<key>` (str): A variable value. Keys must match `^[a-z][a-z0-9_]*$` (lowercase, start with a letter, then lowercase alphanumerics/underscores); values must be strings of at most 20,000 characters and the total payload must be under 100,000 characters.
+    """
+
     settings: Optional[UserSettings] = None
     """User-specific settings."""
 
@@ -213,6 +224,12 @@ class UserModel(BaseModel):
     """Timestamp when the user was created (Unix epoch)."""
 
     model_config = ConfigDict(from_attributes=True)
+
+    @field_validator("variables", mode="before")
+    @classmethod
+    def _normalize_variables(cls, value):
+        """Coerce non-dict values (e.g. null) to an empty dict, mirroring the backend."""
+        return value if isinstance(value, dict) else {}
 
 
 class UserGroupIdsModel(UserModel):
@@ -491,6 +508,9 @@ class SharingPermissions(BaseModel):
     public_notes: bool = True
     """Can share notes publicly (default True)."""
 
+    folders: bool = False
+    """Can share folders."""
+
     public_chats: bool = False
     """Can share chats publicly."""
 
@@ -633,6 +653,9 @@ class AccessGrantsPermissions(BaseModel):
     allow_users: bool = True
     """Whether to allow users to grant access to others."""
 
+    allow_groups: bool = True
+    """Whether to allow groups to grant access to others."""
+
 
 class UserPermissions(BaseModel):
     """
@@ -749,3 +772,213 @@ class UserPreview(BaseModel):
 
     tools: ResourcePreviewList
     """Tools accessible to the user with total count."""
+
+
+class UserVariablesForm(BaseModel):
+    """
+    Request body for updating the calling user's variables.
+
+    Sent to `POST /v1/users/user/variables/update`. The backend validates each
+    key/value and rejects the request with HTTP 400 on invalid input.
+    """
+
+    variables: dict = Field(default_factory=dict)
+    """Variables to store for the calling user.
+
+    Dict Fields:
+        - `<key>` (str, optional): A variable value. Keys must match `^[a-z][a-z0-9_]*$` (lowercase, start with a letter, then lowercase alphanumerics/underscores); values must be strings of at most 20,000 characters and the total payload must be under 100,000 characters. Invalid keys or non-string values are rejected with HTTP 400.
+    """
+
+
+class UserVariablesResponse(BaseModel):
+    """
+    Response for the user-variables endpoints.
+
+    Returned by `GET /v1/users/user/variables` and
+    `POST /v1/users/user/variables/update`. Variables are normalized to
+    `dict[str, str]`: only string keys with string values are retained.
+    """
+
+    variables: dict[str, str] = Field(default_factory=dict)
+    """The calling user's variables, normalized to string keys and string values.
+
+    Dict Fields:
+        - `<key>` (str): A variable value. Keys match `^[a-z][a-z0-9_]*$`; values are strings. Referenced in system prompts via `{{ user.variables.KEY }}`.
+    """
+
+
+class UserUsageTotals(BaseModel):
+    """
+    Aggregate usage totals for the calling user.
+
+    `lifetime_tokens`, `input_tokens`, `output_tokens`, `models_used`,
+    `total_chats`, and `longest_chat_seconds` are lifetime values; `messages`,
+    `user_messages`, `assistant_messages`, `active_days`, `peak_daily_tokens`,
+    and the streaks are scoped to the requested period.
+    """
+
+    lifetime_tokens: int = 0
+    """Total tokens consumed across all time."""
+
+    input_tokens: int = 0
+    """Input/prompt tokens (lifetime)."""
+
+    output_tokens: int = 0
+    """Output/completion tokens (lifetime)."""
+
+    peak_daily_tokens: int = 0
+    """Highest single-day token count within the period."""
+
+    longest_chat_seconds: int = 0
+    """Duration of the longest single chat, in seconds (lifetime)."""
+
+    current_streak: int = 0
+    """Current consecutive-day activity streak (period)."""
+
+    longest_streak: int = 0
+    """Longest consecutive-day activity streak observed (period)."""
+
+    total_chats: int = 0
+    """Total number of chats attributable to the user (lifetime)."""
+
+    active_days: int = 0
+    """Distinct days with activity in the period."""
+
+    models_used: int = 0
+    """Number of distinct models the user has used (lifetime)."""
+
+    messages: int = 0
+    """Total messages (user + assistant) in the period."""
+
+    user_messages: int = 0
+    """Messages authored by the user in the period."""
+
+    assistant_messages: int = 0
+    """Messages authored by the assistant in the period."""
+
+
+class UserUsageHeatmapEntry(BaseModel):
+    """
+    One day (or one aggregated week) of activity in a usage heatmap.
+    """
+
+    date: str
+    """Calendar date (or week-start date) as `YYYY-MM-DD`."""
+
+    messages: int = 0
+    """Total messages on that day."""
+
+    chats: int = 0
+    """Distinct chats with activity on that day."""
+
+    tokens: int = 0
+    """Total tokens consumed on that day."""
+
+    models: dict[str, int] = Field(default_factory=dict)
+    """Per-model message counts for that day.
+
+    Dict Fields:
+        - `<model_id>` (int): Number of messages sent using this model on that day.
+    """
+
+
+class UserUsageModelEntry(BaseModel):
+    """
+    Usage breakdown for a single model within the period.
+    """
+
+    model_id: str
+    """Identifier of the model."""
+
+    messages: int = 0
+    """Messages sent using this model."""
+
+    input_tokens: int = 0
+    """Input tokens attributed to this model."""
+
+    output_tokens: int = 0
+    """Output tokens attributed to this model."""
+
+    total_tokens: int = 0
+    """Total tokens (input + output) attributed to this model."""
+
+
+class UserUsageToolEntry(BaseModel):
+    """
+    Invocation count for a single tool within the period.
+    """
+
+    name: str
+    """Tool name/identifier."""
+
+    count: int
+    """Number of times the tool was invoked."""
+
+
+class UserUsageInsights(BaseModel):
+    """
+    Derived summary insights for the period.
+    """
+
+    most_used_model: Optional[str] = None
+    """Model id with the most messages in the period, or null if none."""
+
+    average_tokens_per_chat: float = 0
+    """Lifetime tokens divided by total chats (rounded to 1 decimal)."""
+
+    average_messages_per_active_day: float = 0
+    """Period messages divided by active days (rounded to 1 decimal)."""
+
+    user_message_share: float = 0
+    """Percentage (0-100) of messages authored by the user."""
+
+    assistant_message_share: float = 0
+    """Percentage (0-100) of messages authored by the assistant."""
+
+
+class UserUsagePeriod(BaseModel):
+    """
+    The inclusive time window covered by the usage report.
+    """
+
+    start_date: int
+    """Period start as a Unix epoch timestamp (seconds)."""
+
+    end_date: int
+    """Period end as a Unix epoch timestamp (seconds)."""
+
+    days: int
+    """Number of days spanned (inclusive): floor((end-start)/86400) + 1, minimum 1."""
+
+
+class UserUsageResponse(BaseModel):
+    """
+    Response for `GET /v1/users/usage`.
+
+    Combines totals, daily/weekly/cumulative activity heatmaps, derived
+    insights, and top models/tools for the calling user over a period.
+    """
+
+    totals: UserUsageTotals
+    """Aggregate lifetime and period totals."""
+
+    heatmap: list[UserUsageHeatmapEntry]
+    """Daily activity entries within the period."""
+
+    weekly_heatmap: list[UserUsageHeatmapEntry]
+    """Activity aggregated by ISO week (week-start Monday)."""
+
+    cumulative_heatmap: list[UserUsageHeatmapEntry]
+    """Daily activity with running cumulative counts."""
+
+    insights: UserUsageInsights
+    """Derived summary metrics for the period."""
+
+    top_models: list[UserUsageModelEntry]
+    """Models ranked by usage in the period (most messages first)."""
+
+    top_tools: list[UserUsageToolEntry] = []
+    """Tools ranked by invocation count in the period."""
+
+    period: UserUsagePeriod
+    """The time window the report covers."""

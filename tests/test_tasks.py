@@ -1,8 +1,6 @@
 import pytest
 from owui_client.models.tasks import (
     TaskConfigForm,
-    ActiveChatsForm,
-    ActiveChatsResponse,
 )
 from owui_client.models.openai import OpenAIConfigForm
 
@@ -173,27 +171,6 @@ async def test_list_and_stop_tasks(client):
     # The backend returns {"status": False, ...} for non-existent tasks (it does not raise 404).
     response = await client.tasks.stop_task("non-existent-task-id")
     assert response["status"] is False
-
-
-@pytest.mark.asyncio
-async def test_check_active_chats(client):
-    """Test checking which chats have active background tasks."""
-    # Test with empty list
-    form = ActiveChatsForm(chat_ids=[])
-    response = await client.tasks.check_active_chats(form)
-    assert isinstance(response, ActiveChatsResponse)
-    assert isinstance(response.active_chat_ids, list)
-    assert len(response.active_chat_ids) == 0
-
-    # Test with non-existent chat IDs
-    form = ActiveChatsForm(
-        chat_ids=["non-existent-chat-id-1", "non-existent-chat-id-2"]
-    )
-    response = await client.tasks.check_active_chats(form)
-    assert isinstance(response, ActiveChatsResponse)
-    assert isinstance(response.active_chat_ids, list)
-    # No active tasks for non-existent chats
-    assert len(response.active_chat_ids) == 0
 
 
 @pytest.mark.asyncio

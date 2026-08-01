@@ -1481,6 +1481,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#owui_client.models.auths.AdminConfig.CHANNEL_MODEL_RESPONSE_MODE" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CHANNEL_MODEL_RESPONSE_MODE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#owui_client.models.auths.AdminConfig.ENABLE_CALENDAR" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1812,6 +1823,39 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#owui_client.models.auths.LdapServerConfig.enable_group_management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enable_group_management
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.auths.LdapServerConfig.enable_group_creation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enable_group_creation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.auths.LdapServerConfig.attribute_for_groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        attribute_for_groups
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1935,6 +1979,17 @@
   
     <nav class="md-nav" aria-label="Attributes">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.auths.OAuthConfigForm.ENABLE_OAUTH" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ENABLE_OAUTH
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#owui_client.models.auths.OAuthConfigForm.ENABLE_OAUTH_SIGNUP" class="md-nav__link">
@@ -5218,6 +5273,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#owui_client.models.auths.AdminConfig.CHANNEL_MODEL_RESPONSE_MODE" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CHANNEL_MODEL_RESPONSE_MODE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#owui_client.models.auths.AdminConfig.ENABLE_CALENDAR" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5549,6 +5615,39 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#owui_client.models.auths.LdapServerConfig.enable_group_management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enable_group_management
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.auths.LdapServerConfig.enable_group_creation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enable_group_creation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.auths.LdapServerConfig.attribute_for_groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        attribute_for_groups
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -5672,6 +5771,17 @@
   
     <nav class="md-nav" aria-label="Attributes">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.auths.OAuthConfigForm.ENABLE_OAUTH" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ENABLE_OAUTH
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#owui_client.models.auths.OAuthConfigForm.ENABLE_OAUTH_SIGNUP" class="md-nav__link">
@@ -8243,6 +8353,30 @@
 
 
 
+<h5 id="owui_client.models.auths.AdminConfig.CHANNEL_MODEL_RESPONSE_MODE" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">CHANNEL_MODEL_RESPONSE_MODE</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">CHANNEL_MODEL_RESPONSE_MODE</span><span class="p">:</span> <span class="n"><span title="str">str</span></span> <span class="o">=</span> <span class="s1">&#39;thread&#39;</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Where model responses to root-level channel mentions are posted.</p>
+<p>Only <code>'thread'</code> (reply in a thread) and <code>'channel'</code> (post in the
+channel itself) are accepted by the backend; any other value is silently
+dropped on update without changing the stored config.</p>
+
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
 <h5 id="owui_client.models.auths.AdminConfig.ENABLE_CALENDAR" class="doc doc-heading">
 <code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">ENABLE_CALENDAR</span>
 
@@ -8590,6 +8724,13 @@ the system prompt; when <code>True</code> (the env default) they are. Maps to th
 
 
         <p>Configuration for the LDAP server.</p>
+<p>Group mapping is driven by the three <code>group</code> fields below. When
+<code>enable_group_management</code> is <code>True</code> the backend requires
+<code>attribute_for_groups</code> to be a non-empty string, otherwise the update is
+rejected with a 400 (<code>REQUIRED_FIELD_EMPTY('attribute_for_groups')</code>);
+the frontend also falls back to <code>'memberOf'</code> in that case. The group
+attribute is additionally requested from the directory during the LDAP
+bind/search on sign-in only when <code>enable_group_management</code> is <code>True</code>.</p>
 
           
 
@@ -8967,6 +9108,76 @@ the system prompt; when <code>True</code> (the env default) they are. Maps to th
 
 </div>
 
+<div class="doc doc-object doc-attribute">
+
+
+
+<h5 id="owui_client.models.auths.LdapServerConfig.enable_group_management" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">enable_group_management</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">enable_group_management</span><span class="p">:</span> <span class="n"><span title="bool">bool</span></span> <span class="o">=</span> <span class="kc">False</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Map LDAP groups to Open WebUI groups on sign-in.</p>
+<p>When <code>True</code>, the directory entry's group attribute (see
+<code>attribute_for_groups</code>) is requested during the LDAP search and used to
+sync the user's Open WebUI group memberships.</p>
+
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h5 id="owui_client.models.auths.LdapServerConfig.enable_group_creation" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">enable_group_creation</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">enable_group_creation</span><span class="p">:</span> <span class="n"><span title="bool">bool</span></span> <span class="o">=</span> <span class="kc">False</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Auto-create Open WebUI groups for LDAP groups that do not yet exist.</p>
+<p>Only evaluated when <code>enable_group_management</code> is <code>True</code> (the frontend only
+exposes this toggle inside the group-management section).</p>
+
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h5 id="owui_client.models.auths.LdapServerConfig.attribute_for_groups" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">attribute_for_groups</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">attribute_for_groups</span><span class="p">:</span> <span class="n"><span title="str">str</span></span> <span class="o">=</span> <span class="s1">&#39;memberOf&#39;</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>LDAP attribute holding the user's group memberships (e.g. <code>memberOf</code>).</p>
+<p>Required (non-empty) when <code>enable_group_management</code> is <code>True</code> or the
+backend rejects the update with a 400.</p>
+
+          
+    </div>
+
+</div>
+
 
 
 
@@ -9230,6 +9441,10 @@ the system prompt; when <code>True</code> (the env default) they are. Maps to th
 Values are persisted under the <code>oauth.*</code> config namespace. Comma-list
 fields (<code>OAUTH_ALLOWED_DOMAINS</code>, <code>OAUTH_ADMIN_ROLES</code>, <code>OAUTH_ALLOWED_ROLES</code>)
 are returned as a comma-joined string and accepted back the same way.</p>
+<p><code>ENABLE_OAUTH</code> is the master switch: when <code>False</code> the backend's OAuth
+login/callback handlers return 404 and the frontend hides every other
+OAuth field. Its env default is <code>True</code> (<code>ENABLE_OAUTH=True</code> in
+<code>backend/open_webui/config.py</code>).</p>
 <p>Persistence caveat: unless the backend runs with
 <code>ENABLE_OAUTH_PERSISTENT_CONFIG=true</code>, reads of <code>oauth.*</code> keys return
 compiled/env defaults and writes are not reflected on read.</p>
@@ -9336,6 +9551,30 @@ compiled/env defaults and writes are not reflected on read.</p>
 
 
 <h4 id="owui_client.models.auths.OAuthConfigForm-attributes">Attributes</h4>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h5 id="owui_client.models.auths.OAuthConfigForm.ENABLE_OAUTH" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">ENABLE_OAUTH</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">ENABLE_OAUTH</span><span class="p">:</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="bool">bool</span></span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Master switch for OAuth/OIDC authentication.</p>
+<p>When <code>False</code>, the OAuth login and callback endpoints respond 404 and the
+frontend collapses the entire OAuth configuration section. Defaults to
+<code>True</code> via the <code>ENABLE_OAUTH</code> env var in the backend.</p>
+
+          
+    </div>
+
+</div>
 
 <div class="doc doc-object doc-attribute">
 

@@ -1342,6 +1342,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#owui_client.models.models.ModelMeta.knowledge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        knowledge
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3671,6 +3682,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#owui_client.models.models.ModelMeta.knowledge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        knowledge
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4710,7 +4732,6 @@ Supported providers will return token usage information in the response when set
 
         <p>Metadata for a model.</p>
 <p>Additional fields often used (via extra="allow"):
-- <code>knowledge</code> (list): List of knowledge collection items.
 - <code>toolIds</code> (list[str]): List of tool IDs enabled for this model.
 - <code>filterIds</code> (list[str]): List of filter IDs enabled.
 - <code>defaultFilterIds</code> (list[str]): List of default filter IDs.
@@ -4853,6 +4874,32 @@ Supported providers will return token usage information in the response when set
     <div class="doc doc-contents ">
 
         <p>Dictionary of model capabilities (e.g., vision, usage).</p>
+
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h5 id="owui_client.models.models.ModelMeta.knowledge" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">knowledge</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">knowledge</span><span class="p">:</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="typing.List">List</span></span><span class="p">[</span><span class="n"><span title="typing.Any">Any</span></span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Knowledge collections attached to the model, injected into the chat context
+for prompts sent with this model. Each item is typically a dict describing an
+attached knowledge base (commonly with <code>id</code>, <code>name</code>, and nested <code>data</code>/<code>file</code>).
+The backend strips duplicated extracted <code>content</code> text from <code>data</code> and
+<code>file.data</code> before persisting/serializing, so do not rely on <code>content</code> keys
+being present.</p>
 
           
     </div>

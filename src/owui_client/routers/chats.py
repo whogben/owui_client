@@ -16,6 +16,7 @@ from owui_client.models.chats import (
     MessageForm,
     EventForm,
     CloneForm,
+    ForkForm,
     CompactChatForm,
     ChatFolderIdForm,
     ChatAccessGrantsForm,
@@ -145,6 +146,19 @@ class ChatsClient(ResourceBase):
             True if successful.
         """
         return await self._request("DELETE", "/v1/chats/", model=bool)
+
+    async def mark_chats_read(self) -> dict:
+        """Mark all of the current user's non-archived, non-internal chats as read.
+
+        Sets each chat's `last_read_at` to its `updated_at`, clearing unread
+        badges across the chat list. Only affects the calling user's own chats.
+
+        Returns:
+            A dict with:
+            - `updated_count` (int): number of chats marked read.
+            - `folder_unread_counts` (dict[str, int]): remaining unread counts per folder id, aggregated up the folder tree.
+        """
+        return await self._request("POST", "/v1/chats/read", model=dict)
 
     async def get_user_list(
         self,
@@ -503,6 +517,35 @@ class ChatsClient(ResourceBase):
         """
         return await self._request("POST", f"/v1/chats/{id}/pin", model=ChatResponse)
 
+    async def fork(self, id: str, form_data: Optional[ForkForm] = None) -> Optional[ChatResponse]:
+        """Fork a chat at a specific message into a new chat.
+
+        Creates a new chat containing the conversation up to and including
+        `form_data.message_id` (or the chat's current message when omitted),
+        copying the source's folder, pinned state, variables, and tags. The new
+        chat's `chat.originalChatId`/`chat.branchPointMessageId` and
+        `meta.forked_from`/`meta.forked_from_message_id` record the fork origin.
+
+        Args:
+            id: The source chat ID.
+            form_data: Optional `ForkForm` carrying the message id to fork at.
+                If None, forks at the chat's current message.
+
+        Returns:
+            The newly created fork as a `ChatResponse`.
+
+        Raises:
+            HTTPStatusError: 401 if the chat is not found or not owned by the
+                caller; 403 if the user lacks `chat.import` permission; 409 if a
+                generation is still active for the chat; 400 if the chat has no
+                messages or the message id is invalid; 404 if the message id is
+                not found in the chat.
+        """
+        json_body = form_data.model_dump(exclude_none=True) if form_data else None
+        return await self._request(
+            "POST", f"/v1/chats/{id}/fork", model=ChatResponse, json=json_body
+        )
+
     async def clone(self, id: str, form_data: CloneForm) -> Optional[ChatResponse]:
         """
         Clone a chat.
@@ -529,6 +572,27 @@ class ChatsClient(ResourceBase):
             The newly created chat object.
         """
         return await self._request("POST", f"/v1/chats/{id}/clone/shared", model=ChatResponse)
+
+    async def mark_chat_unread(self, id: str) -> dict:
+        """Mark a chat as unread for the current user.
+
+        Sets the chat's `last_read_at` to 0 so it shows as unread in the list.
+
+        Args:
+            id: The chat ID.
+
+        Returns:
+            A dict with:
+            - `chat_id` (str): the chat id.
+            - `last_read_at` (int): the new value (0).
+            - `folder_id` (str | None): the chat's folder id, if any.
+            - `folder_unread_counts` (dict[str, int]): unread counts per folder id, aggregated up the folder tree.
+
+        Raises:
+            HTTPStatusError: 404 if the chat is not found or not owned by the
+                caller.
+        """
+        return await self._request("POST", f"/v1/chats/{id}/unread", model=dict)
 
     async def compact(
         self, id: str, form_data: Optional[CompactChatForm] = None

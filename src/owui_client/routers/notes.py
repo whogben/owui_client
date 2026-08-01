@@ -8,6 +8,7 @@ from owui_client.models.notes import (
     NoteListResponse,
     NoteAccessGrantsForm,
 )
+from owui_client.models.chats import ChatResponse
 
 
 class NotesClient(ResourceBase):
@@ -123,6 +124,79 @@ class NotesClient(ResourceBase):
             "GET",
             f"/v1/notes/{id}",
             model=Optional[NoteModel],
+        )
+
+    async def get_note_chat_by_id(self, id: str) -> ChatResponse:
+        """
+        Get the internal chat linked to a note, creating one if none exists (get-or-create).
+
+        Open WebUI attaches a hidden "internal" chat to each note to power
+        in-note conversations. This endpoint returns the caller's existing
+        internal chat for the note; if none exists it creates a new one seeded
+        with a system prompt giving the model the note id and instructions to
+        use the `view_note` / `replace_note_content` tools for edit requests.
+
+        Requires the `features.notes` permission and at least read access to the
+        note. When multiple internal chats exist for the note, the most recently
+        updated one is returned.
+
+        Args:
+            id: The unique identifier of the note.
+
+        Returns:
+            `ChatResponse`: the note's internal chat (created if it did not exist).
+        """
+        return await self._request(
+            "GET",
+            f"/v1/notes/{id}/chat",
+            model=ChatResponse,
+        )
+
+    async def get_note_chats_by_id(self, id: str) -> List[ChatResponse]:
+        """
+        List the internal chats linked to a note for the current user.
+
+        Returns all of the caller's internal ("note") chats for the note, ordered
+        by most recently updated. Each returned chat is normalized so its
+        `chat.params.system` matches the current note-context prompt and any
+        stale `note_id` param or top-level `system` entry is removed.
+
+        Requires the `features.notes` permission and at least read access to the
+        note.
+
+        Args:
+            id: The unique identifier of the note.
+
+        Returns:
+            A list of `ChatResponse` objects (may be empty).
+        """
+        return await self._request(
+            "GET",
+            f"/v1/notes/{id}/chats",
+            model=ChatResponse,
+        )
+
+    async def create_note_chat_by_id(self, id: str) -> ChatResponse:
+        """
+        Create a new internal chat linked to a note.
+
+        Unlike `get_note_chat_by_id` (which reuses an existing chat), this always
+        creates a fresh hidden "internal" chat attached to the note, seeded with
+        the standard note-context system prompt. Each call produces a new chat.
+
+        Requires the `features.notes` permission and at least read access to the
+        note.
+
+        Args:
+            id: The unique identifier of the note.
+
+        Returns:
+            `ChatResponse`: the newly created internal chat.
+        """
+        return await self._request(
+            "POST",
+            f"/v1/notes/{id}/chat",
+            model=ChatResponse,
         )
 
     async def update_note_by_id(

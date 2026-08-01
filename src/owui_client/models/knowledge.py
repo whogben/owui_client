@@ -102,6 +102,9 @@ class KnowledgeUserModel(KnowledgeModel):
     user: Optional[UserResponse] = None
     """The user who owns the knowledge base."""
 
+    file_count: Optional[int] = None
+    """Number of files in the knowledge base (`None` when not populated; added in Open WebUI 0.11.0)."""
+
 
 class KnowledgeResponse(KnowledgeModel):
     """

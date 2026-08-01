@@ -248,6 +248,13 @@ class AdminConfig(BaseModel):
     ENABLE_CHANNELS: bool
     """Whether channels are enabled."""
 
+    CHANNEL_MODEL_RESPONSE_MODE: str = "thread"
+    """Where model responses to root-level channel mentions are posted.
+
+    Only ``'thread'`` (reply in a thread) and ``'channel'`` (post in the
+    channel itself) are accepted by the backend; any other value is silently
+    dropped on update without changing the stored config."""
+
     ENABLE_CALENDAR: bool
     """Whether the calendar feature is enabled."""
 
@@ -295,6 +302,14 @@ class AdminDetails(BaseModel):
 class LdapServerConfig(BaseModel):
     """
     Configuration for the LDAP server.
+
+    Group mapping is driven by the three ``group`` fields below. When
+    `enable_group_management` is `True` the backend requires
+    `attribute_for_groups` to be a non-empty string, otherwise the update is
+    rejected with a 400 (``REQUIRED_FIELD_EMPTY('attribute_for_groups')``);
+    the frontend also falls back to ``'memberOf'`` in that case. The group
+    attribute is additionally requested from the directory during the LDAP
+    bind/search on sign-in only when `enable_group_management` is `True`.
     """
 
     label: str
@@ -336,6 +351,25 @@ class LdapServerConfig(BaseModel):
     ciphers: Optional[str] = "ALL"
     """OpenSSL cipher string."""
 
+    enable_group_management: bool = False
+    """Map LDAP groups to Open WebUI groups on sign-in.
+
+    When `True`, the directory entry's group attribute (see
+    `attribute_for_groups`) is requested during the LDAP search and used to
+    sync the user's Open WebUI group memberships."""
+
+    enable_group_creation: bool = False
+    """Auto-create Open WebUI groups for LDAP groups that do not yet exist.
+
+    Only evaluated when `enable_group_management` is `True` (the frontend only
+    exposes this toggle inside the group-management section)."""
+
+    attribute_for_groups: str = "memberOf"
+    """LDAP attribute holding the user's group memberships (e.g. ``memberOf``).
+
+    Required (non-empty) when `enable_group_management` is `True` or the
+    backend rejects the update with a 400."""
+
 
 class LdapConfigForm(BaseModel):
     """
@@ -365,12 +399,24 @@ class OAuthConfigForm(BaseModel):
     fields (`OAUTH_ALLOWED_DOMAINS`, `OAUTH_ADMIN_ROLES`, `OAUTH_ALLOWED_ROLES`)
     are returned as a comma-joined string and accepted back the same way.
 
+    `ENABLE_OAUTH` is the master switch: when `False` the backend's OAuth
+    login/callback handlers return 404 and the frontend hides every other
+    OAuth field. Its env default is `True` (`ENABLE_OAUTH=True` in
+    `backend/open_webui/config.py`).
+
     Persistence caveat: unless the backend runs with
     ``ENABLE_OAUTH_PERSISTENT_CONFIG=true``, reads of ``oauth.*`` keys return
     compiled/env defaults and writes are not reflected on read.
     """
 
     # General OAuth
+    ENABLE_OAUTH: Optional[bool] = None
+    """Master switch for OAuth/OIDC authentication.
+
+    When `False`, the OAuth login and callback endpoints respond 404 and the
+    frontend collapses the entire OAuth configuration section. Defaults to
+    `True` via the `ENABLE_OAUTH` env var in the backend."""
+
     ENABLE_OAUTH_SIGNUP: Optional[bool] = None
     """Allow new users to sign up via OAuth/OIDC."""
 

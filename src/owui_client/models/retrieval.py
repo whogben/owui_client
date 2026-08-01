@@ -129,6 +129,8 @@ class WebConfig(BaseModel):
     """The query URL for SearXNG."""
     SEARXNG_LANGUAGE: Optional[str] = None
     """The language for SearXNG."""
+    OPENSERP_BASE_URL: Optional[str] = None
+    """Base URL of a self-hosted OpenSERP instance used when `WEB_SEARCH_ENGINE == 'openserp'`. No API key is required; OpenSERP aggregates results from multiple engines via its `/mega/search` endpoint."""
     YACY_QUERY_URL: Optional[str] = None
     """The query URL for YaCy."""
     YACY_USERNAME: Optional[str] = None
@@ -300,6 +302,8 @@ class ConfigForm(BaseModel):
     # Content extraction settings
     CONTENT_EXTRACTION_ENGINE: Optional[str] = None
     """Engine for content extraction."""
+    CONTENT_EXTRACTION_SUPPORTED_MEDIA_MIME_TYPES: Optional[List[str]] = None
+    """Comma-separated-to-list MIME types (e.g. `['image/*', 'video/*']`) that the content extraction engine is allowed to process for uploaded media. Null/None means the env default (`CONTENT_EXTRACTION_SUPPORTED_MEDIA_MIME_TYPES`) is used."""
     PDF_EXTRACT_IMAGES: Optional[bool] = None
     """Whether to extract images from PDFs."""
     PDF_LOADER_MODE: Optional[str] = None

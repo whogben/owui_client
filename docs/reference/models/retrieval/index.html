@@ -1974,6 +1974,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#owui_client.models.retrieval.WebConfig.OPENSERP_BASE_URL" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OPENSERP_BASE_URL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#owui_client.models.retrieval.WebConfig.YACY_QUERY_URL" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2749,6 +2760,17 @@
     <span class="md-ellipsis">
       
         CONTENT_EXTRACTION_ENGINE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.retrieval.ConfigForm.CONTENT_EXTRACTION_SUPPORTED_MEDIA_MIME_TYPES" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CONTENT_EXTRACTION_SUPPORTED_MEDIA_MIME_TYPES
       
     </span>
   </a>
@@ -5929,6 +5951,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#owui_client.models.retrieval.WebConfig.OPENSERP_BASE_URL" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OPENSERP_BASE_URL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#owui_client.models.retrieval.WebConfig.YACY_QUERY_URL" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -6704,6 +6737,17 @@
     <span class="md-ellipsis">
       
         CONTENT_EXTRACTION_ENGINE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#owui_client.models.retrieval.ConfigForm.CONTENT_EXTRACTION_SUPPORTED_MEDIA_MIME_TYPES" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CONTENT_EXTRACTION_SUPPORTED_MEDIA_MIME_TYPES
       
     </span>
   </a>
@@ -9368,6 +9412,27 @@ before the search proceeds.</p>
 
 
 
+<h5 id="owui_client.models.retrieval.WebConfig.OPENSERP_BASE_URL" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">OPENSERP_BASE_URL</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">OPENSERP_BASE_URL</span><span class="p">:</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Base URL of a self-hosted OpenSERP instance used when <code>WEB_SEARCH_ENGINE == 'openserp'</code>. No API key is required; OpenSERP aggregates results from multiple engines via its <code>/mega/search</code> endpoint.</p>
+
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
 <h5 id="owui_client.models.retrieval.WebConfig.YACY_QUERY_URL" class="doc doc-heading">
 <code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">YACY_QUERY_URL</span>
 
@@ -10898,6 +10963,29 @@ endpoint instead of the default. See the Linkup API documentation for additional
     <div class="doc doc-contents ">
 
         <p>Engine for content extraction.</p>
+
+          
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h5 id="owui_client.models.retrieval.ConfigForm.CONTENT_EXTRACTION_SUPPORTED_MEDIA_MIME_TYPES" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">CONTENT_EXTRACTION_SUPPORTED_MEDIA_MIME_TYPES</span>
+
+
+</h5>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">CONTENT_EXTRACTION_SUPPORTED_MEDIA_MIME_TYPES</span><span class="p">:</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><span title="typing.List">List</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">]</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Comma-separated-to-list MIME types (e.g. <code>['image/*', 'video/*']</code>) that the content extraction engine is allowed to process for uploaded media. Null/None means the env default (<code>CONTENT_EXTRACTION_SUPPORTED_MEDIA_MIME_TYPES</code>) is used.</p>
 
           
     </div>

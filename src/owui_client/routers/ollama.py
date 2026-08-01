@@ -433,6 +433,28 @@ class OllamaClient(ResourceBase):
             "POST", self._get_url(path), json=payload
         )
 
+    async def generate_openai_embeddings(self, payload: Dict, url_idx: int = None) -> Dict[str, Any]:
+        """
+        Generate embeddings using Ollama's OpenAI-compatible /v1/embeddings endpoint.
+
+        Proxies the request to the Ollama backend. The payload must include `model`
+        and `input` (a string or list of strings); extra fields are passed through.
+        Requires the Ollama integration to be enabled (returns 503 otherwise).
+
+        Args:
+            payload: OpenAI-compatible embeddings request payload. Must include `model` and `input`.
+            url_idx: Optional index of the Ollama server to target.
+
+        Returns:
+            OpenAI-compatible embeddings response.
+        """
+        path = "ollama/v1/embeddings"
+        if url_idx is not None:
+            path = f"{path}/{url_idx}"
+        return await self._request(
+            "POST", self._get_url(path), json=payload
+        )
+
     async def get_openai_models(self, url_idx: int = None) -> Dict[str, Any]:
         """
         List models using OpenAI-compatible endpoint.

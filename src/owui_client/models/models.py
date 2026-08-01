@@ -57,7 +57,6 @@ class ModelMeta(BaseModel):
     Metadata for a model.
 
     Additional fields often used (via extra="allow"):
-    - `knowledge` (list): List of knowledge collection items.
     - `toolIds` (list[str]): List of tool IDs enabled for this model.
     - `filterIds` (list[str]): List of filter IDs enabled.
     - `defaultFilterIds` (list[str]): List of default filter IDs.
@@ -80,6 +79,16 @@ class ModelMeta(BaseModel):
     capabilities: Optional[ModelCapabilities] = None
     """
     Dictionary of model capabilities (e.g., vision, usage).
+    """
+
+    knowledge: Optional[List[Any]] = None
+    """
+    Knowledge collections attached to the model, injected into the chat context
+    for prompts sent with this model. Each item is typically a dict describing an
+    attached knowledge base (commonly with `id`, `name`, and nested `data`/`file`).
+    The backend strips duplicated extracted `content` text from `data` and
+    `file.data` before persisting/serializing, so do not rely on `content` keys
+    being present.
     """
 
     model_config = ConfigDict(extra="allow")

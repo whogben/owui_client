@@ -154,3 +154,16 @@ async def test_get_shared_folder_chats(client):
     finally:
         await client.folders.delete_folder_by_id(folder.id)
 
+
+async def test_mark_folder_chats_read(client):
+    """Marking a folder's chats as read returns the expected summary dict."""
+    folder = await client.folders.create_folder(FolderForm(name="Read Test Folder"))
+    try:
+        result = await client.folders.mark_folder_chats_read(folder.id)
+        assert isinstance(result, dict)
+        assert result["folder_id"] == folder.id
+        assert "updated_count" in result
+        assert "folder_unread_counts" in result
+    finally:
+        await client.folders.delete_folder_by_id(folder.id)
+

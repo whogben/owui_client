@@ -7,6 +7,57 @@ Package version numbers follow the Open WebUI mapping described in the README (t
 
 ## [Unreleased]
 
+## [11.0.0] - 2026-07-31
+
+Upgrades the target from Open WebUI 0.10.2 to **0.11.0** and resolves all detected drift against the 0.11.0 backend.
+
+### Changed
+
+- Updated target Open WebUI version from 0.10.2 to 0.11.0.
+- Updated reference source (`refs/owui_source_main/`) to Open WebUI 0.11.0 (`v0.11.0`) and regenerated `refs/owui_openapi_main.json` from the 0.11.0 OpenAPI spec (476 paths, up from 458).
+- `OWUIClientBase` now creates its httpx `AsyncClient` with a 60s default timeout (httpx's 5s default was too short for 0.11.0 endpoints that aggregate connections / proxy to upstream providers — e.g. `GET /api/models`, the OpenAI Responses proxy, and retrieval). Fixes the ReadTimeout regressions seen against 0.11.0.
+
+### Added
+
+#### Routers - New Endpoints
+- `ChatsClient`: `mark_chats_read()` (`POST /v1/chats/read`), `fork()` (`POST /v1/chats/{id}/fork`), `mark_chat_unread()` (`POST /v1/chats/{id}/unread`).
+- `UsersClient`: `get_user_variables()` (`GET /v1/users/user/variables`), `update_user_variables()` (`POST /v1/users/user/variables/update`), `get_user_usage()` (`GET /v1/users/usage`).
+- `NotesClient`: `get_note_chat_by_id()` (`GET /v1/notes/{id}/chat`), `get_note_chats_by_id()` (`GET /v1/notes/{id}/chats`), `create_note_chat_by_id()` (`POST /v1/notes/{id}/chat`) — the note↔chat linkage introduced in 0.11.0.
+- `ConfigsClient`: `get_subagents_config()` / `set_subagents_config()` (`GET`/`POST /v1/configs/subagents`) — the new subagents configuration.
+- `FoldersClient`: `mark_folder_chats_read()` (`POST /v1/folders/{id}/read`).
+- `OllamaClient`: `generate_openai_embeddings()` (`POST /ollama/v1/embeddings[/{url_idx}]`) — OpenAI-compatible embeddings proxy; mirrors the existing `/v1/responses` and `/v1/messages` proxies.
+
+#### Models - New Classes
+- chats: `ForkForm`
+- users: `UserVariablesForm`, `UserVariablesResponse`, `UserUsageResponse` and its supporting usage models
+- configs: `SubagentsConfigForm`
+
+#### Models - New Fields
+- `ChatModel`: `current_message_id`, `variables`
+- `ChatForm`: `variables`
+- `ChatImportForm`: `current_message_id`
+- `ChatResponse`: `current_message_id`, `variables`, `context_usage`
+- `ChatTitleIdResponse`: `active`
+- `UserModel`: `variables` (with backend-mirroring `field_validator` coercion and `exclude=True`)
+- `SharingPermissions`: `folders`
+- `AccessGrantsPermissions`: `allow_groups`
+- `AdminConfig`: `CHANNEL_MODEL_RESPONSE_MODE`
+- `LdapServerConfig`: `attribute_for_groups`, `enable_group_management`, `enable_group_creation`
+- `OAuthConfigForm`: `ENABLE_OAUTH`
+- `ModelMeta`: `knowledge`
+- `AutomationModel` / `AutomationForm`: `folder_id`
+- `WebConfig` (retrieval): `OPENSERP_BASE_URL`
+- `ConfigForm` (retrieval): `CONTENT_EXTRACTION_SUPPORTED_MEDIA_MIME_TYPES`
+- `FolderNameIdResponse`: `unread_count`
+- `KnowledgeUserModel`: `file_count`
+
+#### Tests
+- Added coverage for every new endpoint (`tests/test_chats.py`, `tests/test_users.py`, `tests/test_notes.py`, `tests/test_configs.py`, `tests/test_folders.py`, `tests/test_ollama.py`). The `mock_ollama_server` fixture (`tests/conftest.py`) now serves a proper OpenAI-shaped `/v1/embeddings` response.
+
+### Removed
+
+- `TasksClient.check_active_chats()` and the `ActiveChatsForm` / `ActiveChatsResponse` models — the underlying `POST /v1/tasks/active/chats` endpoint was removed in Open WebUI 0.11.0 (no replacement; confirmed absent from both backend and frontend).
+
 ## [10.2.1] - 2026-07-06
 
 Client-only feature release (still targets Open WebUI 0.10.2).

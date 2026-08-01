@@ -57,6 +57,9 @@ class AutomationModel(BaseModel):
     user_id: str
     """ID of the user who owns the automation."""
 
+    folder_id: Optional[str] = None
+    """ID of the folder containing this automation, or None if it is not filed in a folder."""
+
     name: str
     """Display name of the automation."""
 
@@ -136,6 +139,9 @@ class AutomationForm(BaseModel):
 
     name: str
     """Display name of the automation."""
+
+    folder_id: Optional[str] = None
+    """ID of the folder to file this automation under. None (or unset) leaves it at the root."""
 
     data: AutomationData
     """Core automation data: prompt, model, schedule, and optional terminal config."""

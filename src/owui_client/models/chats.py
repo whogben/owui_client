@@ -83,6 +83,20 @@ class ChatModel(BaseModel):
     It plays a crucial role in the chat management system, particularly in tag-based operations.
     """
 
+    variables: dict = {}
+    """Per-chat context variables substituted into prompts at generation time.
+
+    Keys are arbitrary identifiers matching `^[a-z][a-z0-9_]*$`, declared in the
+    chat's system prompt via `{{chat.variables.KEY}}` placeholders; the stored
+    values are rendered into the prompt (and model params) at generation time.
+    Persisted on the chat and copied when it is cloned or forked.
+
+    Dict Fields:
+        - `<key>` (str, optional): Substitution value for a `{{chat.variables.<key>}}`
+          placeholder declared in the chat's system prompt. Keys must match
+          `^[a-z][a-z0-9_]*$`. See backend `utils/chat_variables.py`.
+    """
+
     folder_id: Optional[str] = None
     """ID of the folder containing this chat, if any."""
 
@@ -91,6 +105,15 @@ class ChatModel(BaseModel):
 
     summary: Optional[str] = None
     """Text summary of the chat conversation."""
+
+    current_message_id: Optional[str] = None
+    """ID of the current/active message in the conversation tree.
+
+    Points at the latest leaf on the active branch. Derived by the backend from
+    `chat.history.currentId` (then `chat.currentId`, `chat.branchPointMessageId`,
+    or the last entry in the flat `chat.messages` list). Drives context-usage
+    calculation and chat forking when no explicit message is supplied.
+    """
 
     last_read_at: Optional[int] = None
     """Timestamp when the user last read the chat (Unix epoch)."""
@@ -127,6 +150,17 @@ class ChatForm(BaseModel):
     message history, and metadata. It's used for creating, updating, and managing chats.
     """
 
+    variables: Optional[dict] = None
+    """Per-chat context variables to store on the chat, substituted into prompts
+    via `{{chat.variables.KEY}}` placeholders. On update, None leaves the chat's
+    variables untouched; any dict replaces them wholesale.
+
+    Dict Fields:
+        - `<key>` (str, optional): Substitution value for a placeholder declared
+          in the chat's system prompt. Keys must match `^[a-z][a-z0-9_]*$`.
+          See backend `utils/chat_variables.py`.
+    """
+
     folder_id: Optional[str] = None
     """Optional ID of the folder to place this chat in."""
 
@@ -152,6 +186,10 @@ class ChatImportForm(ChatForm):
 
     pinned: Optional[bool] = False
     """Whether the imported chat should be pinned."""
+
+    current_message_id: Optional[str] = None
+    """ID of the message to treat as current after import. If omitted, the backend
+    derives it from the imported chat's history."""
 
     created_at: Optional[int] = None
     """Original creation timestamp (Unix epoch)."""
@@ -270,6 +308,20 @@ class ChatResponse(BaseModel):
     It plays a crucial role in the chat management system, particularly in tag-based operations.
     """
 
+    variables: dict = {}
+    """Per-chat context variables substituted into prompts at generation time.
+
+    Keys are arbitrary identifiers matching `^[a-z][a-z0-9_]*$`, declared in the
+    chat's system prompt via `{{chat.variables.KEY}}` placeholders; the stored
+    values are rendered into the prompt (and model params) at generation time.
+    Persisted on the chat and copied when it is cloned or forked.
+
+    Dict Fields:
+        - `<key>` (str, optional): Substitution value for a `{{chat.variables.<key>}}`
+          placeholder declared in the chat's system prompt. Keys must match
+          `^[a-z][a-z0-9_]*$`. See backend `utils/chat_variables.py`.
+    """
+
     folder_id: Optional[str] = None
     """ID of the folder containing this chat, if any."""
 
@@ -278,6 +330,30 @@ class ChatResponse(BaseModel):
 
     summary: Optional[str] = None
     """Text summary of the chat conversation."""
+
+    current_message_id: Optional[str] = None
+    """ID of the current/active message in the conversation tree.
+
+    Points at the latest leaf on the active branch. Derived by the backend from
+    `chat.history.currentId` (then `chat.currentId`, `chat.branchPointMessageId`,
+    or the last entry in the flat `chat.messages` list). Drives context-usage
+    calculation and chat forking when no explicit message is supplied.
+    """
+
+    context_usage: Optional[dict] = None
+    """Estimated token usage of the chat's current context vs. the compaction threshold.
+
+    Only present on fetched chats when context compaction is enabled; computed
+    by the backend's `get_chat_context_usage` and attached to `ChatResponse` by
+    the GET/POST `/{id}` handlers.
+
+    Dict Fields:
+        - `tokens` (int, required): Estimated token count of the active context.
+        - `estimated_tokens` (int, required): Same value as `tokens`.
+        - `threshold` (int, required): Configured compaction token threshold.
+        - `percent` (int, required): `tokens` expressed as a percentage of `threshold`.
+        - `source` (str, required): Origin of the estimate (currently `'estimated'`).
+    """
 
 
 class ChatListResponse(BaseModel):
@@ -397,6 +473,14 @@ class ChatTitleIdResponse(BaseModel):
     `None` for results that do not come from a content search.
     """
 
+    active: bool = False
+    """Whether the chat currently has an unfinished assistant response.
+
+    Populated only by list endpoints (`get_list`, search, folder lists, etc.)
+    via `add_active_state_to_chat_list`. False for single-chat fetches and for
+    chats with no active generation task.
+    """
+
 
 # Models from router
 class TagForm(BaseModel):
@@ -494,6 +578,18 @@ class CloneForm(BaseModel):
 
     title: Optional[str] = None
     """Optional new title for the cloned chat."""
+
+
+class ForkForm(BaseModel):
+    """Form for forking a chat at a specific message.
+
+    Sent to `POST /{id}/fork`. When `message_id` is omitted the backend forks
+    from the chat's `current_message_id` (falling back to `history.currentId`).
+    """
+
+    message_id: Optional[str] = None
+    """ID of the message to fork the conversation at. If omitted, the backend
+    uses the chat's current message."""
 
 
 class ChatFolderIdForm(BaseModel):

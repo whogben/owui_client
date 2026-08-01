@@ -7,6 +7,7 @@ from owui_client.models.notes import (
     NoteModel,
     NoteAccessGrantsForm,
 )
+from owui_client.models.chats import ChatResponse
 
 pytestmark = pytest.mark.asyncio
 
@@ -174,6 +175,54 @@ async def test_notes_access_grants(client):
 
     finally:
         # Cleanup
+        await client.notes.delete_note_by_id(note_id)
+
+
+async def test_notes_chat_endpoints(client):
+    """
+    Test the note-linked chat endpoints: get-or-create, list, and create.
+    """
+    note_form = NoteForm(
+        title="Note With Chat",
+        data={"content": {"md": "A note with a linked chat"}},
+        access_control=None,
+    )
+    created_note = await client.notes.create_note(note_form)
+    assert created_note is not None
+    note_id = created_note.id
+
+    try:
+        # GET /{id}/chat: get-or-create -> creates the first internal chat
+        chat = await client.notes.get_note_chat_by_id(note_id)
+        assert chat is not None
+        assert isinstance(chat, ChatResponse)
+        assert chat.id
+        # Seeded system prompt references the note id
+        params = chat.chat.get("params") or {}
+        assert note_id in params.get("system", "")
+        first_chat_id = chat.id
+
+        # GET /{id}/chat again returns the same chat (get-or-create)
+        chat_again = await client.notes.get_note_chat_by_id(note_id)
+        assert chat_again.id == first_chat_id
+
+        # GET /{id}/chats lists the note's internal chats (one so far)
+        chats = await client.notes.get_note_chats_by_id(note_id)
+        assert isinstance(chats, list)
+        assert first_chat_id in {c.id for c in chats}
+
+        # POST /{id}/chat always creates a new internal chat
+        new_chat = await client.notes.create_note_chat_by_id(note_id)
+        assert new_chat is not None
+        assert isinstance(new_chat, ChatResponse)
+        assert new_chat.id != first_chat_id
+
+        # GET /{id}/chats now includes both chats
+        chats = await client.notes.get_note_chats_by_id(note_id)
+        chat_ids = {c.id for c in chats}
+        assert first_chat_id in chat_ids
+        assert new_chat.id in chat_ids
+    finally:
         await client.notes.delete_note_by_id(note_id)
 
 

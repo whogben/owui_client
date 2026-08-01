@@ -222,3 +222,25 @@ class FoldersClient(ResourceBase):
             params=params,
             model=bool,
         )
+
+    async def mark_folder_chats_read(self, id: str) -> dict:
+        """
+        Mark all chats in a folder (and, for owners/admins, its subtree) as read.
+
+        Open WebUI 0.11.0+. The caller must own the folder, be admin, or have read
+        access. Owners/admins mark the whole folder subtree; other users mark only
+        the folder itself.
+
+        Args:
+            id: The folder ID.
+
+        Returns:
+            dict with keys: `folder_id` (str), `folder_ids` (list[str] of affected
+            folder ids), `updated_count` (int, chats updated), and
+            `folder_unread_counts` (dict[str, int] of remaining unread counts per folder).
+        """
+        return await self._request(
+            "POST",
+            f"/v1/folders/{id}/read",
+            model=dict,
+        )

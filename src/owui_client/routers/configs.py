@@ -8,6 +8,7 @@ from owui_client.models.configs import (
     ToolServerConnection,
     CodeInterpreterConfigForm,
     ModelsConfigForm,
+    SubagentsConfigForm,
     PromptSuggestion,
     SetDefaultSuggestionsForm,
     BannerModel,
@@ -110,6 +111,38 @@ class ConfigsClient(ResourceBase):
             model=dict,
             json=form_data.model_dump(),
             params=params,
+        )
+
+    async def get_subagents_config(self) -> SubagentsConfigForm:
+        """
+        Get the subagents configuration (Open WebUI 0.11.0+). Admin only.
+
+        Returns:
+            `SubagentsConfigForm` with the current subagents settings.
+        """
+        return await self._request(
+            "GET",
+            "/v1/configs/subagents",
+            model=SubagentsConfigForm,
+        )
+
+    async def set_subagents_config(
+        self, form_data: SubagentsConfigForm
+    ) -> SubagentsConfigForm:
+        """
+        Set the subagents configuration (Open WebUI 0.11.0+). Admin only.
+
+        Args:
+            form_data: `SubagentsConfigForm` with the new settings (all fields required).
+
+        Returns:
+            `SubagentsConfigForm` reflecting the saved settings.
+        """
+        return await self._request(
+            "POST",
+            "/v1/configs/subagents",
+            model=SubagentsConfigForm,
+            json=form_data.model_dump(),
         )
 
     async def get_tool_servers_config(self) -> ToolServersConfigForm:

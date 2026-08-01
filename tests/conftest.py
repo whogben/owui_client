@@ -415,6 +415,19 @@ class MockOllamaHandler(BaseHTTPRequestHandler):
             response = {"embedding": [0.1, 0.2, 0.3]}
             self.wfile.write(json.dumps(response).encode("utf-8"))
 
+        elif self.path == "/v1/embeddings":
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            response = {
+                "object": "list",
+                "data": [
+                    {"object": "embedding", "embedding": [0.1, 0.2, 0.3], "index": 0}
+                ],
+                "model": "llama2:latest",
+                "usage": {"prompt_tokens": 2, "total_tokens": 2},
+            }
+            self.wfile.write(json.dumps(response).encode("utf-8"))
         else:
             self.send_response(200)
             self.end_headers()

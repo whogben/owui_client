@@ -431,3 +431,34 @@ class TerminalServerRefreshForm(BaseModel):
 
     reset: bool = False
     """When True, reset sessions (tear down and recreate) instead of just refreshing them."""
+
+
+class SubagentsConfigForm(BaseModel):
+    """
+    Configuration for the Open WebUI 0.11.0 subagents feature.
+
+    Subagents are auxiliary models spawned to assist with a task. Stored under the
+    `subagents.*` config namespace. All fields are required by the backend
+    (`POST /v1/configs/subagents` validates the full form).
+    """
+
+    ENABLE_SUBAGENTS: bool
+    """Master switch for the subagents feature."""
+
+    SUBAGENTS_BACKGROUND_ENABLED: bool
+    """Whether subagents run in the background (non-blocking) rather than foreground."""
+
+    SUBAGENTS_MAX_CONCURRENT: int
+    """Maximum number of subagents that may run concurrently."""
+
+    SUBAGENTS_MAX_ASYNC: int
+    """Maximum number of asynchronous subagent tasks permitted."""
+
+    SUBAGENTS_MAX_ITERATIONS: int
+    """Maximum iterations a subagent may perform before stopping."""
+
+    SUBAGENTS_MAX_OUTPUT: int
+    """Maximum output (tokens) a subagent may produce."""
+
+    SUBAGENTS_SYSTEM_PROMPT: str
+    """System prompt applied to subagents."""

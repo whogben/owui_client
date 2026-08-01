@@ -14,6 +14,9 @@ from owui_client.models.users import (
     UserStatus,
     UserActiveResponse,
     UserPreview,
+    UserVariablesForm,
+    UserVariablesResponse,
+    UserUsageResponse,
 )
 from owui_client.models.groups import GroupModel
 from owui_client.models.oauth_sessions import OAuthSessionModel
@@ -279,6 +282,89 @@ class UsersClient(ResourceBase):
             "POST",
             "/v1/users/user/info/update",
             json=info,
+        )
+
+    async def get_user_variables(self) -> UserVariablesResponse:
+        """
+        Get the calling (session) user's variables.
+
+        Variables are template substitutions available in system prompts via
+        `{{ user.variables.KEY }}`. The response is normalized to `dict[str, str]`.
+
+        Returns:
+            `UserVariablesResponse`: The user's variables (string keys/values).
+        """
+        return await self._request(
+            "GET",
+            "/v1/users/user/variables",
+            model=UserVariablesResponse,
+        )
+
+    async def update_user_variables(
+        self, variables: Dict[str, str]
+    ) -> UserVariablesResponse:
+        """
+        Update the calling (session) user's variables.
+
+        Replaces the user's stored variables with the supplied mapping. Keys
+        must match `^[a-z][a-z0-9_]*$` and values must be strings; the backend
+        rejects invalid input with HTTP 400.
+
+        Args:
+            variables: Mapping of variable key to string value.
+
+        Returns:
+            `UserVariablesResponse`: The normalized variables now stored for
+            the user.
+        """
+        form = UserVariablesForm(variables=variables)
+        return await self._request(
+            "POST",
+            "/v1/users/user/variables/update",
+            model=UserVariablesResponse,
+            json=form.model_dump(),
+        )
+
+    async def get_user_usage(
+        self,
+        days: Optional[int] = None,
+        start_date: Optional[int] = None,
+        end_date: Optional[int] = None,
+    ) -> UserUsageResponse:
+        """
+        Get usage info for the calling (session) user.
+
+        Returns aggregate token/message totals, daily/weekly/cumulative activity
+        heatmaps, derived insights, and top models/tools over a time window.
+
+        The period is determined by the first available of: an explicit
+        `start_date`/`end_date` window, a `days` count back from `end_date`
+        (or now), or a default spanning up to two years from the user's
+        creation date. When `days` is given it must be between 7 and 732.
+
+        Args:
+            days: Number of days to cover (must be between 7 and 732). Used
+                only if `start_date` is not given.
+            start_date: Period start as a Unix epoch timestamp (seconds).
+            end_date: Period end as a Unix epoch timestamp (seconds);
+                defaults to now.
+
+        Returns:
+            `UserUsageResponse`: The usage report for the user.
+        """
+        params = {}
+        if days is not None:
+            params["days"] = days
+        if start_date is not None:
+            params["start_date"] = start_date
+        if end_date is not None:
+            params["end_date"] = end_date
+
+        return await self._request(
+            "GET",
+            "/v1/users/usage",
+            model=UserUsageResponse,
+            params=params,
         )
 
     async def get_user_by_id(self, user_id: str) -> UserActiveResponse:

@@ -24,7 +24,10 @@ class OWUIClientBase:
     def _client(self) -> AsyncClient:
         """Obtains and configures the httpx client."""
         if not self.__client:
-            self.__client = AsyncClient()
+            # Generous default timeout: Open WebUI endpoints that proxy to upstream
+            # providers (model listing, inference, retrieval) routinely exceed httpx's
+            # 5s default, especially the connection-aggregating routes added in 0.11.0.
+            self.__client = AsyncClient(timeout=60.0)
         self.__client.base_url = self.api_url
         if self.api_key:
             self.__client.headers.update({"Authorization": f"Bearer {self.api_key}"})

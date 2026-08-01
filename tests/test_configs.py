@@ -16,6 +16,7 @@ from owui_client.models.configs import (
     SetBannersForm,
     TerminalServerLifecycleForm,
     TerminalServerRefreshForm,
+    SubagentsConfigForm,
 )
 
 
@@ -424,3 +425,18 @@ async def test_refresh_terminal_server_terminals(
     assert isinstance(result, dict)
     assert result.get("status") is True
     assert "refreshed" in result
+
+
+async def test_subagents_config(client: OpenWebUI):
+    """Subagents config round-trips (read, toggle, write, restore original)."""
+    original = await client.configs.get_subagents_config()
+    assert isinstance(original, SubagentsConfigForm)
+
+    toggled = original.model_copy(
+        update={"ENABLE_SUBAGENTS": not original.ENABLE_SUBAGENTS}
+    )
+    try:
+        updated = await client.configs.set_subagents_config(toggled)
+        assert updated.ENABLE_SUBAGENTS == toggled.ENABLE_SUBAGENTS
+    finally:
+        await client.configs.set_subagents_config(original)

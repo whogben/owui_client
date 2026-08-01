@@ -15,6 +15,8 @@ from owui_client.models.users import (
     UserResponse,
     UserStatus,
     UserActiveResponse,
+    UserVariablesResponse,
+    UserUsageResponse,
 )
 from owui_client.models.groups import GroupModel
 from owui_client.models.oauth_sessions import OAuthSessionModel
@@ -370,6 +372,56 @@ async def test_user_status_lifecycle(client):
     check_model = await client.users.get_user_status()
     assert check_model.status_emoji == "🚀"
     assert check_model.status_message == "Testing drift fixes"
+
+
+async def test_user_variables_lifecycle(client):
+    """
+    Test get_user_variables and update_user_variables (replace semantics).
+    """
+    # 1. Capture original variables so we can restore them (update replaces).
+    original = await client.users.get_user_variables()
+    assert isinstance(original, UserVariablesResponse)
+    original_vars = dict(original.variables)
+
+    try:
+        # 2. Replace with a known variable.
+        updated = await client.users.update_user_variables({"test_key": "test_value"})
+        assert isinstance(updated, UserVariablesResponse)
+        assert updated.variables.get("test_key") == "test_value"
+
+        # 3. Verify persistence via GET.
+        check = await client.users.get_user_variables()
+        assert check.variables.get("test_key") == "test_value"
+    finally:
+        # 4. Restore original state.
+        await client.users.update_user_variables(original_vars)
+
+
+async def test_get_user_usage(client):
+    """
+    Test get_user_usage structure for the calling (session) user.
+    """
+    usage = await client.users.get_user_usage()
+    assert isinstance(usage, UserUsageResponse)
+
+    # Required sub-objects present and correctly typed.
+    assert isinstance(usage.totals, type(usage).model_fields["totals"].annotation)
+    assert isinstance(usage.heatmap, list)
+    assert isinstance(usage.weekly_heatmap, list)
+    assert isinstance(usage.cumulative_heatmap, list)
+    assert isinstance(usage.insights, type(usage).model_fields["insights"].annotation)
+    assert isinstance(usage.top_models, list)
+    assert isinstance(usage.top_tools, list)
+    assert isinstance(usage.period, type(usage).model_fields["period"].annotation)
+
+    # Period window must be internally consistent (days >= 1, start <= end).
+    assert usage.period.days >= 1
+    assert usage.period.start_date <= usage.period.end_date
+
+    # 2. Exercise the `days` query param (backend constrains 7 <= days <= 732).
+    usage_days = await client.users.get_user_usage(days=7)
+    assert isinstance(usage_days, UserUsageResponse)
+    assert usage_days.period.days == 7
 
 
 async def test_get_user_preview_by_id_admin_self(client):

@@ -102,6 +102,9 @@ class FolderNameIdResponse(BaseModel):
     is_expanded: bool = False
     """Whether the folder is expanded in the UI."""
 
+    unread_count: int = 0
+    """Number of chats in this folder with unread messages (added in Open WebUI 0.11.0)."""
+
     created_at: int
     """Timestamp of creation (Unix epoch)."""
 

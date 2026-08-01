@@ -2,24 +2,6 @@ from typing import Optional, List
 from pydantic import BaseModel
 
 
-class ActiveChatsForm(BaseModel):
-    """
-    Form to check which chats have active background tasks.
-    """
-
-    chat_ids: List[str]
-    """List of chat IDs to check for active tasks."""
-
-
-class ActiveChatsResponse(BaseModel):
-    """
-    Response containing chat IDs that have active tasks.
-    """
-
-    active_chat_ids: List[str]
-    """List of chat IDs that currently have active background tasks running."""
-
-
 class TaskConfigForm(BaseModel):
     """
     Configuration form for task-related settings (e.g. title generation, tags, autocomplete).

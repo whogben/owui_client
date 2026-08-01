@@ -82,3 +82,18 @@ async def test_ollama_openai_compatible_endpoints(client, mock_ollama_server):
     assert "data" in models
     assert "object" in models
     assert models["object"] == "list"
+
+
+async def test_ollama_openai_embeddings(client, mock_ollama_server):
+    """The OpenAI-compatible /v1/embeddings proxy returns a dict response."""
+    new_config = OllamaConfigForm(
+        ENABLE_OLLAMA_API=True,
+        OLLAMA_BASE_URLS=[mock_ollama_server],
+        OLLAMA_API_CONFIGS={},
+    )
+    await client.ollama.update_config(new_config)
+
+    res = await client.ollama.generate_openai_embeddings(
+        {"model": "llama2:latest", "input": "hello world"}
+    )
+    assert isinstance(res, dict)
